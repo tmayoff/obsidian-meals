@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "marked": "^10.0.0"
+    "marked": "^10.0.0",
+    "parse-ingredient": "^1.0.1"
   }
 }

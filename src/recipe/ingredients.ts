@@ -1,20 +1,10 @@
 import type { App, TFile } from "obsidian";
-
-class Ingredient {
-  name: string;
-  amount: string;
-
-  constructor(name: string, amount: string) {
-    this.name = name;
-    this.amount = amount;
-  }
-}
+import { parseIngredient, type Ingredient } from "parse-ingredient";
 
 export async function get_ingredients(app: App, recipe_file: TFile) {
   console.log("Getting Ingredients from %s...", recipe_file.path);
   let content = await recipe_file.vault.read(recipe_file);
-  let ingredients = parse_ingredients(content);
-  console.log(ingredients);
+  return parse_ingredients(content);
 }
 
 function parse_ingredients(content: string): Ingredient[] {
@@ -47,9 +37,6 @@ function parse_ingredient(content: string): Ingredient {
   content = content.substring(
     content.indexOf(LINE_PREFIX) + LINE_PREFIX.length
   );
-  let words = content.split(" ");
-  let amount = words[words.length - 1];
-  words.pop();
-  let name: string = words.join(" ");
-  return new Ingredient(name, amount);
+
+  return parseIngredient(content)[0];
 }

@@ -3,9 +3,12 @@
   import type { MealSettings } from "../main";
   import { get_recipes } from "./recipe";
   import { get_ingredients } from "./ingredients";
+  import type { Ingredient } from "parse-ingredient";
 
   export let settings: MealSettings;
   export let app: App;
+
+  let ingredients = new Array<Ingredient>();
 
   console.log(
     "Searching directory (%s) for recipes",
@@ -16,8 +19,8 @@
     console.log(recipes_dir.path);
     let recipes = get_recipes(recipes_dir);
     console.log(recipes);
-    recipes.forEach((recipe) => {
-      console.log(get_ingredients(app, recipe.path));
+    recipes.forEach(async (recipe) => {
+      ingredients = await get_ingredients(app, recipe.path);
     });
   } else {
     console.error("Failed to get recipes");
@@ -29,6 +32,13 @@
   <div>
     <div>
       <h2>Ingredients</h2>
+      <ul>
+        {#each ingredients as ingredient}
+          <li>
+            {ingredient.description}
+          </li>
+        {/each}
+      </ul>
     </div>
     <div>
       <h2>Filter</h2>
