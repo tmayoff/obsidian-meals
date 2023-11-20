@@ -16,10 +16,10 @@ function parse_ingredients(content: string): Ingredient[] {
   }
 
   let start = content.indexOf(HEADER_STRING) + HEADER_STRING.length;
-  let end = content.substring(start).indexOf("#");
+  content = content.substring(start);
+  let end = content.indexOf("#");
 
-  let ingredients = content.substring(start, end);
-
+  let ingredients = content.substring(0, end);
   ingredients
     .split("\n")
     .filter((line) => {
@@ -37,6 +37,5 @@ function parse_ingredient(content: string): Ingredient {
   content = content.substring(
     content.indexOf(LINE_PREFIX) + LINE_PREFIX.length
   );
-
   return parseIngredient(content)[0];
 }
