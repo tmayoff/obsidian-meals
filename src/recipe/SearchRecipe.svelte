@@ -1,14 +1,14 @@
 <script lang="ts">
   import { TFolder, type App } from "obsidian";
   import type { MealSettings } from "../main";
-  import { get_recipes } from "./recipe";
-  import { get_ingredients } from "./ingredients";
-  import type { Ingredient } from "parse-ingredient";
+  import { Recipe, get_recipes } from "./recipe";
+  import { get_ingredient_set, get_ingredients } from "./ingredients";
 
   export let settings: MealSettings;
   export let app: App;
 
-  let ingredients = new Array<Ingredient>();
+  let recipes = new Array<Recipe>();
+  let ingredients: Promise<Set<string>>;
 
   console.log(
     "Searching directory (%s) for recipes",
@@ -16,14 +16,8 @@
   );
   let recipes_dir = app.vault.getAbstractFileByPath(settings.recipe_directory);
   if (recipes_dir instanceof TFolder) {
-    console.log(recipes_dir.path);
-    let recipes = get_recipes(recipes_dir);
-    console.log(recipes);
-    recipes.forEach(async (recipe) => {
-      ingredients = await get_ingredients(app, recipe.path);
-    });
-  } else {
-    console.error("Failed to get recipes");
+    recipes = get_recipes(recipes_dir);
+    ingredients = get_ingredient_set(recipes.map((r) => r.path));
   }
 </script>
 
@@ -31,17 +25,29 @@
   <h1>Search Recipes</h1>
   <div>
     <div>
-      <h2>Ingredients</h2>
+      {#await ingredients}
+        <li>Loading...</li>
+      {:then ingredients}
+        <h2>Ingredients</h2>
+        {ingredients.size}
+        <ul>
+          {#each ingredients as ingredient}
+            <li>
+              {ingredient}
+            </li>
+          {/each}
+        </ul>
+      {/await}
+    </div>
+    <div>
+      <h2>Recipes</h2>
       <ul>
-        {#each ingredients as ingredient}
+        {#each recipes as recipe}
           <li>
-            {ingredient.description}
+            {recipe.name}
           </li>
         {/each}
       </ul>
-    </div>
-    <div>
-      <h2>Filter</h2>
     </div>
   </div>
 </div>

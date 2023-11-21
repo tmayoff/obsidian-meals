@@ -1,8 +1,23 @@
 import type { App, TFile } from "obsidian";
 import { parseIngredient, type Ingredient } from "parse-ingredient";
 
-export async function get_ingredients(app: App, recipe_file: TFile) {
-  console.log("Getting Ingredients from %s...", recipe_file.path);
+export async function get_ingredient_set(recipe_dirs: TFile[]) {
+  return Promise.all(
+    recipe_dirs.map(async (dir) => {
+      return await get_ingredients(dir);
+    })
+  ).then((ingredients) => {
+    let all_ingredients: Set<string> = new Set();
+    ingredients.forEach((ingredient) => {
+      ingredient.forEach((ingredient) => {
+        all_ingredients.add(ingredient.description.toLocaleLowerCase());
+      });
+    });
+    return all_ingredients;
+  });
+}
+
+export async function get_ingredients(recipe_file: TFile) {
   let content = await recipe_file.vault.read(recipe_file);
   return parse_ingredients(content);
 }

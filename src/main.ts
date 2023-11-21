@@ -70,6 +70,7 @@ class RecipeSearch extends Modal {
   }
   onClose(): void {
     this.contentEl.empty();
+    this.recipeView?.$destroy();
   }
 }
 

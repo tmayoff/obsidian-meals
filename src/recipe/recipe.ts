@@ -1,11 +1,13 @@
 import * as fs from "fs";
 import { TFile, type TFolder } from "obsidian";
 
-class Recipe {
+export class Recipe {
+  name: string;
   path: TFile;
 
-  constructor(path: TFile) {
+  constructor(path: TFile, name: string = path.basename) {
     this.path = path;
+    this.name = name;
   }
 }
 
