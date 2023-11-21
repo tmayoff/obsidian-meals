@@ -1,11 +1,4 @@
-import {
-  App,
-  Modal,
-  Plugin,
-  PluginSettingTab,
-  Setting,
-  TFolder,
-} from "obsidian";
+import { App, Modal, Plugin, PluginSettingTab, Setting } from "obsidian";
 
 import SearchRecipe from "./recipe/SearchRecipe.svelte";
 

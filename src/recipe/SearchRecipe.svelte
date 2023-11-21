@@ -2,7 +2,7 @@
   import { TFolder, type App } from "obsidian";
   import type { MealSettings } from "../main";
   import { Recipe, get_recipes } from "./recipe";
-  import { get_ingredient_set, get_ingredients } from "./ingredients";
+  import { get_ingredient_set } from "./ingredients";
 
   export let settings: MealSettings;
   export let app: App;
@@ -23,13 +23,12 @@
 
 <div>
   <h1>Search Recipes</h1>
-  <div>
+  <div class="columns">
     <div>
       {#await ingredients}
         <li>Loading...</li>
       {:then ingredients}
         <h2>Ingredients</h2>
-        {ingredients.size}
         <ul>
           {#each ingredients as ingredient}
             <li>
@@ -53,4 +52,7 @@
 </div>
 
 <style>
+  .columns {
+    columns: 2 auto;
+  }
 </style>
