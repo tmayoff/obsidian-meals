@@ -1,0 +1,14 @@
+on: 
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - uses: oven-sh/setup-bun@v1
+
+      - run: bun run build
