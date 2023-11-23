@@ -21,6 +21,8 @@ export default class MealPlugin extends Plugin {
   async onload() {
     await this.loadSettings();
 
+    initialize_store(this);
+
     this.app.vault.on("create", () => {
       initialize_store(this);
     });

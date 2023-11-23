@@ -4,13 +4,36 @@
   import { PlusCircle } from "lucide-svelte";
 
   const search = writable("");
-  const searched_ingredients = derived(
+  const ingredients_search_results = derived(
     [search, ingredients],
     ([$search, $ingredients]) => {
-      console.log("Searching ", $search);
       if ($search.length == 0) return [];
+
+      console.log("Searching ", $search);
+
+      // Levenshtein distance
       return [...$ingredients].filter((i) => {
         return i.contains($search);
+      });
+    }
+  );
+
+  const search_ingredients = writable(new Set<string>());
+
+  function add_ingredient(ingredient: string) {
+    console.log("Pushing to ingredients, ", ingredient);
+    search_ingredients.update((items) => {
+      items.add(ingredient);
+      return items;
+    });
+  }
+
+  const found_recipes = derived(
+    [search_ingredients, recipes],
+    ([$search_ingredients, $recipes]) => {
+      $recipes.filter((recipe) => {
+        // let ingredients = recipe.
+        // TODO Get recipes
       });
     }
   );
@@ -26,22 +49,39 @@
         <PlusCircle />
       </div>
       <div class="search-container">
-        <input
-          type="text"
-          placeholder="search for ingredients to add"
-          bind:value={$search}
-        />
-        <div class="search-results">
-          <div>
-            <ul>
-              <!-- TODO Make modal -->
-              {#each $searched_ingredients as i}
-                <li>
+        <div>
+          <form
+            on:submit={(e) => {
+              if ($ingredients_search_results.length > 0) {
+                add_ingredient($ingredients_search_results[0]);
+                $search = "";
+              }
+              e.preventDefault();
+            }}
+          >
+            <input
+              type="text"
+              placeholder="search for ingredients to add"
+              bind:value={$search}
+            />
+          </form>
+          {#if $ingredients_search_results.length > 0}
+            <div class="search-results">
+              {#each $ingredients_search_results as i}
+                <div>
                   {i}
-                </li>
+                </div>
               {/each}
-            </ul>
-          </div>
+            </div>
+          {/if}
+        </div>
+
+        <div>
+          <ul>
+            {#each $search_ingredients as ingredient}
+              <li>{ingredient}</li>
+            {/each}
+          </ul>
         </div>
       </div>
     </div>
@@ -68,5 +108,15 @@
     content: "";
     display: table;
     clear: both;
+  }
+
+  .search-results {
+    position: absolute;
+    background-color: var(--modal-background);
+
+    border: var(--modal-border-width) solid var(--modal-border-color);
+    border-radius: var(--modal-radius);
+
+    padding: var(--size-4-1);
   }
 </style>
