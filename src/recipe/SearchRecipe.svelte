@@ -22,7 +22,7 @@
     <div class="column flex-box">
       <h2>Ingredients</h2>
       <div>
-        <label>Add all ingredients</label>
+        <!-- <label>Add all ingredients</label> -->
         <PlusCircle />
       </div>
       <div class="search-container">
