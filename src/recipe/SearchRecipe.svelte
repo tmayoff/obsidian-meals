@@ -1,7 +1,7 @@
 <script lang="ts">
   import { derived, writable } from "svelte/store";
   import { ingredients, recipes } from "../store";
-  import { PlusCircle } from "lucide-svelte";
+  import { PlusCircle, MinusCircle } from "lucide-svelte";
 
   const search = writable("");
   const ingredients_search_results = derived(
@@ -47,11 +47,17 @@
 <div>
   <h1 class="">Search Recipes</h1>
   <div class="columns">
-    <div class="column flex-box">
+    <div class="column">
       <h2>Ingredients</h2>
-      <div>
-        <!-- <label>Add all ingredients</label> -->
-        <PlusCircle />
+      <div class="flex filter-toolbox">
+        <p>Add all ingredients</p>
+        <button
+          on:click={(e) => {
+            // TODO Add all ingredients
+          }}
+        >
+          <PlusCircle />
+        </button>
       </div>
       <div class="search-container">
         <div>
@@ -82,11 +88,22 @@
         </div>
 
         <div>
-          <ul>
+          <div>
             {#each $search_ingredients as ingredient}
-              <li>{ingredient}</li>
+              <div>
+                <div>{ingredient}</div>
+                <div>
+                  <button
+                    on:click={(e) => {
+                      console.log("Remove ingredient");
+                    }}
+                  >
+                    <MinusCircle /></button
+                  >
+                </div>
+              </div>
             {/each}
-          </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -104,6 +121,17 @@
 </div>
 
 <style>
+  .flex {
+    display: flex;
+  }
+
+  .filter-toolbox {
+    padding-left: var(--size-4-1);
+    padding-right: var(--size-4-1);
+    justify-content: space-around;
+    align-items: center;
+  }
+
   .column {
     float: left;
     width: 50%;

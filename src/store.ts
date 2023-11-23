@@ -1,9 +1,7 @@
-import { derived, readable, writable } from "svelte/store";
+import { derived, writable } from "svelte/store";
 import { get_recipes, type Recipe } from "./recipe/recipe";
 import { TFolder, type App } from "obsidian";
-import type { MealSettings } from "./main";
 import type MealPlugin from "./main";
-import { get_ingredient_set } from "./recipe/ingredients";
 
 const recipes_setter = writable(new Array<Recipe>(), () => {});
 
