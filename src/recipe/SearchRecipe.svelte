@@ -31,9 +31,14 @@
   const found_recipes = derived(
     [search_ingredients, recipes],
     ([$search_ingredients, $recipes]) => {
-      $recipes.filter((recipe) => {
-        // let ingredients = recipe.
-        // TODO Get recipes
+      return $recipes.filter((recipe) => {
+        let descs = recipe.ingredients.map((i) =>
+          i.description.toLocaleLowerCase()
+        );
+
+        return [...$search_ingredients].every((i) => {
+          return descs.contains(i);
+        });
       });
     }
   );
@@ -88,7 +93,7 @@
     <div class="column">
       <h2>Recipes</h2>
       <ul>
-        {#each $recipes as recipe}
+        {#each $found_recipes as recipe}
           <li>
             {recipe.name}
           </li>

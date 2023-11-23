@@ -14,7 +14,14 @@ export let recipes = derived(recipes_setter, (r) => {
 export let ingredients = derived(
   recipes,
   ($recipes, set) => {
-    get_ingredient_set($recipes).then((i) => set(i));
+    let ingredients: Set<string> = new Set();
+
+    $recipes.forEach((r) => {
+      let is = r.ingredients.map((i) => i.description.toLocaleLowerCase());
+      is.forEach((i) => ingredients.add(i));
+    });
+
+    set(ingredients);
   },
   new Set<string>()
 );
@@ -29,7 +36,6 @@ export async function initialize_store(plugin: MealPlugin) {
   );
 
   if (recipe_folder instanceof TFolder) {
-    let recipes = get_recipes(recipe_folder);
-    recipes_setter.set(recipes);
+    get_recipes(recipe_folder).then((r) => recipes_setter.set(r));
   }
 }
