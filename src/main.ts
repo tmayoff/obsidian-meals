@@ -1,5 +1,6 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting } from "obsidian";
 
+import { initialize_store } from "./store";
 import SearchRecipe from "./recipe/SearchRecipe.svelte";
 
 // Remember to rename these classes and interfaces!
@@ -19,6 +20,15 @@ export default class MealPlugin extends Plugin {
 
   async onload() {
     await this.loadSettings();
+
+    this.app.vault.on("create", () => {
+      initialize_store(this);
+    });
+
+    this.app.vault.on("modify", () => {
+      initialize_store(this);
+    });
+
     this.addSettingTab(new MealPluginSettingsTab(this.app, this));
 
     this.addCommand({
@@ -55,10 +65,6 @@ class RecipeSearch extends Modal {
   async onOpen() {
     this.recipeView = new SearchRecipe({
       target: this.containerEl.children[1].children[2],
-      props: {
-        settings: this.settings,
-        app: this.app,
-      },
     });
   }
   onClose(): void {

@@ -1,9 +1,12 @@
 import type { App, TFile } from "obsidian";
 import { parseIngredient, type Ingredient } from "parse-ingredient";
+import type { Recipe } from "./recipe";
 
-export async function get_ingredient_set(recipe_dirs: TFile[]) {
+export async function get_ingredient_set(recipes: Recipe[]) {
+  let recipes_files = recipes.map((r) => r.path);
+
   return Promise.all(
-    recipe_dirs.map(async (dir) => {
+    recipes_files.map(async (dir) => {
       return await get_ingredients(dir);
     })
   ).then((ingredients) => {
