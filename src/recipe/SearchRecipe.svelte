@@ -3,21 +3,6 @@
   import { ingredients, recipes } from "../store";
   import { PlusCircle, MinusCircle } from "lucide-svelte";
 
-  const search = writable("");
-  const ingredients_search_results = derived(
-    [search, ingredients],
-    ([$search, $ingredients]) => {
-      if ($search.length == 0) return [];
-
-      console.log("Searching ", $search);
-
-      // Levenshtein distance
-      return [...$ingredients].filter((i) => {
-        return i.contains($search);
-      });
-    }
-  );
-
   const search_ingredients = writable(new Set<string>());
 
   function add_ingredient(ingredient: string) {
@@ -60,33 +45,7 @@
         </button>
       </div>
       <div class="search-container">
-        <div>
-          <form
-            on:submit={(e) => {
-              if ($ingredients_search_results.length > 0) {
-                add_ingredient($ingredients_search_results[0]);
-                $search = "";
-              }
-              e.preventDefault();
-            }}
-          >
-            <input
-              type="text"
-              placeholder="search for ingredients to add"
-              bind:value={$search}
-            />
-          </form>
-          {#if $ingredients_search_results.length > 0}
-            <div class="search-results">
-              {#each $ingredients_search_results as i}
-                <div>
-                  {i}
-                </div>
-              {/each}
-            </div>
-          {/if}
-        </div>
-
+        <div bind:this={suggester_parent} />
         <div>
           <div>
             {#each $search_ingredients as ingredient}
@@ -141,15 +100,5 @@
     content: "";
     display: table;
     clear: both;
-  }
-
-  .search-results {
-    position: absolute;
-    background-color: var(--modal-background);
-
-    border: var(--modal-border-width) solid var(--modal-border-color);
-    border-radius: var(--modal-radius);
-
-    padding: var(--size-4-1);
   }
 </style>
