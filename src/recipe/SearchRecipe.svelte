@@ -94,12 +94,15 @@
                 <div>{ingredient}</div>
                 <div>
                   <button
-                    on:click={(e) => {
-                      console.log("Remove ingredient");
+                    on:click|preventDefault={(e) => {
+                      search_ingredients.update((items) => {
+                        items.delete(ingredient);
+                        return items;
+                      });
                     }}
                   >
-                    <MinusCircle /></button
-                  >
+                    <MinusCircle />
+                  </button>
                 </div>
               </div>
             {/each}
