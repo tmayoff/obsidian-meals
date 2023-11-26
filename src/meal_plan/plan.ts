@@ -35,7 +35,7 @@ async function fill_meal_plan_note(file_path: string) {
       if (content.contains(header)) {
         return content;
       } else {
-        return "# " + header + "\n" + day_headers.join("\n\n") + content;
+        return "# " + header + "\n" + day_headers.join("\n\n") + "\n" + content;
       }
     });
   }
