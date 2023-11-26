@@ -25,5 +25,5 @@ jobs:
         with:
           files: |
             main.js 
-            style.css 
+            styles.css 
             manifest.json
