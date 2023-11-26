@@ -25,7 +25,7 @@ export let ingredients = derived(
 );
 
 export async function initialize_store(plugin: MealPlugin) {
-  console.log("Reloading recipes");
+  console.debug("Reloading recipes");
 
   const settings = plugin.settings;
 
