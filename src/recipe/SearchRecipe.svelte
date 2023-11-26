@@ -2,6 +2,11 @@
   import { derived, writable } from "svelte/store";
   import { ingredients, recipes } from "../store";
   import { PlusCircle, MinusCircle } from "lucide-svelte";
+  import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
+  import { TextComponent, type FuzzyMatch } from "obsidian";
+  import { onMount } from "svelte";
+
+  let search_operation = writable("OR");
 
   const search_ingredients = writable(new Set<string>());
 
@@ -14,19 +19,45 @@
   }
 
   const found_recipes = derived(
-    [search_ingredients, recipes],
-    ([$search_ingredients, $recipes]) => {
+    [search_ingredients, search_operation, recipes],
+    ([$search_ingredients, $search_operation, $recipes]) => {
       return $recipes.filter((recipe) => {
         let descs = recipe.ingredients.map((i) =>
           i.description.toLocaleLowerCase()
         );
 
-        return [...$search_ingredients].every((i) => {
-          return descs.contains(i);
-        });
+        if ($search_operation == "AND") {
+          return [...$search_ingredients].every((i) => {
+            return descs.contains(i);
+          });
+        } else if ($search_operation == "OR") {
+          return [...$search_ingredients].some((i) => {
+            return descs.contains(i);
+          });
+        }
       });
     }
   );
+
+  let suggester_parent: HTMLElement;
+  onMount(() => {
+    console.log("Loaded suggester parent");
+    let suggester_text = new TextComponent(suggester_parent);
+
+    let suggester = new IngredientSuggestionModal(app, suggester_text, [
+      ...$ingredients,
+    ]);
+
+    suggester_text.onChange((text) => {
+      suggester.shouldNotOpen = false;
+      suggester.open();
+    });
+
+    suggester.onClose = () => {
+      add_ingredient(suggester.text.getValue());
+      suggester.text.setValue("");
+    };
+  });
 </script>
 
 <div>
@@ -43,22 +74,29 @@
         >
           <PlusCircle />
         </button>
+        <select bind:value={$search_operation}>
+          <option>AND</option>
+          <option>OR</option>
+        </select>
       </div>
       <div class="search-container">
         <div bind:this={suggester_parent} />
         <div>
           <div>
             {#each $search_ingredients as ingredient}
-              <div>
+              <div class="flex justify-around align-center p-4-1">
                 <div>{ingredient}</div>
                 <div>
                   <button
-                    on:click={(e) => {
-                      console.log("Remove ingredient");
+                    on:click|preventDefault={(e) => {
+                      search_ingredients.update((items) => {
+                        items.delete(ingredient);
+                        return items;
+                      });
                     }}
                   >
-                    <MinusCircle /></button
-                  >
+                    <MinusCircle />
+                  </button>
                 </div>
               </div>
             {/each}
@@ -80,8 +118,20 @@
 </div>
 
 <style>
+  .p-4-1 {
+    padding: var(--size-4-1);
+  }
+
   .flex {
     display: flex;
+  }
+
+  .justify-around {
+    justify-content: space-around;
+  }
+
+  .align-center {
+    align-items: center;
   }
 
   .filter-toolbox {
