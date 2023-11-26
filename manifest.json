@@ -1,7 +1,7 @@
 {
-  "id": "meal-plans",
+  "id": "meals",
   "name": "Meal Plan",
-  "version": "0.0.1",
+  "version": "v0.0.3",
   "minAppVersion": "0.15.0",
   "description": "Meal Planning in Obsidian.",
   "author": "Tyler Mayoff",
