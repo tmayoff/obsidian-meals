@@ -1,9 +1,8 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting } from "obsidian";
+import { App, Modal, Plugin, PluginSettingTab, Setting, TFile } from "obsidian";
 
 import { initialize_store } from "./store";
 import SearchRecipe from "./recipe/SearchRecipe.svelte";
-
-// Remember to rename these classes and interfaces!
+import { open_meal_plan_note } from "./meal_plan/plan";
 
 export interface MealSettings {
   recipe_directory: string;
@@ -11,7 +10,7 @@ export interface MealSettings {
 }
 
 const DEFAULT_SETTINGS: MealSettings = {
-  recipe_directory: "/",
+  recipe_directory: "Meals",
   meal_plan_note: "Meal Plan",
 };
 
@@ -38,6 +37,14 @@ export default class MealPlugin extends Plugin {
       name: "Find a recipe",
       callback: () => {
         new RecipeSearch(this.app, this.settings).open();
+      },
+    });
+
+    this.addCommand({
+      id: "open-meal-plan",
+      name: "Open meal plan note",
+      callback: async () => {
+        await open_meal_plan_note(this.settings.meal_plan_note);
       },
     });
   }
