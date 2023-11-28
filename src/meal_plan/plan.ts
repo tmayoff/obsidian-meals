@@ -17,8 +17,18 @@ export async function open_meal_plan_note(file_path: string) {
   }
   await create_meal_plan_note(file_path);
 
-  // TODO Look for leaf already open
-  await app.workspace.openLinkText(file_path, "", true);
+  let found = false;
+  app.workspace.iterateAllLeaves((leaf) => {
+    if (leaf.getDisplayText() == file_path.substring(0, file_path.length - 3)) {
+      console.log(leaf.getDisplayText());
+      app.workspace.setActiveLeaf(leaf);
+      found = true;
+    }
+  });
+
+  if (!found) {
+    await app.workspace.openLinkText(file_path, "", true);
+  }
 
   fill_meal_plan_note(file_path);
 }
