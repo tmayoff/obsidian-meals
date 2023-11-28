@@ -66,7 +66,7 @@
     <div class="column">
       <h2>Ingredients</h2>
       <div class="flex filter-toolbox">
-        <p>Add all ingredients</p>
+        <p class="text-3xl font-bold underline">Add all ingredients</p>
         <button
           on:click={(e) => {
             // TODO Add all ingredients

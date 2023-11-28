@@ -3,6 +3,7 @@ import { App, Modal, Plugin, PluginSettingTab, Setting, TFile } from "obsidian";
 import { initialize_store } from "./store";
 import SearchRecipe from "./recipe/SearchRecipe.svelte";
 import { open_meal_plan_note } from "./meal_plan/plan";
+import "virtual:uno.css";
 
 export interface MealSettings {
   recipe_directory: string;
