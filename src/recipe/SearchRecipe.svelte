@@ -43,6 +43,7 @@
   onMount(() => {
     console.log("Loaded suggester parent");
     let suggester_text = new TextComponent(suggester_parent);
+    suggester_text.inputEl.addClass("w-full");
 
     let suggester = new IngredientSuggestionModal(app, suggester_text, [
       ...$ingredients,
@@ -61,30 +62,30 @@
 </script>
 
 <div>
-  <h1 class="">Search Recipes</h1>
-  <div class="columns">
-    <div class="column">
+  <h1>Search Recipes</h1>
+  <div class="flex flex-row">
+    <div class="basis-1/2 flex flex-col space-x-4">
       <h2>Ingredients</h2>
-      <div class="flex filter-toolbox">
-        <p class="text-3xl font-bold underline">Add all ingredients</p>
+      <div class="w-full flex flex-row justify-evenly items-center m-4">
+        <!-- <p>Add all ingredients</p>
         <button
           on:click={(e) => {
             // TODO Add all ingredients
           }}
         >
           <PlusCircle />
-        </button>
+        </button> -->
         <select bind:value={$search_operation}>
           <option>AND</option>
           <option>OR</option>
         </select>
       </div>
-      <div class="search-container">
+      <div class="search-container m-1">
         <div bind:this={suggester_parent} />
-        <div>
+        <div class="m-2">
           <div>
             {#each $search_ingredients as ingredient}
-              <div class="flex justify-around align-center p-4-1">
+              <div class="flex flex-row justify-between items-center">
                 <div>{ingredient}</div>
                 <div>
                   <button
@@ -104,7 +105,7 @@
         </div>
       </div>
     </div>
-    <div class="column">
+    <div class="basis-1/2">
       <h2>Recipes</h2>
       <ul>
         {#each $found_recipes as recipe}
@@ -118,37 +119,4 @@
 </div>
 
 <style>
-  .p-4-1 {
-    padding: var(--size-4-1);
-  }
-
-  .flex {
-    display: flex;
-  }
-
-  .justify-around {
-    justify-content: space-around;
-  }
-
-  .align-center {
-    align-items: center;
-  }
-
-  .filter-toolbox {
-    padding-left: var(--size-4-1);
-    padding-right: var(--size-4-1);
-    justify-content: space-around;
-    align-items: center;
-  }
-
-  .column {
-    float: left;
-    width: 50%;
-  }
-
-  .columns::after {
-    content: "";
-    display: table;
-    clear: both;
-  }
 </style>
