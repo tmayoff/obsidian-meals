@@ -1,15 +1,6 @@
 import moment from "moment";
 import { TFile } from "obsidian";
-
-const DAYS_OF_WEEK = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
+import { DAYS_OF_WEEK } from "../constants";
 
 export async function open_meal_plan_note(file_path: string) {
   if (!file_path.endsWith(".md")) {

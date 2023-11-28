@@ -1,10 +1,11 @@
 <script lang="ts">
   import { derived, writable } from "svelte/store";
   import { ingredients, recipes } from "../store";
-  import { PlusCircle, MinusCircle } from "lucide-svelte";
+  import { MinusCircle } from "lucide-svelte";
   import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
-  import { TextComponent, type FuzzyMatch } from "obsidian";
+  import { TextComponent } from "obsidian";
   import { onMount } from "svelte";
+  import { DAYS_OF_WEEK } from "../constants";
 
   let search_operation = writable("OR");
 
@@ -109,9 +110,16 @@
       <h2>Recipes</h2>
       <ul>
         {#each $found_recipes as recipe}
-          <li>
-            {recipe.name}
-          </li>
+          <div class="flex flex-row">
+            <p>
+              {recipe.name}
+            </p>
+            <select>
+              {#each DAYS_OF_WEEK as day}
+                <optiona value={day} />
+              {/each}
+            </select>
+          </div>
         {/each}
       </ul>
     </div>
