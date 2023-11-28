@@ -1,5 +1,6 @@
 import { svelte, vitePreprocess } from "@sveltejs/vite-plugin-svelte";
 import builtins from "builtin-modules";
+import UnoCSS from "unocss/vite";
 import { PluginOption, defineConfig } from "vite";
 
 const setOutDir = (mode: string) => {
@@ -13,7 +14,10 @@ const setOutDir = (mode: string) => {
 
 export default defineConfig(({ mode }) => {
   return {
-    plugins: [svelte({ preprocess: vitePreprocess() }) as PluginOption],
+    plugins: [
+      UnoCSS(),
+      svelte({ preprocess: vitePreprocess() }) as PluginOption,
+    ],
     build: {
       lib: {
         entry: "src/main",
