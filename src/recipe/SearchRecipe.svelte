@@ -6,6 +6,7 @@
   import { TextComponent } from "obsidian";
   import { onMount } from "svelte";
   import { DAYS_OF_WEEK } from "../constants";
+  import Dropdown from "../utils/Dropdown.svelte";
 
   let search_operation = writable("any of");
 
@@ -103,9 +104,11 @@
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $found_recipes as recipe}
-          <div>
-            {recipe.name}
-          </div>
+          <Dropdown text={recipe.name}>
+            {#each DAYS_OF_WEEK as day}
+              <button class="rounded-none">{day}</button>
+            {/each}
+          </Dropdown>
         {/each}
       </div>
     </div>
