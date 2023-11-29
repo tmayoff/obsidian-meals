@@ -7,7 +7,7 @@
   import { onMount } from "svelte";
   import { DAYS_OF_WEEK } from "../constants";
 
-  let search_operation = writable("OR");
+  let search_operation = writable("any of");
 
   const search_ingredients = writable(new Set<string>());
 
@@ -27,11 +27,11 @@
           i.description.toLocaleLowerCase()
         );
 
-        if ($search_operation == "AND") {
+        if ($search_operation == "all of") {
           return [...$search_ingredients].every((i) => {
             return descs.contains(i);
           });
-        } else if ($search_operation == "OR") {
+        } else if ($search_operation == "any of") {
           return [...$search_ingredients].some((i) => {
             return descs.contains(i);
           });
@@ -64,24 +64,17 @@
 
 <div>
   <h1>Search Recipes</h1>
-  <div class="flex flex-row">
+  <div class="flex flex-col md:flex-row">
     <div class="basis-1/2 flex flex-col space-x-4">
       <h2>Ingredients</h2>
-      <div class="w-full flex flex-row justify-evenly items-center m-4">
-        <!-- <p>Add all ingredients</p>
-        <button
-          on:click={(e) => {
-            // TODO Add all ingredients
-          }}
-        >
-          <PlusCircle />
-        </button> -->
-        <select bind:value={$search_operation}>
-          <option>AND</option>
-          <option>OR</option>
+      <div class="w-full flex flex-row justify-evenly items-center m-1 ml-0">
+        <label for="filter-combination">recipes containing</label>
+        <select name="filter-combination" bind:value={$search_operation}>
+          <option>all of</option>
+          <option>any of</option>
         </select>
       </div>
-      <div class="search-container m-1">
+      <div class="search-container ml-0">
         <div bind:this={suggester_parent} />
         <div class="m-2">
           <div>
@@ -108,20 +101,13 @@
     </div>
     <div class="basis-1/2">
       <h2>Recipes</h2>
-      <ul>
+      <div class="flex flex-col p-3">
         {#each $found_recipes as recipe}
-          <div class="flex flex-row">
-            <p>
-              {recipe.name}
-            </p>
-            <select>
-              {#each DAYS_OF_WEEK as day}
-                <optiona value={day} />
-              {/each}
-            </select>
+          <div>
+            {recipe.name}
           </div>
         {/each}
-      </ul>
+      </div>
     </div>
   </div>
 </div>

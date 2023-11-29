@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-sample-plugin",
-  "version": "1.0.0",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "name": "obsidian-meals",
+  "version": "0.0.4",
+  "description": "This is a recipe manager and meal planner",
   "main": "main.js",
   "scripts": {
     "dev": "vite build --mode development --watch",
