@@ -1,7 +1,7 @@
-import { derived, writable } from "svelte/store";
+import { derived, get, writable } from "svelte/store";
 import { get_recipes, type Recipe } from "./recipe/recipe";
 import { TFolder, type App } from "obsidian";
-import type MealPlugin from "./main";
+import { settings } from "./settings";
 
 const recipes_setter = writable(new Array<Recipe>(), () => {});
 
@@ -24,13 +24,11 @@ export let ingredients = derived(
   new Set<string>()
 );
 
-export async function initialize_store(plugin: MealPlugin) {
+export async function initialize_store() {
   console.debug("Reloading recipes");
 
-  const settings = plugin.settings;
-
-  let recipe_folder = plugin.app.vault.getAbstractFileByPath(
-    settings.recipe_directory
+  let recipe_folder = app.vault.getAbstractFileByPath(
+    get(settings).recipe_directory
   );
 
   if (recipe_folder instanceof TFolder) {
