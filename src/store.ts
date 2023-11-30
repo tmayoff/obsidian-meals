@@ -25,7 +25,7 @@ export let ingredients = derived(
   new Set<string>()
 );
 
-export async function initialize_store(plugin: MealPlugin) {
+export async function initialize_store() {
   console.debug("Reloading recipes");
 
   let recipe_folder = app.vault.getAbstractFileByPath(
