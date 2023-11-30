@@ -1,17 +1,17 @@
 <script lang="ts">
   export let text: string;
 
-  let show = false;
+  let open = false;
 </script>
 
 <div class="realtive inline-block text-left">
   <div>
     <button
-      on:click={() => (show = !show)}
+      on:click={() => (open = !open)}
       type="button"
       class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300"
       id="menu-button"
-      aria-expanded={show}
+      aria-expanded={open}
       aria-haspopup="true"
       >{text}
       <svg
@@ -31,12 +31,12 @@
   <div
     class="flex-col fixed z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-[--background-primary] border-[--background-modifier-border] border-2"
     role="menu"
-    class:hidden={!show}
-    class:flex={show}
+    class:hidden={!open}
+    class:flex={open}
     aria-orientation="vertical"
     aria-labelledby="menu-button"
     tabindex="-1"
   >
-    <slot on:click={(show = false)} />
+    <slot />
   </div>
 </div>

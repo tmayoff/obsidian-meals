@@ -1,6 +1,11 @@
 import moment from "moment";
 import { TFile } from "obsidian";
 import { DAYS_OF_WEEK } from "../constants";
+import type { Recipe } from "../recipe/recipe";
+
+export async function add_recipe_to_meal_plan(recipe: Recipe, day: string) {
+  console.log("Adding recipe to meal plan");
+}
 
 export async function open_meal_plan_note(file_path: string) {
   if (!file_path.endsWith(".md")) {

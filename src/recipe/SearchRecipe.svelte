@@ -6,6 +6,7 @@
   import { TextComponent } from "obsidian";
   import { onMount } from "svelte";
   import { DAYS_OF_WEEK } from "../constants";
+  import { add_recipe_to_meal_plan } from "../meal_plan/plan";
   import Dropdown from "../utils/Dropdown.svelte";
 
   let search_operation = writable("any of");
@@ -106,7 +107,11 @@
         {#each $found_recipes as recipe}
           <Dropdown text={recipe.name}>
             {#each DAYS_OF_WEEK as day}
-              <button class="rounded-none">{day}</button>
+              <button
+                on:click={async () => {
+                  await add_recipe_to_meal_plan(recipe, day);
+                }}>{day}</button
+              >
             {/each}
           </Dropdown>
         {/each}
