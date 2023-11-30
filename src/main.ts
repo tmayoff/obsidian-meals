@@ -1,34 +1,24 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting, TFile } from "obsidian";
 
+import "virtual:uno.css";
 import { initialize_store } from "./store";
 import SearchRecipe from "./recipe/SearchRecipe.svelte";
 import { open_meal_plan_note } from "./meal_plan/plan";
-import "virtual:uno.css";
-
-export interface MealSettings {
-  recipe_directory: string;
-  meal_plan_note: string;
-}
-
-const DEFAULT_SETTINGS: MealSettings = {
-  recipe_directory: "Meals",
-  meal_plan_note: "Meal Plan",
-};
+import { MealSettings, settings } from "./settings";
+import { get } from "svelte/store";
 
 export default class MealPlugin extends Plugin {
-  settings: MealSettings = DEFAULT_SETTINGS;
-
   async onload() {
     await this.loadSettings();
 
-    initialize_store(this);
+    initialize_store();
 
     this.app.vault.on("create", () => {
-      initialize_store(this);
+      initialize_store();
     });
 
     this.app.vault.on("modify", () => {
-      initialize_store(this);
+      initialize_store();
     });
 
     this.addSettingTab(new MealPluginSettingsTab(this.app, this));
@@ -37,7 +27,7 @@ export default class MealPlugin extends Plugin {
       id: "open-recipe-search",
       name: "Find a recipe",
       callback: () => {
-        new RecipeSearch(this.app, this.settings).open();
+        new RecipeSearch(this.app, get(settings)).open();
       },
     });
 
@@ -45,7 +35,7 @@ export default class MealPlugin extends Plugin {
       id: "open-meal-plan",
       name: "Open meal plan note",
       callback: async () => {
-        await open_meal_plan_note(this.settings.meal_plan_note);
+        await open_meal_plan_note(get(settings).meal_plan_note);
       },
     });
   }
@@ -53,11 +43,11 @@ export default class MealPlugin extends Plugin {
   onunload() {}
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
   }
 
   async saveSettings() {
-    await this.saveData(this.settings);
+    await this.saveData(get(settings));
   }
 }
 
@@ -101,9 +91,12 @@ class MealPluginSettingsTab extends PluginSettingTab {
       .setDesc("Folder where recipes are stored")
       .addText(async (text) => {
         text
-          .setValue(this.plugin.settings.recipe_directory)
+          .setValue(get(settings).recipe_directory)
           .onChange(async (value) => {
-            this.plugin.settings.recipe_directory = value;
+            settings.update((s) => {
+              s.recipe_directory = value;
+              return s;
+            });
             await this.plugin.saveSettings();
           });
       });
@@ -113,9 +106,12 @@ class MealPluginSettingsTab extends PluginSettingTab {
       .addText((text) =>
         text
           .setPlaceholder("Meal Plan")
-          .setValue(this.plugin.settings.meal_plan_note)
+          .setValue(get(settings).meal_plan_note)
           .onChange(async (value) => {
-            this.plugin.settings.meal_plan_note = value;
+            settings.update((s) => {
+              s.meal_plan_note = value;
+              return s;
+            });
             await this.plugin.saveSettings();
           })
       );
