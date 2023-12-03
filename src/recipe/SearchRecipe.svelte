@@ -3,8 +3,11 @@
   import { ingredients, recipes } from "../store";
   import { MinusCircle } from "lucide-svelte";
   import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
-  import { TextComponent, type FuzzyMatch } from "obsidian";
+  import { TextComponent } from "obsidian";
   import { onMount } from "svelte";
+  import { DAYS_OF_WEEK } from "../constants";
+  import { add_recipe_to_meal_plan } from "../meal_plan/plan";
+  import Dropdown from "../utils/Dropdown.svelte";
 
   let search_operation = writable("any of");
 
@@ -102,9 +105,16 @@
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $found_recipes as recipe}
-          <div>
-            {recipe.name}
-          </div>
+          <Dropdown text={recipe.name}>
+            {#each DAYS_OF_WEEK as day}
+              <button
+                class="rounded-none"
+                on:click={async () => {
+                  await add_recipe_to_meal_plan(recipe, day);
+                }}>{day}</button
+              >
+            {/each}
+          </Dropdown>
         {/each}
       </div>
     </div>

@@ -16,7 +16,12 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       UnoCSS(),
-      svelte({ preprocess: vitePreprocess() }) as PluginOption,
+      svelte({
+        preprocess: vitePreprocess(),
+        compilerOptions: {
+          customElement: true,
+        },
+      }) as PluginOption,
     ],
     build: {
       lib: {
