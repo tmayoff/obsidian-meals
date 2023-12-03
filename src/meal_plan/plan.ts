@@ -11,6 +11,8 @@ export async function add_recipe_to_meal_plan(recipe: Recipe, day: string) {
     file_path += ".md";
   }
 
+  await fill_meal_plan_note(file_path);
+
   let file = app.vault.getAbstractFileByPath(file_path);
   if (file instanceof TFile) {
     file.vault.process(file, (content) => {

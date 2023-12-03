@@ -108,6 +108,7 @@
           <Dropdown text={recipe.name}>
             {#each DAYS_OF_WEEK as day}
               <button
+                class="rounded-none"
                 on:click={async () => {
                   await add_recipe_to_meal_plan(recipe, day);
                 }}>{day}</button

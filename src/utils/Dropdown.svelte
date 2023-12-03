@@ -29,7 +29,7 @@
     </button>
   </div>
   <div
-    class="flex-col fixed z-10 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-[--background-primary] border-[--background-modifier-border] border-2"
+    class="flex-col fixed z-10 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-[--background-primary] border-[--background-modifier-border] border-2"
     role="menu"
     class:hidden={!open}
     class:flex={open}
