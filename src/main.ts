@@ -13,13 +13,17 @@ export default class MealPlugin extends Plugin {
 
     initialize_store();
 
-    this.app.vault.on("create", () => {
-      initialize_store();
-    });
+    this.registerEvent(
+      this.app.vault.on("create", () => {
+        initialize_store();
+      })
+    );
 
-    this.app.vault.on("modify", () => {
-      initialize_store();
-    });
+    this.registerEvent(
+      this.app.vault.on("modify", () => {
+        initialize_store();
+      })
+    );
 
     this.addSettingTab(new MealPluginSettingsTab(this.app, this));
 
