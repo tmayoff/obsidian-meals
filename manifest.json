@@ -3,7 +3,7 @@
   "name": "Meal Plan",
   "version": "0.0.5",
   "minAppVersion": "0.15.0",
-  "description": "Meal Planning in Obsidian.",
+  "description": "Store and manage recipes, create weekly meal plans and generate shopping lists.",
   "author": "Tyler Mayoff",
   "authorUrl": "https://github.com/tmayoff",
   "isDesktopOnly": false
