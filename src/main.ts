@@ -91,8 +91,8 @@ class MealPluginSettingsTab extends PluginSettingTab {
     containerEl.empty();
 
     new Setting(containerEl)
-      .setName("Recipe Directory")
-      .setDesc("Folder where recipes are stored")
+      .setName("Recipe directory")
+      .setDesc("Parent folder where recipes are stored")
       .addText(async (text) => {
         text
           .setValue(get(settings).recipe_directory)
@@ -105,8 +105,8 @@ class MealPluginSettingsTab extends PluginSettingTab {
           });
       });
     new Setting(containerEl)
-      .setName("Meal Plan Note")
-      .setDesc("Note to store meal plans")
+      .setName("Meal plan note")
+      .setDesc("Note to store the the weekly meal plans")
       .addText((text) =>
         text
           .setPlaceholder("Meal Plan")

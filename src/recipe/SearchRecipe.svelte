@@ -14,7 +14,7 @@
   const search_ingredients = writable(new Set<string>());
 
   function add_ingredient(ingredient: string) {
-    console.log("Pushing to ingredients, ", ingredient);
+    // console.log("Pushing to ingredients, ", ingredient);
     search_ingredients.update((items) => {
       items.add(ingredient);
       return items;
@@ -44,7 +44,7 @@
 
   let suggester_parent: HTMLElement;
   onMount(() => {
-    console.log("Loaded suggester parent");
+    // console.log("Loaded suggester parent");
     let suggester_text = new TextComponent(suggester_parent);
     suggester_text.inputEl.addClass("w-full");
 
@@ -65,7 +65,7 @@
 </script>
 
 <div>
-  <h1>Search Recipes</h1>
+  <h1>Search recipes</h1>
   <div class="flex flex-col md:flex-row">
     <div class="basis-1/2 flex flex-col space-x-4">
       <h2>Ingredients</h2>
