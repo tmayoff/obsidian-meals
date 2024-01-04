@@ -1,0 +1,179 @@
+{
+  "main": {
+    "id": "52ce30af652940e4",
+    "type": "split",
+    "children": [
+      {
+        "id": "4013ab71a9a50b58",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "8e4a28db85d416f1",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Meals/Za'atar Chicken Bulgur Bowls.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "a1c55fb4e98f83f2",
+    "type": "split",
+    "children": [
+      {
+        "id": "b2d3fb38afafca9b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e2ee6ca9af39055a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6d1ed74c6d5451ee",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "6cd666d551142f33",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "772eef1503cec901",
+    "type": "split",
+    "children": [
+      {
+        "id": "c572b82491bbe867",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a01bd7c6dc27d6bd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Meals/Za'atar Chicken Bulgur Bowls.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "f56211e596670286",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Meals/Za'atar Chicken Bulgur Bowls.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "507958d03fcb4ad3",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "e24e761de3386153",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Meals/Za'atar Chicken Bulgur Bowls.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "8e4a28db85d416f1",
+  "lastOpenFiles": [
+    "Meals/Cali Chicken Tostada.md",
+    "Meals/Za'atar Chicken Bulgur Bowls.md",
+    "Meals/Chipotle Salmon Bowls.md",
+    "Meals/Crispy Mexican-Inspired Tortillas.md",
+    "Meals/General Tao.md",
+    "Meals/Chana Masala.md",
+    "Meal Plan.md",
+    "Meals/High Protein Dynamite Chicken Loaded Fries.md",
+    "Meals/High Protein Butter Chicken Shawarma Rice Bowls.md",
+    "Meals/Garlic Butter Steak Bites.md",
+    "Meals/Sushi Bake.md",
+    "Meals/Smashburger Tacos.md",
+    "Meals/Simple Red Lentil and Chickpea Bowls.md",
+    "Meals/Poke Bowl.md",
+    "Meals/Pancakes.md",
+    "Meals/Middle Eastern-Inspired Beef Bowls.md",
+    "Meals/Mexican Picadillo.md",
+    "Meals/Maple Mustard Glazed Chicken.md",
+    "Meals/Mac and Cheese.md",
+    "Meals/Jalapeño Popper Skewers.md",
+    "Meals/Indian-Spiced Pork Burgers.md",
+    "Meals/High Protein Chicken Pad Thai.md",
+    "Meals/Hard Boiled Eggs.md",
+    "Meals/Garlic Pull Apart Bread.md",
+    "Meals/Fajita Chicken and Rice.md",
+    "Meals/Crispy Shallot Pork Croquettes.md",
+    "Meals"
+  ]
+}

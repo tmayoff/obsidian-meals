@@ -1,4 +1,3 @@
-import * as fs from "fs";
 import { TFile, type TFolder } from "obsidian";
 import type { Ingredient } from "parse-ingredient";
 import { get_ingredients } from "./ingredients";
@@ -21,15 +20,13 @@ export class Recipe {
 }
 
 export async function get_recipes(recipe_dir: TFolder) {
-  let recipes: Recipe[] = new Array();
+  const recipes: Recipe[] = new Array();
 
-  recipe_dir.children.forEach(async (file) => {
-    if (file instanceof TFile) {
-      let recipe = new Recipe(file);
+  for (const file of recipe_dir.children) {
+    const recipe = new Recipe(file);
       await recipe.fill_ingredients();
       recipes.push(recipe);
     }
-  });
 
   return recipes;
 }

@@ -1,37 +1,35 @@
-import { derived, get, writable } from "svelte/store";
-import { get_recipes, type Recipe } from "./recipe/recipe";
-import { TFolder, type App } from "obsidian";
-import { settings } from "./settings";
+import { derived, get, writable } from 'svelte/store';
+import { get_recipes, type Recipe } from './recipe/recipe';
+import { TFolder, app, type App } from 'obsidian';
+import { settings } from './settings';
 
-const recipes_setter = writable(new Array<Recipe>(), () => {});
+export const APP = writable();
 
-export let recipes = derived(recipes_setter, (r) => {
-  return r;
+export const recipes = writable(new Array<Recipe>());
+
+export const ingredients = derived(recipes, ($recipes) => {
+    const ingredients = new Set();
+
+    for (const recipe of $recipes) {
+        for (const ingredient of recipe.ingredients) {
+            if (ingredient === undefined) {
+                console.error('Recipe ingredient is broken', recipe, ingredient);
+                continue;
+            }
+
+            ingredients.add(ingredient.description.toLowerCase());
+        }
+    }
+
+    return ingredients;
 });
 
-export let ingredients = derived(
-  recipes,
-  ($recipes, set) => {
-    let ingredients: Set<string> = new Set();
+export async function load_recipes() {
+    const recipe_folder = get(APP).vault.getAbstractFileByPath(get(settings).recipe_directory);
 
-    $recipes.forEach((r) => {
-      let is = r.ingredients.map((i) => i.description.toLocaleLowerCase());
-      is.forEach((i) => ingredients.add(i));
-    });
-
-    set(ingredients);
-  },
-  new Set<string>()
-);
-
-export async function initialize_store() {
-  console.debug("Reloading recipes");
-
-  let recipe_folder = app.vault.getAbstractFileByPath(
-    get(settings).recipe_directory
-  );
-
-  if (recipe_folder instanceof TFolder) {
-    get_recipes(recipe_folder).then((r) => recipes_setter.set(r));
-  }
+    if (recipe_folder instanceof TFolder) {
+        get_recipes(recipe_folder).then((r) => {
+            recipes.set(r);
+        });
+    }
 }
