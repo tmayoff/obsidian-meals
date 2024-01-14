@@ -1,5 +1,4 @@
 import {
-  TFolder,
   TextComponent,
   type CachedMetadata,
   App,
@@ -23,7 +22,7 @@ export class IngredientSuggestionModal extends SuggestionModal<string> {
     this.text.setValue(item);
   }
   selectSuggestion({ item }: FuzzyMatch<string>) {
-    let link = item;
+    const link = item;
     this.item = item;
     this.text.setValue(link);
     this.onClose();
@@ -31,8 +30,8 @@ export class IngredientSuggestionModal extends SuggestionModal<string> {
     this.close();
   }
   renderSuggestion(result: FuzzyMatch<string>, el: HTMLElement) {
-    let { item, match: matches } = result || {};
-    let content = el.createDiv({
+    const { item, match: matches } = result || {};
+    const content = el.createDiv({
       cls: "suggestion-content",
     });
     if (!item) {

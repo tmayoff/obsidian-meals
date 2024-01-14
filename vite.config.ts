@@ -4,12 +4,12 @@ import UnoCSS from "unocss/vite";
 import { PluginOption, defineConfig } from "vite";
 
 const setOutDir = (mode: string) => {
-  //   switch (mode) {
-  //     case "development":
-  //       return "./test-vault/.obsidian/plugins/obsidian-svelte-plugin";
-  //     case "production":
-  return "";
-  //   }
+     switch (mode) {
+      case "development":
+         return "./test_vault/.obsidian/plugins/obsidian-meals";
+       case "production":
+         return "";
+     }
 };
 
 export default defineConfig(({ mode }) => {
