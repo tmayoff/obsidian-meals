@@ -26,4 +26,4 @@ jobs:
           files: |
             build/main.js 
             build/styles.css 
-            build/manifest.json
+            manifest.json
