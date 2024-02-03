@@ -1,8 +1,6 @@
 # vscode
 .vscode 
 
-manifest.json
-
 # Intellij
 *.iml
 .idea
