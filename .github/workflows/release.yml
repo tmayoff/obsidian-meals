@@ -24,6 +24,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            main.js 
-            styles.css 
-            manifest.json
+            build/main.js 
+            build/styles.css 
+            build/manifest.json
