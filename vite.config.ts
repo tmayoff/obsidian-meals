@@ -8,7 +8,7 @@ const setOutDir = (mode: string) => {
       case "development":
          return "./test_vault/.obsidian/plugins/obsidian-meals";
        case "production":
-         return "";
+         return "./";
      }
 };
 
