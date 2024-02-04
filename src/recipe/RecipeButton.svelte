@@ -1,11 +1,17 @@
 <script lang="ts">
+    import type { App } from "obsidian";
     import { DAYS_OF_WEEK } from "../constants";
     import { add_recipe_to_meal_plan } from "../meal_plan/plan";
+    import { open_note_file } from "../utils/filesystem";
     import type { Recipe } from "./recipe";
-
+    import { createEventDispatcher } from "svelte";
+    
+    export let app: App;
     export let recipe: Recipe;
 
     let open = false;
+
+    let dispatch = createEventDispatcher();
 </script>
 
 <div class="realtive inline-block text-left">
@@ -41,7 +47,13 @@
         aria-labelledby="menu-button"
         tabindex="-1"
     >
-        <button on:click={() => {}}>Go to recipe</button>
+        <button
+            on:click={async () => {
+                await open_note_file(app, recipe.path);
+                open = false;
+                dispatch('close_modal');
+            }}>Go to recipe</button
+        >
         {#each DAYS_OF_WEEK as day}
             <button
                 class="rounded-none"

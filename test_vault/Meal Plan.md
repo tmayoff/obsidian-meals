@@ -1,6 +1,7 @@
 # Week of February 4th
 ## Sunday
 - [[Creamy Garlic Chicken & Potatoes]]
+- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Monday
 - [[Creamy Garlic Chicken & Potatoes]]

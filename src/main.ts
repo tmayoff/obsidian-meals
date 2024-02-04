@@ -78,8 +78,16 @@ class RecipeSearch extends Modal {
     async onOpen() {
         this.recipeView = new SearchRecipe({
             target: this.containerEl.children[1].children[2],
+            props: {
+                app: this.app,
+            },
+        });
+
+        this.recipeView.$on('close_modal', () => {
+            this.close();
         });
     }
+
     onClose(): void {
         this.contentEl.empty();
         this.recipeView?.$destroy();
