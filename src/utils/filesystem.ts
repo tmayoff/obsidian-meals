@@ -7,8 +7,7 @@ export async function open_note_file(app: App, file: TFile) {
 export async function open_note_path(app: App, file_path: string) {
     let found = false;
 
-    const file_name = file_path.substring(file_path.lastIndexOf('.'));
-
+    const file_name = file_path.substring(file_path.lastIndexOf('/') + 1, file_path.lastIndexOf('.'));
     app.workspace.iterateAllLeaves((leaf) => {
         if (leaf.getDisplayText() === file_name) {
             app.workspace.setActiveLeaf(leaf);
