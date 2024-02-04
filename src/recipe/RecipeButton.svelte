@@ -1,5 +1,9 @@
 <script lang="ts">
-    export let text: string;
+    import { DAYS_OF_WEEK } from "../constants";
+    import { add_recipe_to_meal_plan } from "../meal_plan/plan";
+    import type { Recipe } from "./recipe";
+
+    export let recipe: Recipe;
 
     let open = false;
 </script>
@@ -13,7 +17,7 @@
             id="menu-button"
             aria-expanded={open}
             aria-haspopup="true"
-            >{text}
+            >{recipe.name}
             <svg
                 class="-mr-1 h-5 w-5 text-gray-400"
                 viewBox="0 0 20 20"
@@ -37,6 +41,15 @@
         aria-labelledby="menu-button"
         tabindex="-1"
     >
-        <slot />
+        <button on:click={() => {}}>Go to recipe</button>
+        {#each DAYS_OF_WEEK as day}
+            <button
+                class="rounded-none"
+                on:click={async () => {
+                    await add_recipe_to_meal_plan(recipe, day);
+                    open = false;
+                }}>{day}</button
+            >
+        {/each}
     </div>
 </div>
