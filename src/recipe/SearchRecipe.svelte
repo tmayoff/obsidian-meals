@@ -4,10 +4,10 @@
     import { MinusCircle } from "lucide-svelte";
     import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
     import { TextComponent } from "obsidian";
-    import { onMount } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     import { DAYS_OF_WEEK } from "../constants";
     import { add_recipe_to_meal_plan } from "../meal_plan/plan";
-    import Dropdown from "../utils/Dropdown.svelte";
+    import RecipeButton from "./RecipeButton.svelte";
 
     let search_operation = writable("any of");
 
@@ -64,6 +64,8 @@
             suggester.text.setValue("");
         };
     });
+
+    let dispatch = createEventDispatcher();
 </script>
 
 <div>
@@ -116,16 +118,7 @@
             <h2>Recipes</h2>
             <div class="flex flex-col p-3">
                 {#each $found_recipes as recipe}
-                    <Dropdown text={recipe.name}>
-                        {#each DAYS_OF_WEEK as day}
-                            <button
-                                class="rounded-none"
-                                on:click={async () => {
-                                    await add_recipe_to_meal_plan(recipe, day);
-                                }}>{day}</button
-                            >
-                        {/each}
-                    </Dropdown>
+                    <RecipeButton {recipe} />
                 {/each}
             </div>
         </div>
