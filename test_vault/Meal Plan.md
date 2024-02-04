@@ -38,6 +38,7 @@
 ## Saturday
 # Week of December 31st
 ## Sunday
+- [[Bacon Pesto Tomato Pizza]]
 
 ## Monday
 

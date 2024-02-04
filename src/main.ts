@@ -1,10 +1,11 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import 'virtual:uno.css';
-import { load_recipes, APP } from './store';
-import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { open_meal_plan_note } from './meal_plan/plan';
-import { MealSettings, settings } from './settings';
 import { get } from 'svelte/store';
+import { open_meal_plan_note } from './meal_plan/plan';
+import { generate_shopping_list } from './meal_plan/shopping_list';
+import SearchRecipe from './recipe/SearchRecipe.svelte';
+import { MealSettings, settings } from './settings';
+import { APP, load_recipes } from './store';
+import 'virtual:uno.css';
 
 export default class MealPlugin extends Plugin {
     async onload() {
@@ -42,9 +43,17 @@ export default class MealPlugin extends Plugin {
                 await open_meal_plan_note(get(settings).meal_plan_note);
             },
         });
+
+        this.addCommand({
+            id: 'create-shopping-list',
+            name: "Add week's shopping list",
+            callback: async () => {
+                generate_shopping_list(this.app);
+            },
+        });
     }
 
-    onunload() {}
+    onunload() { }
 
     async loadSettings() {
         settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
@@ -117,5 +126,38 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
+        new Setting(containerEl)
+            .setName('Shopping List note')
+            .setDesc('Note for storing your shopping list')
+            .addText((text) =>
+                text
+                    .setPlaceholder('Shopping List')
+                    .setValue(get(settings).shopping_list_note)
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.shopping_list_note = value;
+                            return s;
+                        });
+
+                        await this.plugin.saveSettings();
+                    }),
+            );
+
+        new Setting(containerEl)
+            .setName('Shopping list ignore')
+            .setDesc('CSV list of ingredients to not add to the shopping list automatically')
+            .addText((text) => {
+                text.setPlaceholder('salt,pepper')
+                    .setValue(get(settings).shopping_list_ignore.join(','))
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.shopping_list_ignore = value.split(',');
+                            return s;
+                        });
+
+                        await this.plugin.saveSettings();
+                    });
+            });
     }
 }
