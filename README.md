@@ -6,7 +6,7 @@ This plugin helps you manage your list of recipes as well as plan meals for the 
 
 - Search & Filter recipes based on ingredients you have
 - Create/update or generate 'Meal Plan' note for each week you need to plan
-- TODO generate shopping lists for you for the week
+- Generate shopping lists for you for the week
 
 ## Usage
 To be able to search through recipes, recipes must be in the same folder (defaults to Meals), and in the following format
