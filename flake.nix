@@ -26,7 +26,7 @@
           nativeBuildInputs = with pkgs;
             [
               nodePackages.svelte-language-server
-
+              nodePackages.typescript-language-server
               bun
               biome
             ];

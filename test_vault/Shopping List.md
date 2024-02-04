@@ -1,0 +1,23 @@
+- [ ] 800 g Chicken Breasts
+- [ ] 800 g Yellow Potatoes
+- [ ] 3  Garlic Cloves, minced
+- [ ] 1 tbsp Onion Powder
+- [ ] 2 tbsp Za'atar
+- [ ] 2 tbsp Chili Flakes
+- [ ] 2 tbsp Paprika
+- [ ] 0.5 cup Milk
+- [ ] 100 g cream cheese
+- [ ] 40 g Parmesan cheese, shredded
+- [ ] 50 g Mozzarella, shredded
+- [ ] 2  Chicken Breasts
+- [ ] 0.5 cup Bulgur Wheat
+- [ ] 30 g Mixed Olives
+- [ ] 66 g Mini cucumber
+- [ ] 1 tbsp Za'atar spice blend
+- [ ] 95 g Roma Tomato
+- [ ] 1  Lemon
+- [ ] 0.25 cup Feta Cheese, crumbled
+- [ ] 1  Garlic, cloves
+- [ ] 1 tbsp White Wine Vinegar
+- [ ] 1 tbsp Mediterranean Spice Blend
+- [ ] 1 tbsp Sugar
