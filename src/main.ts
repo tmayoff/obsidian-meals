@@ -126,5 +126,38 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
+        new Setting(containerEl)
+            .setName('Shopping List note')
+            .setDesc('Note for storing your shopping list')
+            .addText((text) =>
+                text
+                    .setPlaceholder('Shopping List')
+                    .setValue(get(settings).shopping_list_note)
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.shopping_list_note = value;
+                            return s;
+                        });
+
+                        await this.plugin.saveSettings();
+                    }),
+            );
+
+        new Setting(containerEl)
+            .setName('Shopping list ignore')
+            .setDesc('CSV list of ingredients to not add to the shopping list automatically')
+            .addText((text) => {
+                text.setPlaceholder('salt,pepper')
+                    .setValue(get(settings).shopping_list_ignore.join(','))
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.shopping_list_ignore = value.split(',');
+                            return s;
+                        });
+
+                        await this.plugin.saveSettings();
+                    });
+            });
     }
 }

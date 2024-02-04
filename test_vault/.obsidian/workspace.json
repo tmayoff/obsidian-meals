@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Meal Plan.md",
+                "file": "Shopping List.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 266.5
   },
   "right": {
     "id": "772eef1503cec901",
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Meal Plan.md",
+                "file": "Shopping List.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Meal Plan.md",
+                "file": "Shopping List.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Meal Plan.md"
+                "file": "Shopping List.md"
               }
             }
           }
@@ -148,13 +148,16 @@
   },
   "active": "8e4a28db85d416f1",
   "lastOpenFiles": [
+    "Meal Plan.md",
+    "Shopping List.md",
+    "Shopping List",
+    "Meals/Creamy Garlic Chicken & Potatoes.md",
     "Meals/Za'atar Chicken Bulgur Bowls.md",
     "Meals/Cali Chicken Tostada.md",
     "Meals/Chipotle Salmon Bowls.md",
     "Meals/Crispy Mexican-Inspired Tortillas.md",
     "Meals/General Tao.md",
     "Meals/Chana Masala.md",
-    "Meal Plan.md",
     "Meals/High Protein Dynamite Chicken Loaded Fries.md",
     "Meals/High Protein Butter Chicken Shawarma Rice Bowls.md",
     "Meals/Garlic Butter Steak Bites.md",
@@ -172,8 +175,6 @@
     "Meals/High Protein Chicken Pad Thai.md",
     "Meals/Hard Boiled Eggs.md",
     "Meals/Garlic Pull Apart Bread.md",
-    "Meals/Fajita Chicken and Rice.md",
-    "Meals/Crispy Shallot Pork Croquettes.md",
     "Meals"
   ]
 }

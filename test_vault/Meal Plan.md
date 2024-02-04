@@ -3,12 +3,10 @@
 
 ## Monday
 - [[Creamy Garlic Chicken & Potatoes]]
-
 ## Tuesday
 
 ## Wednesday
 - [[Za'atar Chicken Bulgur Bowls]]
-
 ## Thursday
 
 ## Friday
