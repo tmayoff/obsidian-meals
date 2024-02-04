@@ -84,7 +84,6 @@ class RecipeSearch extends Modal {
         });
 
         this.recipeView.$on('close_modal', () => {
-            console.log('Close requested');
             this.close();
         });
     }
