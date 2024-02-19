@@ -1,4 +1,4 @@
-import { App, TFile } from 'obsidian';
+import { App, TFile, type Pos } from 'obsidian';
 import { get } from 'svelte/store';
 import { settings } from '../settings';
 import { get_current_week } from './utils';
@@ -51,22 +51,30 @@ function get_ingredients(app: App, file: TFile) {
     const topLevel = fileCache.headings!.filter((h) => {
         return h.level === 1;
     });
-    let end = topLevel.findIndex((h) => {
-        return h.level === 1 && h.heading.contains(this_week);
-    });
-    if (end < topLevel.length - 1) {
-        end += 1;
+
+    let end = -1;
+    if (topLevel.length > 1) {
+         let end = topLevel.findIndex((h) => {
+             return h.level === 1 && h.heading.contains(this_week);
+         });
+         if (end < topLevel.length - 1) {
+             end += 1;
+         }
     }
 
     const startPos = topLevel[0].position!;
-    const endPos = topLevel[end]?.position!;
+    const endPos = end != -1 ? topLevel[end]?.position! : null;
 
     const links = fileCache.links!;
     const ignore_list = get(settings).shopping_list_ignore;
     const ingredients: Array<Ingredient> = [];
     for (const i of links) {
         // Skip links outside the bounds of the date range
-        if (i.position.start.offset < startPos.end.offset || i.position.end.offset > endPos.start.offset) {
+        if (i.position.start.offset < startPos.end.offset) {
+            continue;
+        }
+
+        if (endPos != null && i.position.end.offset > endPos.start.offset) {
             continue;
         }
 
