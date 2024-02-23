@@ -26,19 +26,25 @@ export async function get_ingredients(recipe_file: TFile) {
 }
 
 function parse_ingredients(content: string): Ingredient[] {
+    const debug = true;
     const recipes: Ingredient[] = new Array();
 
-    const HEADER_STRING = '# Ingredients';
-    if (!content.contains(HEADER_STRING)) {
-        return new Array();
+//    const HEADER_STRING = '# Ingredients';
+    const ingredients = content.split('---')[3];
+
+    if (debug) {
+      console.log("INGREDIENTS", ingredients);
     }
 
-    const start = content.indexOf(HEADER_STRING) + HEADER_STRING.length;
-    content = content.substring(start);
-    const end = content.indexOf('#');
 
-    const ingredients = content.substring(0, end);
-    for (const line of ingredients.split('\n').filter((line) => {
+    if (typeof ingredients == 'undefined' || ingredients.length<=0) {
+        return new Array();
+    }
+    if (debug) {
+      console.log("PROCESSING", ingredients);
+    }
+
+    for (const line of ingredients?.split('\n').filter((line) => {
         return line.length > 0;
     })) {
         const i = parse_ingredient(line);

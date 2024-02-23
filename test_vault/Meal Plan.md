@@ -1,45 +1,6 @@
-# Week of February 4th
+# Week of February 18th
 ## Sunday
-- [[Creamy Garlic Chicken & Potatoes]]
-- [[Creamy Garlic Chicken & Potatoes]]
-
-## Monday
-- [[Creamy Garlic Chicken & Potatoes]]
-
-## Tuesday
-
-## Wednesday
-
-## Thursday
-- [[Za'atar Chicken Bulgur Bowls]]
-
-## Friday
-
-## Saturday
-# Week of January 28th
-## Sunday
-- [[Bacon Pesto Tomato Pizza]]
-- [[Creamy Garlic Chicken & Potatoes]]
-- [[Creamy Garlic Chicken & Potatoes]]
-
-## Monday
-
-## Tuesday
-- [[Bacon Pesto Tomato Pizza]]
-- [[Creamy Garlic Chicken & Potatoes]]
-
-## Wednesday
-- [[Za'atar Chicken Bulgur Bowls]]
-
-## Thursday
-- [[Creamy Garlic Chicken & Potatoes]]
-
-## Friday
-
-## Saturday
-# Week of December 31st
-## Sunday
-- [[Bacon Pesto Tomato Pizza]]
+- [[Boulangère potatoes]]
 
 ## Monday
 
@@ -48,6 +9,8 @@
 ## Wednesday
 
 ## Thursday
+- [[Thai chicken satay rice bowl]]
+- [[Fish and Ginger Soup]]
 
 ## Friday
 

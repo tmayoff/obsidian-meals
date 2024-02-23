@@ -1,23 +1,39 @@
-- [ ] 800 g Chicken Breasts
-- [ ] 800 g Yellow Potatoes
-- [ ] 3  Garlic Cloves, minced
-- [ ] 1 tbsp Onion Powder
-- [ ] 2 tbsp Za'atar
-- [ ] 2 tbsp Chili Flakes
-- [ ] 2 tbsp Paprika
-- [ ] 0.5 cup Milk
-- [ ] 100 g cream cheese
-- [ ] 40 g Parmesan cheese, shredded
-- [ ] 50 g Mozzarella, shredded
-- [ ] 2  Chicken Breasts
-- [ ] 0.5 cup Bulgur Wheat
-- [ ] 30 g Mixed Olives
-- [ ] 66 g Mini cucumber
-- [ ] 1 tbsp Za'atar spice blend
-- [ ] 95 g Roma Tomato
-- [ ] 1  Lemon
-- [ ] 0.25 cup Feta Cheese, crumbled
-- [ ] 1  Garlic, cloves
-- [ ] 1 tbsp White Wine Vinegar
-- [ ] 1 tbsp Mediterranean Spice Blend
-- [ ] 1 tbsp Sugar
+- [ ] 800 ml chicken stock
+- [ ] 1.5 kg waxy potatoes, such as Desiree or Vivaldi
+- [ ] 1 large onion, thinly sliced
+- [ ] 2  garlic cloves, very thinly sliced
+- [ ] Leaves from 10 sprigs thyme
+- [ ] Leaves from 5 sprigs rosemary, finely chopped 100g butter, thinly sliced
+- [ ] Sea salt and freshly ground black pepper
+- [ ] 2  chicken thighs
+- [ ] 1 tsp curry powder
+- [ ] Thai yellow curry paste
+- [ ] 200 g coconut milk
+- [ ] 1 tbsp peanut butter
+- [ ] 1 tbsp palm sugar
+- [ ] 1 tbsp fish sauce
+- [ ] 5  lime leaves
+- [ ] 120 g cooked brown rice
+- [ ] 0.5 small cucumber
+- [ ] 4  spring onions
+- [ ] Bean sprouts
+- [ ] 1 tbsp toasted peanuts
+- [ ] Fresh coriander
+- [ ] Thai basil
+- [ ] 1 tablespoon oil
+- [ ] 2 tablespoons sugar
+- [ ] 2 tablespoons tamarind water
+- [ ] 2 tablespoons fish sauce
+- [ ] 2 cups chicken stock
+- [ ] 0.5 cup shredded ginger
+- [ ] 200 g mussels or other seafood
+- [ ] 3  spring onions, in 2 inch lengths
+- [ ] 1 tablespoon coriander leaves
+- [ ] pinch ground white pepper
+- [ ] Paste
+- [ ] 1 teaspoon coriander root
+- [ ] 1 tablespoon chopped garlic
+- [ ] 1 tablespoon chopped red shallot
+- [ ] 1 tablespoon chopped ginger
+- [ ] 0.25 teaspoon shrimp paste
+- [ ] 10  white peppercorns
