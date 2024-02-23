@@ -153,6 +153,22 @@ class MealPluginSettingsTab extends PluginSettingTab {
             );
 
         new Setting(containerEl)
+            .setName('Recipe Format')
+            .setDesc('RecipeMD or Meal Planner')
+            .addDropdown((dropdown) => {
+              dropdown.addOption("RecipeMD","RecipeMD")
+              .addOption("Meal Planner","Meal Planner")
+              .setValue(get(settings).recipe_format)
+              .onChange(async (value) => {
+                  settings.update((s) => {
+                      s.recipe_format = value;
+                      return s;
+                  });
+
+                  await this.plugin.saveSettings();
+              });
+            });
+        new Setting(containerEl)
             .setName('Shopping list ignore')
             .setDesc('CSV list of ingredients to not add to the shopping list automatically')
             .addText((text) => {
