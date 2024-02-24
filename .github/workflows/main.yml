@@ -11,7 +11,7 @@ jobs:
       - uses: oven-sh/setup-bun@v1
 
       - run: bun install
-      - run: bun install @biomejs/biome
+      - run: bun add --dev --exact @biomejs/biome
       - run: biome format src/
       - run: bun run build
 
