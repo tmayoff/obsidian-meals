@@ -57,7 +57,7 @@ function parse_ingredients(content: string): Ingredient[] {
 }
 
 function parse_ingredients_recipemd(content: string): Ingredient[] {
-    const debug = true;
+    const debug = false;
     const recipes: Ingredient[] = new Array();
     var ingredients;
     
