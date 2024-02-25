@@ -21,7 +21,6 @@
     "autoprefixer": "^10.4.16",
     "builtin-modules": "^3.3.0",
     "bun-types": "latest",
-    "marked": "^11.2.0",
     "obsidian": "^1.4.11",
     "parse-ingredient": "^1.0.1",
     "postcss": "^8.4.31",
