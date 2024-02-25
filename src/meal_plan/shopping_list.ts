@@ -11,21 +11,27 @@ export async function clear_checked_ingredients(app: App) {
         file_path += '.md';
     }
 
-    let file = app.vault.getAbstractFileByPath(file_path);
+    const file = app.vault.getAbstractFileByPath(file_path);
     if (file instanceof TFile) {
-        let list_items = app.metadataCache.getFileCache(file)?.listItems;
+        const list_items = app.metadataCache.getFileCache(file)?.listItems;
         if (list_items === undefined) return;
 
-        list_items.forEach((item) => {
-            if (item.task !== undefined) {
-                // TODO remove
-                console.log(item);
-            }
-        });
+        // Get current files content
+        let content = await  app.vault.read(file);
 
-        app.vault.process(file, (data) => {
-            return data;
-        });
+        // Since we're modifying the content but keeping the original content's metadata we need to keep track of
+        // how much we remove and offset all removals by that amount
+        let offset = 0;
+        for (const item of list_items) {
+            if (item.task !== undefined && item.task !== ' ') {
+                const pos = item.position;
+                content = content.substring(0, pos.start.offset - offset) + content.substring(pos.end.offset + 1 - offset);
+                offset += pos.start.offset + pos.end.offset + 1;
+            }
+        }
+
+        // Save the new content
+        app.vault.modify(file, content);
     }
 }
 

@@ -59,8 +59,6 @@ export default class MealPlugin extends Plugin {
                 clear_checked_ingredients(this.app);
             },
         });
-
-        console.log('Meal planner loaded');
     }
 
     onunload() {}
