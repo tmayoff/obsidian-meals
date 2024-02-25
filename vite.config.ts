@@ -6,7 +6,7 @@ import { PluginOption, defineConfig } from 'vite';
 const setOutDir = (mode: string) => {
     switch (mode) {
         case 'development':
-            return './test_vault/.obsidian/plugins/obsidian-meals';
+            return './test_vault/.obsidian/plugins/tmayoff-meals';
         case 'production':
             return './build';
     }
