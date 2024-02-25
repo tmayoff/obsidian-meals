@@ -53,7 +53,7 @@ export default class MealPlugin extends Plugin {
         });
     }
 
-    onunload() { }
+    onunload() {}
 
     async loadSettings() {
         settings.set(Object.assign({}, new MealSettings(), await this.loadData()));

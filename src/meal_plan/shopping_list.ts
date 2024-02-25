@@ -54,12 +54,12 @@ function get_ingredients(app: App, file: TFile) {
 
     let end = -1;
     if (topLevel.length > 1) {
-         let end = topLevel.findIndex((h) => {
-             return h.level === 1 && h.heading.contains(this_week);
-         });
-         if (end < topLevel.length - 1) {
-             end += 1;
-         }
+        let end = topLevel.findIndex((h) => {
+            return h.level === 1 && h.heading.contains(this_week);
+        });
+        if (end < topLevel.length - 1) {
+            end += 1;
+        }
     }
 
     const startPos = topLevel[0].position!;
