@@ -5,6 +5,30 @@ import { get_current_week } from './utils';
 import { recipes } from '../store';
 import type { Ingredient } from 'parse-ingredient';
 
+export async function clear_checked_ingredients(app: App) {
+    let file_path = get(settings).shopping_list_note;
+    if (!file_path.endsWith('.md')) {
+        file_path += '.md';
+    }
+
+    let file = app.vault.getAbstractFileByPath(file_path);
+    if (file instanceof TFile) {
+        let list_items = app.metadataCache.getFileCache(file)?.listItems;
+        if (list_items === undefined) return;
+
+        list_items.forEach((item) => {
+            if (item.task !== undefined) {
+                // TODO remove
+                console.log(item);
+            }
+        });
+
+        app.vault.process(file, (data) => {
+            return data;
+        });
+    }
+}
+
 export async function generate_shopping_list(app: App) {
     let file_path = get(settings).meal_plan_note;
     if (!file_path.endsWith('.md')) {

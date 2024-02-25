@@ -1,1 +1,5 @@
 workspace.json
+community-plugins.json
+
+plugins
+!plugins/obsidian-meals

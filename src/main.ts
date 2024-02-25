@@ -1,7 +1,7 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { get } from 'svelte/store';
 import { open_meal_plan_note } from './meal_plan/plan';
-import { generate_shopping_list } from './meal_plan/shopping_list';
+import { clear_checked_ingredients, generate_shopping_list } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, settings } from './settings';
 import { APP, load_recipes } from './store';
@@ -51,6 +51,16 @@ export default class MealPlugin extends Plugin {
                 generate_shopping_list(this.app);
             },
         });
+
+        this.addCommand({
+            id: 'clear-shopping-list',
+            name: 'Clear checked shopping list items',
+            callback: async () => {
+                clear_checked_ingredients(this.app);
+            },
+        });
+
+        console.log('Meal planner loaded');
     }
 
     onunload() {}
