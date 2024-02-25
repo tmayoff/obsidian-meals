@@ -5,7 +5,7 @@ export class MealSettings {
     meal_plan_note = 'Meal Plan';
     shopping_list_note = 'Shopping List';
 
-    recipe_format = 'RecipeMD';
+    recipe_format = 'Meal Plan';
 
     shopping_list_ignore: Array<string> = ['salt', 'pepper', 'olive oil', 'garlic powder'];
 }

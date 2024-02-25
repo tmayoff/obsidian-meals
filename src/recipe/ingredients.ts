@@ -57,7 +57,6 @@ function parse_ingredients(content: string): Ingredient[] {
 }
 
 function parse_ingredients_recipemd(content: string): Ingredient[] {
-    const debug = false;
     const recipes: Ingredient[] = new Array();
     var ingredients;
     
@@ -68,16 +67,8 @@ function parse_ingredients_recipemd(content: string): Ingredient[] {
       ingredients = content.split('---')[1];
     }
 
-    if (debug) {
-      console.log("INGREDIENTS", ingredients);
-    }
-
-
     if (typeof ingredients == 'undefined' || ingredients.length<=0) {
         return new Array();
-    }
-    if (debug) {
-      console.log("PROCESSING", ingredients);
     }
 
     for (const line of ingredients?.split('\n').filter((line) => {
