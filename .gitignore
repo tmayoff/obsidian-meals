@@ -27,5 +27,3 @@ data.json
 *.swp
 test_vault/.obsidian/app.json
 test_vault/.obsidian/plugins/obsidian-meals/manifest.json
-test_vault/Meal\ Plan.md
-test_vault/Shopping\ List.md
