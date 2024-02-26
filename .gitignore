@@ -25,5 +25,7 @@ data.json
 .DS_Store
 
 *.swp
-test_vault/.obsidian/app.json
-test_vault/.obsidian/plugins/obsidian-meals/manifest.json
+
+test/vault/.obsidian
+!.obsidian/plugins/hot-reload
+!.obsidian/plugins/tmayoff-meals/.hotreload
