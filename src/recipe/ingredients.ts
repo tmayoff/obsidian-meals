@@ -61,7 +61,7 @@ function parse_ingredients_recipemd(content: string): Ingredient[] {
     var ingredients;
     
 
-    if (content.substring(0,2)=='---') {
+    if (content.substring(0,3)=='---') {
       ingredients = content.split('---')[3];
     } else {
       ingredients = content.split('---')[1];
