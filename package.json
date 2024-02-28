@@ -33,7 +33,6 @@
   },
   "dependencies": {
     "@unocss/extractor-svelte": "^0.57.7",
-    "lucide-svelte": "^0.292.0",
     "moment": "^2.29.4",
     "pluralize": "^8.0.0",
     "unocss": "^0.57.7"
