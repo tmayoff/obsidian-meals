@@ -3,7 +3,7 @@ source: ChefsPlate
 servings: "2"
 meal: Dinner
 ---
-# Ingredients
+ # Ingredients
 - 100g Bacon
 - 340g Pizza Dough
 - 1 Tomato

@@ -1,5 +1,6 @@
 import type { TFile } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
+import {singular} from 'pluralize';
 import type { Recipe } from './recipe';
 
 export async function get_ingredient_set(recipes: Recipe[]) {
@@ -7,6 +8,7 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 
     return Promise.all(
         recipes_files.map(async (dir) => {
+            console.log(dir.name);
             return await get_ingredients(dir);
         }),
     ).then((ingredients) => {
@@ -21,6 +23,7 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 }
 
 export async function get_ingredients(recipe_file: TFile) {
+    console.log(`Parsing ${recipe_file.name} for ingredients`);
     const content = await recipe_file.vault.read(recipe_file);
     return parse_ingredients(content);
 }
@@ -52,7 +55,7 @@ function parse_ingredients(content: string): Ingredient[] {
 function parse_ingredient(content: string): Ingredient {
     // Parse the ingredient line
     const LINE_PREFIX = '- ';
-    let ingredient = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
+    let ingredient_content = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
 
     // ============================
     // Special ingredient parsing
@@ -61,8 +64,19 @@ function parse_ingredient(content: string): Ingredient {
     // Ingredient name ignores everything after the first comma
     // 200g onions, chopped
     // ~~~~~~~~~~~
-    ingredient = ingredient.substring(0, ingredient.indexOf(','));
-    
-    
-    return parseIngredient(content)[0];
+    // 200g onion
+    console.log(ingredient_content);
+    const first_comma = ingredient_content.indexOf(',');
+    console.log(first_comma);
+    if (first_comma >= 0)
+        ingredient_content = ingredient_content.substring(0, first_comma);
+
+    console.log(ingredient_content);
+    const ingredient = parseIngredient(ingredient_content)[0];
+    console.log(ingredient);
+    if (ingredient !== undefined) {
+        ingredient.description = singular(ingredient.description);
+    }
+
+    return ingredient
 }

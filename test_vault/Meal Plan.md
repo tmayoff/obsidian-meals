@@ -2,10 +2,9 @@
 ## Sunday
 
 ## Monday
-
+- [[Creamy Garlic Chicken & Potatoes]]
 ## Tuesday
 - [[Za'atar Chicken Bulgur Bowls]]
-- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Wednesday
 
