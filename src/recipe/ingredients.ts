@@ -10,7 +10,6 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 
     return Promise.all(
         recipes_files.map(async (dir) => {
-            console.log(dir.name);
             return await get_ingredients(dir);
         }),
     ).then((ingredients) => {
@@ -25,7 +24,6 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 }
 
 export async function get_ingredients(recipe_file: TFile) {
-    console.log(`Parsing ${recipe_file.name} for ingredients`);
     const content = await recipe_file.vault.read(recipe_file);
     return parse_ingredients(content);
 }
