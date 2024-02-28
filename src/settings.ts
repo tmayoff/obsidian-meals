@@ -6,6 +6,8 @@ export class MealSettings {
     shopping_list_note = 'Shopping List';
 
     shopping_list_ignore: Array<string> = ['salt', 'pepper', 'olive oil', 'garlic powder'];
+
+    advanced_ingredient_parsing = false;
 }
 
 export const settings = writable(new MealSettings());

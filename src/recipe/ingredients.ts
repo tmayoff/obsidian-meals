@@ -1,7 +1,9 @@
 import type { TFile } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
-import {singular} from 'pluralize';
+import { singular } from 'pluralize';
 import type { Recipe } from './recipe';
+import { get } from 'svelte/store';
+import { settings } from '../settings';
 
 export async function get_ingredient_set(recipes: Recipe[]) {
     const recipes_files = recipes.map((r) => r.path);
@@ -57,26 +59,28 @@ function parse_ingredient(content: string): Ingredient {
     const LINE_PREFIX = '- ';
     let ingredient_content = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
 
-    // ============================
-    // Special ingredient parsing
-    // =============================
+    const do_advanced_parse = get(settings).advanced_ingredient_parsing;
 
-    // Ingredient name ignores everything after the first comma
-    // 200g onions, chopped
-    // ~~~~~~~~~~~
-    // 200g onion
-    console.log(ingredient_content);
-    const first_comma = ingredient_content.indexOf(',');
-    console.log(first_comma);
-    if (first_comma >= 0)
-        ingredient_content = ingredient_content.substring(0, first_comma);
+    if (do_advanced_parse) {
+        // ============================
+        // Special ingredient parsing
+        // =============================
 
-    console.log(ingredient_content);
+        // Ingredient name ignores everything after the first comma
+        // 200g onions, chopped
+        // ~~~~~~~~~~~
+        // 200g onion
+
+        const first_comma = ingredient_content.indexOf(',');
+
+        if (first_comma >= 0) ingredient_content = ingredient_content.substring(0, first_comma);
+    }
+
     const ingredient = parseIngredient(ingredient_content)[0];
-    console.log(ingredient);
-    if (ingredient !== undefined) {
+
+    if (do_advanced_parse && ingredient !== undefined) {
         ingredient.description = singular(ingredient.description);
     }
 
-    return ingredient
+    return ingredient;
 }
