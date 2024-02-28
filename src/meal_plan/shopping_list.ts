@@ -1,4 +1,4 @@
-import { App, TFile, type Pos } from 'obsidian';
+import { App, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { settings } from '../settings';
 import { get_current_week } from './utils';
@@ -17,7 +17,7 @@ export async function clear_checked_ingredients(app: App) {
         if (list_items === undefined) return;
 
         // Get current files content
-        let content = await  app.vault.read(file);
+        let content = await app.vault.read(file);
 
         // Since we're modifying the content but keeping the original content's metadata we need to keep track of
         // how much we remove and offset all removals by that amount
@@ -42,8 +42,8 @@ export async function generate_shopping_list(app: App) {
     }
 
     let ingredients: Array<Ingredient> = [];
-    const meal_plan_file = app.vault.getAbstractFileByPath(file_path);
-    if (meal_plan_file instanceof TFile) {
+    const meal_plan_file = app.vault.getFileByPath(file_path);
+    if (meal_plan_file != null) {
         ingredients = get_ingredients(app, meal_plan_file);
     }
 

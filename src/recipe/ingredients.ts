@@ -1,5 +1,5 @@
-import type { App, TFile } from 'obsidian';
-import { parseIngredient, type Ingredient } from 'parse-ingredient';
+import type { TFile } from 'obsidian';
+import { type Ingredient, parseIngredient } from 'parse-ingredient';
 import type { Recipe } from './recipe';
 
 export async function get_ingredient_set(recipes: Recipe[]) {
@@ -50,7 +50,19 @@ function parse_ingredients(content: string): Ingredient[] {
 }
 
 function parse_ingredient(content: string): Ingredient {
+    // Parse the ingredient line
     const LINE_PREFIX = '- ';
-    content = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
+    let ingredient = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
+
+    // ============================
+    // Special ingredient parsing
+    // =============================
+
+    // Ingredient name ignores everything after the first comma
+    // 200g onions, chopped
+    // ~~~~~~~~~~~
+    ingredient = ingredient.substring(0, ingredient.indexOf(','));
+    
+    
     return parseIngredient(content)[0];
 }
