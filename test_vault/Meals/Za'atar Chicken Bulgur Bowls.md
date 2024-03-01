@@ -4,7 +4,7 @@ servings: "2"
 meal: Dinner
 ---
 # Ingredients
-- 2 Chicken Breasts sd
+- 2 Chicken Breasts 
 - Bulgur Wheat 1/2 cup
 - Mixed Olives 30g
 - Mini cucumber 66g

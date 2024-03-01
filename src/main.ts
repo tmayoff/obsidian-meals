@@ -15,14 +15,14 @@ export default class MealPlugin extends Plugin {
         load_recipes();
 
         this.registerEvent(
-            this.app.vault.on('create', () => {
-                load_recipes();
+            this.app.vault.on('create', (file) => {
+                load_recipes(file);
             }),
         );
 
         this.registerEvent(
-            this.app.vault.on('modify', () => {
-                load_recipes();
+            this.app.vault.on('modify', (file) => {
+                load_recipes(file);
             }),
         );
 

@@ -2,7 +2,7 @@
 
 ---
 - 2 Chicken Breasts
-- Bulgur Wheat 1/2 cup
+- Bulgur Wheat 1/2 cup  
 - Mixed Olives 30g
 - Mini cucumber 66g
 - 1 tbsp Za'atar spice blend
@@ -10,7 +10,7 @@
 - Lemon x1
 - Feta Cheese, crumbled 1/4 cup
 - Garlic, cloves 1
-- White Wine Vinegar 1tbsp
+- White Wine Vinegar 1tbsp  
 - Mediterranean Spice Blend 1tbsp
 - Sugar 1tbsp
 ---

@@ -30,7 +30,6 @@ export async function get_ingredients(recipe_file: TFile) {
     const contentStart = getFrontMatterInfo(filecontent).contentStart
     const content = filecontent.substring(contentStart)
 
-    console.log("CONTENT",content)
 
     if (get(settings).recipe_format == 'RecipeMD') {
       return parse_ingredients_recipemd(content);
