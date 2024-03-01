@@ -1,4 +1,5 @@
-import type { App, TFile } from 'obsidian';
+import type { App, TFile, FrontMatterInfo } from 'obsidian';
+import { getFrontMatterInfo } from 'obsidian';
 import { parseIngredient, type Ingredient } from 'parse-ingredient';
 import type { Recipe } from './recipe';
 import { settings } from '../settings';
@@ -24,7 +25,13 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 }
 
 export async function get_ingredients(recipe_file: TFile) {
-    const content = await recipe_file.vault.read(recipe_file);
+    const filecontent = await recipe_file.vault.read(recipe_file);
+
+    const contentStart = getFrontMatterInfo(filecontent).contentStart
+    const content = filecontent.substring(contentStart)
+
+    console.log("CONTENT",content)
+
     if (get(settings).recipe_format == 'RecipeMD') {
       return parse_ingredients_recipemd(content);
     } else {
@@ -39,6 +46,7 @@ function parse_ingredients(content: string): Ingredient[] {
     if (!content.contains(HEADER_STRING)) {
         return new Array();
     }
+
 
     const start = content.indexOf(HEADER_STRING) + HEADER_STRING.length;
     content = content.substring(start);
@@ -60,12 +68,8 @@ function parse_ingredients_recipemd(content: string): Ingredient[] {
     const recipes: Ingredient[] = new Array();
     var ingredients;
     
+    ingredients = content.split('---')[1];
 
-    if (content.substring(0,3)=='---') {
-      ingredients = content.split('---')[3];
-    } else {
-      ingredients = content.split('---')[1];
-    }
 
     if (typeof ingredients == 'undefined' || ingredients.length<=0) {
         return new Array();

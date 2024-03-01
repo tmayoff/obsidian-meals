@@ -7,11 +7,11 @@
 - [ ] 4 tbsp Mediterranean Spice Blend
 - [ ] 51200 g Chicken Breasts
 - [ ] 51200 g Yellow Potatoes
-- [ ] 192  Garlic Cloves, minces
+- [ ] 192  Garlic Cloves,  minces
 - [ ] 128 tbsp Paprika
 - [ ] 32 cup Milk
 - [ ] 3200 g Mozzarella, shredded
-- [ ] 400 g Bacon
+- [ ] 400 g Bacon 
 - [ ] 1360 g Pizza Dough
 - [ ] 4  Tomato
 - [ ] 112 g Baby Spinach
