@@ -2,7 +2,7 @@ import type { App, TFile, FrontMatterInfo } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
 import { parseIngredient, type Ingredient } from 'parse-ingredient';
 import type { Recipe } from './recipe';
-import { settings } from '../settings';
+import { RecipeFormat, settings } from '../settings';
 import { get } from 'svelte/store';
 
 
@@ -31,7 +31,7 @@ export async function get_ingredients(recipe_file: TFile) {
     const content = filecontent.substring(contentStart)
 
 
-    if (get(settings).recipe_format == 'RecipeMD') {
+    if (get(settings).recipe_format == RecipeFormat.RecipeMD) {
       return parse_ingredients_recipemd(content);
     } else {
       return parse_ingredients(content);
