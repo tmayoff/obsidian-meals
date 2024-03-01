@@ -1,6 +1,6 @@
 import { derived, get, writable } from 'svelte/store';
 import { get_recipes, type Recipe } from './recipe/recipe';
-import { TFolder, app, type App } from 'obsidian';
+import { TFolder, TFile, TAbstractFile, app, type App } from 'obsidian';
 import { settings } from './settings';
 
 export const APP = writable();
@@ -24,12 +24,15 @@ export const ingredients = derived(recipes, ($recipes) => {
     return ingredients;
 });
 
-export async function load_recipes() {
+export async function load_recipes(file:TAbstractFile) {
     const recipe_folder = get(APP).vault.getAbstractFileByPath(get(settings).recipe_directory);
-
+    
     if (recipe_folder instanceof TFolder) {
-        get_recipes(recipe_folder).then((r) => {
-            recipes.set(r);
-        });
-    }
+      if (file instanceof TFolder && file != recipe_folder) return
+      if (file instanceof TFile && file.parent != recipe_folder) return
+
+      get_recipes(recipe_folder).then((r) => {
+          recipes.set(r);
+      });
+    } 
 }
