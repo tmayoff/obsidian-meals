@@ -1,9 +1,9 @@
 import { App, TFile } from 'obsidian';
+import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import { settings } from '../settings';
-import { get_current_week } from './utils';
 import { recipes } from '../store';
-import type { Ingredient } from 'parse-ingredient';
+import { get_current_week } from './utils';
 
 export async function clear_checked_ingredients(app: App) {
     let file_path = get(settings).shopping_list_note;

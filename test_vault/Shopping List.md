@@ -1,21 +1,19 @@
-
-- [ ] 4 tbsp Za'atar spice blend
-- [ ] 380 g Roma Tomato
-- [ ] 1 cup Feta Cheese, crumbled
-- [ ] 4  Garlic, cloves
-- [ ] 4 tbsp White Wine Vinegar
-- [ ] 4 tbsp Mediterranean Spice Blend
-- [ ] 51200 g Chicken Breasts
-- [ ] 51200 g Yellow Potatoes
-- [ ] 192  Garlic Cloves, minces
-- [ ] 128 tbsp Paprika
-- [ ] 32 cup Milk
-- [ ] 3200 g Mozzarella, shredded
-- [ ] 400 g Bacon
-- [ ] 1360 g Pizza Dough
-- [ ] 4  Tomato
-- [ ] 112 g Baby Spinach
-- [ ] 1 cup Basil Pesto
-- [ ] 3 cup Mozzarella Cheese, shredded
-- [ ] 4  Garlic cloves
-- [ ] 16 tbsp Mayonnaise
+- [ ] 100 g Bacon
+- [ ] 340 g Pizza Dough
+- [ ] 1  Tomato
+- [ ] 28 g Baby Spinach
+- [ ] 0.25 cup Basil Pesto
+- [ ] 0.75 cup Mozzarella Cheese, shredded
+- [ ] 1  Garlic cloves
+- [ ] 4 tbsp Mayonnaise
+- [ ] 800 g Chicken Breasts
+- [ ] 800 g Yellow Potatoes
+- [ ] 3  Garlic Cloves, minced
+- [ ] 1 tbsp Onion Powder
+- [ ] 2 tbsp Za'atar
+- [ ] 2 tbsp Chili Flakes
+- [ ] 2 tbsp Paprika
+- [ ] 0.5 cup Milk
+- [ ] 100 g cream cheese
+- [ ] 40 g Parmesan cheese, shredded
+- [ ] 50 g Mozzarella, shredded
