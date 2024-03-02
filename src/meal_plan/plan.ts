@@ -5,13 +5,13 @@ import type { Recipe } from '../recipe/recipe';
 import { settings } from '../settings';
 import { get_current_week } from './utils';
 
-export async function add_recipe_to_meal_plan(recipe: Recipe, day: string) {
+export async function add_recipe_to_meal_plan(app: App, recipe: Recipe, day: string) {
     let file_path = get(settings).meal_plan_note;
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
 
-    await fill_meal_plan_note(file_path);
+    await fill_meal_plan_note(app, file_path);
 
     const file = app.vault.getAbstractFileByPath(file_path);
     if (file instanceof TFile) {
@@ -30,11 +30,11 @@ export async function add_recipe_to_meal_plan(recipe: Recipe, day: string) {
     }
 }
 
-export async function open_meal_plan_note(file_path: string) {
+export async function open_meal_plan_note(app: App, file_path: string) {
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
-    await create_meal_plan_note(file_path);
+    await create_meal_plan_note(app, file_path);
 
     let found = false;
     app.workspace.iterateAllLeaves((leaf) => {
@@ -49,10 +49,10 @@ export async function open_meal_plan_note(file_path: string) {
         await app.workspace.openLinkText(file_path, '', true);
     }
 
-    fill_meal_plan_note(file_path);
+    fill_meal_plan_note(app, file_path);
 }
 
-async function fill_meal_plan_note(file_path: string) {
+async function fill_meal_plan_note(app: App, file_path: string) {
     const header = `Week of ${get_current_week()}`;
     const day_headers = DAYS_OF_WEEK.map((day) => {
         return `## ${day}`;
@@ -70,7 +70,7 @@ async function fill_meal_plan_note(file_path: string) {
     }
 }
 
-async function create_meal_plan_note(file_path: string) {
+async function create_meal_plan_note(app: App, file_path: string) {
     const file = app.vault.getAbstractFileByPath(file_path);
     if (file === undefined) {
         await app.vault.create(file_path, '');

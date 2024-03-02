@@ -1,5 +1,6 @@
+import { type Instance as PopperInstance, createPopper } from '@popperjs/core';
 import { App, type FuzzyMatch, FuzzySuggestModal, Scope, SuggestModal } from 'obsidian';
-import { createPopper, type Instance as PopperInstance } from '@popperjs/core';
+
 declare module 'obsidian' {
     interface App {
         keymap: {
@@ -8,9 +9,7 @@ declare module 'obsidian' {
         };
     }
 }
-declare global {
-    var app: App;
-}
+
 class Suggester<T> {
     owner: SuggestModal<T>;
     items!: T[];
@@ -59,7 +58,7 @@ class Suggester<T> {
         this.useSelectedItem(event);
     }
 
-    onSuggestionMouseover(event: MouseEvent, el: HTMLElement): void {
+    onSuggestionMouseover(_event: MouseEvent, el: HTMLElement): void {
         if (!this.suggestions || !this.suggestions.length) return;
         const item = this.suggestions.indexOf(el);
         this.setSelectedItem(item, false);
@@ -71,11 +70,11 @@ class Suggester<T> {
         this.containerEl.empty();
         const els: HTMLDivElement[] = [];
 
-        items.forEach((item) => {
+        for (const item of items) {
             const suggestionEl = this.containerEl.createDiv('suggestion-item');
             this.owner.renderSuggestion(item, suggestionEl);
             els.push(suggestionEl);
-        });
+        }
         this.items = items;
         this.suggestions = els;
         this.setSelectedItem(0, false);
@@ -115,8 +114,8 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
     suggester: Suggester<FuzzyMatch<T>>;
     suggestEl: HTMLDivElement;
     promptEl!: HTMLDivElement;
-    emptyStateText: string = 'No match found';
-    limit: number = 100;
+    emptyStateText = 'No match found';
+    limit = 100;
     shouldNotOpen: boolean;
     constructor(app: App, inputEl: HTMLInputElement, items: T[]) {
         super(app);
@@ -124,6 +123,7 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
         this.inputEl = inputEl;
         this.items = items;
 
+        // biome-ignore lint/correctness/noUndeclaredVariables: External code
         this.suggestEl = createDiv('suggestion-container');
 
         this.contentEl = this.suggestEl.createDiv('suggestion');
@@ -208,8 +208,8 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
     }
     createPrompt(prompts: HTMLSpanElement[]) {
         if (!this.promptEl) this.promptEl = this.suggestEl.createDiv('prompt-instructions');
-        let prompt = this.promptEl.createDiv('prompt-instruction');
-        for (let p of prompts) {
+        const prompt = this.promptEl.createDiv('prompt-instruction');
+        for (const p of prompts) {
             prompt.appendChild(p);
         }
     }
