@@ -2,15 +2,16 @@ import type { TFile } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
-import { RecipeFormat, settings } from '../settings';
+import type { Context } from '../context';
+import { RecipeFormat } from '../settings';
 import type { Recipe } from './recipe';
 
-export async function get_ingredient_set(recipes: Recipe[]) {
+export async function get_ingredient_set(ctx: Context, recipes: Recipe[]) {
     const recipes_files = recipes.map((r) => r.path);
 
     return Promise.all(
         recipes_files.map(async (dir) => {
-            return await get_ingredients(dir);
+            return await get_ingredients(ctx, dir);
         }),
     ).then((ingredients) => {
         const all_ingredients: Set<string> = new Set();
@@ -23,13 +24,13 @@ export async function get_ingredient_set(recipes: Recipe[]) {
     });
 }
 
-export async function get_ingredients(recipe_file: TFile) {
+export async function get_ingredients(ctx: Context, recipe_file: TFile) {
     const filecontent = await recipe_file.vault.read(recipe_file);
 
     const contentStart = getFrontMatterInfo(filecontent).contentStart;
     const content = filecontent.substring(contentStart);
 
-    if (get(settings).recipe_format === RecipeFormat.RecipeMD) {
+    if (get(ctx.settings).recipe_format === RecipeFormat.RecipeMD) {
         return parse_ingredients_recipemd(content);
     }
 

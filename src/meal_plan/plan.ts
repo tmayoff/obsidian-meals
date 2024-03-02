@@ -2,18 +2,18 @@ import { App, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { DAYS_OF_WEEK } from '../constants';
 import type { Recipe } from '../recipe/recipe';
-import { settings } from '../settings';
 import { get_current_week } from './utils';
+import type { Context } from '../context';
 
-export async function add_recipe_to_meal_plan(app: App, recipe: Recipe, day: string) {
-    let file_path = get(settings).meal_plan_note;
+export async function add_recipe_to_meal_plan(ctx: Context, recipe: Recipe, day: string) {
+    let file_path = get(ctx.settings).meal_plan_note;
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
 
-    await fill_meal_plan_note(app, file_path);
+    await fill_meal_plan_note(ctx.app, file_path);
 
-    const file = app.vault.getAbstractFileByPath(file_path);
+    const file = ctx.app.vault.getAbstractFileByPath(file_path);
     if (file instanceof TFile) {
         file.vault.process(file, (content) => {
             const header = `Week of ${get_current_week()}`;

@@ -1,27 +1,29 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { get } from 'svelte/store';
+import { Context } from './context';
 import { open_meal_plan_note } from './meal_plan/plan';
 import { clear_checked_ingredients, generate_shopping_list } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings, RecipeFormat, settings } from './settings';
-import { load_recipes } from './store';
+import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
 
 export default class MealPlugin extends Plugin {
+    ctx = new Context(this);
+
     async onload() {
         await this.loadSettings();
 
-        load_recipes(this.app, undefined);
+        this.ctx.load_recipes(undefined);
 
         this.registerEvent(
             this.app.vault.on('create', (file) => {
-                load_recipes(this.app, file);
+                this.ctx.load_recipes(file);
             }),
         );
 
         this.registerEvent(
             this.app.vault.on('modify', (file) => {
-                load_recipes(this.app, file);
+                this.ctx.load_recipes(file);
             }),
         );
 
@@ -31,7 +33,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-recipe-search',
             name: 'Find a recipe',
             callback: () => {
-                new RecipeSearch(this.app, get(settings)).open();
+                new RecipeSearch(this.app, get(this.ctx.settings)).open();
             },
         });
 
@@ -39,7 +41,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-meal-plan',
             name: 'Open meal plan note',
             callback: async () => {
-                await open_meal_plan_note(get(settings).meal_plan_note);
+                await open_meal_plan_note(this.app, get(this.ctx.settings).meal_plan_note);
             },
         });
 
@@ -47,7 +49,7 @@ export default class MealPlugin extends Plugin {
             id: 'create-shopping-list',
             name: "Add week's shopping list",
             callback: async () => {
-                generate_shopping_list(this.app);
+                generate_shopping_list(this.ctx);
             },
         });
 
@@ -55,7 +57,7 @@ export default class MealPlugin extends Plugin {
             id: 'clear-shopping-list',
             name: 'Clear checked shopping list items',
             callback: async () => {
-                clear_checked_ingredients(this.app);
+                clear_checked_ingredients(this.ctx);
             },
         });
     }
@@ -63,11 +65,11 @@ export default class MealPlugin extends Plugin {
     onunload() {}
 
     async loadSettings() {
-        settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
+        this.ctx.settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
     }
 
     async saveSettings() {
-        await this.saveData(get(settings));
+        await this.saveData(get(this.ctx.settings));
     }
 }
 
@@ -103,10 +105,12 @@ class RecipeSearch extends Modal {
 
 class MealPluginSettingsTab extends PluginSettingTab {
     plugin: MealPlugin;
+    ctx: Context;
 
     constructor(app: App, plugin: MealPlugin) {
         super(app, plugin);
         this.plugin = plugin;
+        this.ctx = plugin.ctx;
     }
 
     display(): void {
@@ -118,8 +122,8 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setName('Recipe directory')
             .setDesc('Parent folder where recipes are stored')
             .addText(async (text) => {
-                text.setValue(get(settings).recipe_directory).onChange(async (value) => {
-                    settings.update((s) => {
+                text.setValue(get(this.ctx.settings).recipe_directory).onChange(async (value) => {
+                    this.ctx.settings.update((s) => {
                         s.recipe_directory = value;
                         return s;
                     });
@@ -132,9 +136,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .addText((text) =>
                 text
                     .setPlaceholder('Meal Plan')
-                    .setValue(get(settings).meal_plan_note)
+                    .setValue(get(this.ctx.settings).meal_plan_note)
                     .onChange(async (value) => {
-                        settings.update((s) => {
+                        this.ctx.settings.update((s) => {
                             s.meal_plan_note = value;
                             return s;
                         });
@@ -148,9 +152,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .addText((text) =>
                 text
                     .setPlaceholder('Shopping List')
-                    .setValue(get(settings).shopping_list_note)
+                    .setValue(get(this.ctx.settings).shopping_list_note)
                     .onChange(async (value) => {
-                        settings.update((s) => {
+                        this.ctx.settings.update((s) => {
                             s.shopping_list_note = value;
                             return s;
                         });
@@ -166,9 +170,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
                 dropdown
                     .addOption('RecipeMD', RecipeFormat.RecipeMD)
                     .addOption('Meal Planner', RecipeFormat.Meal_Plan)
-                    .setValue(get(settings).recipe_format)
+                    .setValue(get(this.ctx.settings).recipe_format)
                     .onChange(async (value) => {
-                        settings.update((s) => {
+                        this.ctx.settings.update((s) => {
                             s.recipe_format = <RecipeFormat>value;
                             return s;
                         });
@@ -181,9 +185,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setDesc('CSV list of ingredients to not add to the shopping list automatically')
             .addText((text) => {
                 text.setPlaceholder('salt,pepper')
-                    .setValue(get(settings).shopping_list_ignore.join(','))
+                    .setValue(get(this.ctx.settings).shopping_list_ignore.join(','))
                     .onChange(async (value) => {
-                        settings.update((s) => {
+                        this.ctx.settings.update((s) => {
                             s.shopping_list_ignore = value.split(',');
                             return s;
                         });
