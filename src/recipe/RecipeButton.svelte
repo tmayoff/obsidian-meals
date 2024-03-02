@@ -49,7 +49,7 @@
   >
     <button
       on:click={async () => {
-        await open_note_file(app, recipe.path);
+        await open_note_file(ctx.app, recipe.path);
         open = false;
         dispatch("close_modal");
       }}>Go to recipe</button
