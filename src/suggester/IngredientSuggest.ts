@@ -1,4 +1,4 @@
-import { TextComponent, type CachedMetadata, App, type FuzzyMatch } from 'obsidian';
+import { App, type CachedMetadata, type FuzzyMatch, TextComponent } from 'obsidian';
 import { SuggestionModal } from './suggester';
 
 export class IngredientSuggestionModal extends SuggestionModal<string> {
@@ -25,7 +25,7 @@ export class IngredientSuggestionModal extends SuggestionModal<string> {
         this.close();
     }
     renderSuggestion(result: FuzzyMatch<string>, el: HTMLElement) {
-        const { item, match: matches } = result || {};
+        const { item } = result || {};
         const content = el.createDiv({
             cls: 'suggestion-content',
         });

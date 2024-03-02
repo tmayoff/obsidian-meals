@@ -6,4 +6,3 @@ export function get_current_week() {
 
     return moment(last_sunday_date).format('MMMM Do');
 }
-

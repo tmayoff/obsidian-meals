@@ -1,8 +1,8 @@
 import { writable } from 'svelte/store';
 
-export const enum RecipeFormat {
-  Meal_Plan = "Meal Plan",
-  RecipeMD = "RecipeMD",
+export enum RecipeFormat {
+    Meal_Plan = 'Meal Plan',
+    RecipeMD = 'RecipeMD',
 }
 
 export class MealSettings {

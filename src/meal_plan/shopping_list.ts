@@ -1,9 +1,9 @@
 import { App, TFile } from 'obsidian';
+import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import { settings } from '../settings';
-import { get_current_week } from './utils';
 import { recipes } from '../store';
-import type { Ingredient } from 'parse-ingredient';
+import { get_current_week } from './utils';
 
 export async function clear_checked_ingredients(app: App) {
     let file_path = get(settings).shopping_list_note;
@@ -17,7 +17,7 @@ export async function clear_checked_ingredients(app: App) {
         if (list_items === undefined) return;
 
         // Get current files content
-        let content = await  app.vault.read(file);
+        let content = await app.vault.read(file);
 
         // Since we're modifying the content but keeping the original content's metadata we need to keep track of
         // how much we remove and offset all removals by that amount

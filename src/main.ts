@@ -3,26 +3,25 @@ import { get } from 'svelte/store';
 import { open_meal_plan_note } from './meal_plan/plan';
 import { clear_checked_ingredients, generate_shopping_list } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { RecipeFormat, MealSettings, settings } from './settings';
-import { APP, load_recipes } from './store';
+import { MealSettings, RecipeFormat, settings } from './settings';
+import { load_recipes } from './store';
 import 'virtual:uno.css';
 
 export default class MealPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        APP.set(this.app);
-        load_recipes();
+        load_recipes(this.app, undefined);
 
         this.registerEvent(
             this.app.vault.on('create', (file) => {
-                load_recipes(file);
+                load_recipes(this.app, file);
             }),
         );
 
         this.registerEvent(
             this.app.vault.on('modify', (file) => {
-                load_recipes(file);
+                load_recipes(this.app, file);
             }),
         );
 
@@ -164,17 +163,18 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setName('Recipe Format')
             .setDesc('RecipeMD or Meal Planner')
             .addDropdown((dropdown) => {
-              dropdown.addOption("RecipeMD",RecipeFormat.RecipeMD)
-              .addOption("Meal Planner",RecipeFormat.Meal_Plan)
-              .setValue(get(settings).recipe_format)
-              .onChange(async (value) => {
-                  settings.update((s) => {
-                      s.recipe_format = <RecipeFormat> value;
-                      return s;
-                  });
+                dropdown
+                    .addOption('RecipeMD', RecipeFormat.RecipeMD)
+                    .addOption('Meal Planner', RecipeFormat.Meal_Plan)
+                    .setValue(get(settings).recipe_format)
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.recipe_format = <RecipeFormat>value;
+                            return s;
+                        });
 
-                  await this.plugin.saveSettings();
-              });
+                        await this.plugin.saveSettings();
+                    });
             });
         new Setting(containerEl)
             .setName('Shopping list ignore')
