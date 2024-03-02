@@ -5,8 +5,6 @@ meal: Dinner
 ---
 # Bacon Pesto Tomato Pizza
 
-kjhjjhhkj
-
 ---
 - 100g Bacon
 - 340g Pizza Dough
@@ -17,6 +15,7 @@ kjhjjhhkj
 - 1 Garlic cloves
 - 4 tbsp Mayonnaise
 ---
+
 0. Get Started
 	- **Remove pizza dough from fridge and let rest in a warm spot for 20 min.**
 	- Preheat the oven to 450F

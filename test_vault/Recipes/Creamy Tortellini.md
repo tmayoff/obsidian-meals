@@ -5,9 +5,6 @@ meal: Dinner
 ---
 # Creamy Tortellini 
 
-asdasdsad 
-
-
 ---
 
 - Minced Garlic 15 ml 
@@ -17,8 +14,8 @@ asdasdsad
 - Vegetable Demi-Glace 30ml
 -  Heavy Cream 45 ml
 -  Zingy Garlic and Oregano Spices (salt, paprika, garlic, vinegar powder, onion, red bell pepper, black pepper, sunflower oil, oregano, parsley, chives, cayenne pepper) 10g
-
 ---
+
 0. Mise en place
 	- Bring a medium pot of **salted water** to a boil. 
 	- Remove the **kale leaves** from the stems; roughly chop the **leaves**. 

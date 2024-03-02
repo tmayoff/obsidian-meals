@@ -1,7 +1,7 @@
 # Za'atar Chicken Bulgur Bowls 
 
 ---
-- 2 Chicken Breasts
+- 2 Chicken Breast
 - Bulgur Wheat 1/2 cup  
 - Mixed Olives 30g
 - Mini cucumber 66g
@@ -14,6 +14,7 @@
 - Mediterranean Spice Blend 1tbsp
 - Sugar 1tbsp
 ---
+
 0. Start Here
 	- Before Starting, preheat the oven to 450f
 	- Wash and dry all produce
