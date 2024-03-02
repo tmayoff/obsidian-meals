@@ -1,23 +1,22 @@
-import { App, TFile } from 'obsidian';
+import { TFile } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
-import { settings } from '../settings';
-import { recipes } from '../store';
+import type { Context } from '../context';
 import { get_current_week } from './utils';
 
-export async function clear_checked_ingredients(app: App) {
-    let file_path = get(settings).shopping_list_note;
+export async function clear_checked_ingredients(ctx: Context) {
+    let file_path = get(ctx.settings).shopping_list_note;
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
 
-    const file = app.vault.getAbstractFileByPath(file_path);
+    const file = ctx.app.vault.getAbstractFileByPath(file_path);
     if (file instanceof TFile) {
-        const list_items = app.metadataCache.getFileCache(file)?.listItems;
+        const list_items = ctx.app.metadataCache.getFileCache(file)?.listItems;
         if (list_items === undefined) return;
 
         // Get current files content
-        let content = await app.vault.read(file);
+        let content = await ctx.app.vault.read(file);
 
         // Since we're modifying the content but keeping the original content's metadata we need to keep track of
         // how much we remove and offset all removals by that amount
@@ -31,35 +30,35 @@ export async function clear_checked_ingredients(app: App) {
         }
 
         // Save the new content
-        app.vault.modify(file, content);
+        ctx.app.vault.modify(file, content);
     }
 }
 
-export async function generate_shopping_list(app: App) {
-    let file_path = get(settings).meal_plan_note;
+export async function generate_shopping_list(ctx: Context) {
+    let file_path = get(ctx.settings).meal_plan_note;
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
 
     let ingredients: Array<Ingredient> = [];
-    const meal_plan_file = app.vault.getFileByPath(file_path);
+    const meal_plan_file = ctx.app.vault.getFileByPath(file_path);
     if (meal_plan_file != null) {
-        ingredients = get_ingredients(app, meal_plan_file);
+        ingredients = get_ingredients(ctx, meal_plan_file);
     }
 
-    file_path = get(settings).shopping_list_note;
+    file_path = get(ctx.settings).shopping_list_note;
     if (!file_path.endsWith('.md')) {
         file_path += '.md';
     }
 
-    let file = app.vault.getAbstractFileByPath(file_path);
+    let file = ctx.app.vault.getAbstractFileByPath(file_path);
     if (file == null) {
-        app.vault.create(file_path, '');
-        file = app.vault.getAbstractFileByPath(file_path);
+        ctx.app.vault.create(file_path, '');
+        file = ctx.app.vault.getAbstractFileByPath(file_path);
     }
 
     if (file instanceof TFile) {
-        app.vault.process(file, (data) => {
+        ctx.app.vault.process(file, (data) => {
             for (const i of ingredients) {
                 let line = '';
                 if (i.quantity != null) line += `${i.quantity} `;
@@ -74,9 +73,9 @@ export async function generate_shopping_list(app: App) {
     }
 }
 
-function get_ingredients(app: App, file: TFile) {
+function get_ingredients(ctx: Context, file: TFile) {
     const this_week = get_current_week();
-    const fileCache = app.metadataCache.getFileCache(file)!;
+    const fileCache = ctx.app.metadataCache.getFileCache(file)!;
 
     const topLevel = fileCache.headings!.filter((h) => {
         return h.level === 1;
@@ -96,7 +95,7 @@ function get_ingredients(app: App, file: TFile) {
     const endPos = end !== -1 ? topLevel[end]?.position! : null;
 
     const links = fileCache.links!;
-    const ignore_list = get(settings).shopping_list_ignore;
+    const ignore_list = get(ctx.settings).shopping_list_ignore;
     const ingredients: Array<Ingredient> = [];
     for (const i of links) {
         // Skip links outside the bounds of the date range
@@ -108,9 +107,9 @@ function get_ingredients(app: App, file: TFile) {
             continue;
         }
 
-        const recipeFile = app.metadataCache.getFirstLinkpathDest(i.link, file.path);
+        const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(i.link, file.path);
         if (recipeFile != null) {
-            const r = get(recipes).find((r) => {
+            const r = get(ctx.recipes).find((r) => {
                 return r.path.path === recipeFile.path;
             });
             if (r !== undefined) {

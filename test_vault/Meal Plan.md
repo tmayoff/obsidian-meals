@@ -8,6 +8,7 @@
 ## Wednesday
 
 ## Thursday
+- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Friday
 

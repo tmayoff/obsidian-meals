@@ -1,13 +1,15 @@
 <script lang="ts">
   import { derived, writable } from "svelte/store";
-  import { ingredients, recipes } from "../store";
   import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
-  import { App, TextComponent } from "obsidian";
-  import { createEventDispatcher, onMount } from "svelte";
+  import { TextComponent } from "obsidian";
+  import { onMount } from "svelte";
   import RecipeButton from "./RecipeButton.svelte";
+    import type { Context } from "../context";
 
-  export let app: App;
+  export let ctx: Context;
 
+  let ingredients = ctx.ingredients;
+  
   let search_operation = writable("any of");
 
   const search_ingredients = writable(new Set<string>());
@@ -20,7 +22,7 @@
   }
 
   const found_recipes = derived(
-    [search_ingredients, search_operation, recipes],
+    [search_ingredients, search_operation, ctx.recipes],
     ([$search_ingredients, $search_operation, $recipes]) => {
       return $recipes.filter((recipe) => {
         let descs = recipe.ingredients.map((i) => {
@@ -49,11 +51,11 @@
     let suggester_text = new TextComponent(suggester_parent);
     suggester_text.inputEl.addClass("w-full");
 
-    let suggester = new IngredientSuggestionModal(app, suggester_text, [
+    let suggester = new IngredientSuggestionModal(ctx.app, suggester_text, [
       ...$ingredients,
     ]);
 
-    suggester_text.onChange((text) => {
+    suggester_text.onChange(() => {
       suggester.shouldNotOpen = false;
       suggester.open();
     });
@@ -119,7 +121,7 @@
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $found_recipes as recipe}
-          <RecipeButton on:close_modal {app} {recipe} />
+          <RecipeButton on:close_modal {ctx} {recipe} />
         {/each}
       </div>
     </div>
