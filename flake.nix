@@ -29,6 +29,7 @@
               nodePackages.typescript-language-server
               bun
               biome
+              act
             ];
         };
       }

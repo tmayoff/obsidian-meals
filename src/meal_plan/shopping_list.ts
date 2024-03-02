@@ -1,9 +1,9 @@
 import { App, TFile } from 'obsidian';
+import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import { settings } from '../settings';
-import { get_current_week } from './utils';
 import { recipes } from '../store';
-import type { Ingredient } from 'parse-ingredient';
+import { get_current_week } from './utils';
 
 export async function clear_checked_ingredients(app: App) {
     let file_path = get(settings).shopping_list_note;
@@ -84,7 +84,7 @@ function get_ingredients(app: App, file: TFile) {
 
     let end = -1;
     if (topLevel.length > 1) {
-        let end = topLevel.findIndex((h) => {
+        end = topLevel.findIndex((h) => {
             return h.level === 1 && h.heading.contains(this_week);
         });
         if (end < topLevel.length - 1) {
@@ -93,7 +93,7 @@ function get_ingredients(app: App, file: TFile) {
     }
 
     const startPos = topLevel[0].position!;
-    const endPos = end != -1 ? topLevel[end]?.position! : null;
+    const endPos = end !== -1 ? topLevel[end]?.position! : null;
 
     const links = fileCache.links!;
     const ignore_list = get(settings).shopping_list_ignore;

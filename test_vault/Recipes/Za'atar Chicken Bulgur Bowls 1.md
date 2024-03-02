@@ -1,11 +1,8 @@
+# Za'atar Chicken Bulgur Bowls 
+
 ---
-source: HelloFresh
-servings: "2"
-meal: Dinner
----
-# Ingredients
-- 2 Chicken Breasts 
-- Bulgur Wheat 1/2 cup
+- 2 Chicken Breasts
+- Bulgur Wheat 1/2 cup  
 - Mixed Olives 30g
 - Mini cucumber 66g
 - 1 tbsp Za'atar spice blend
@@ -13,10 +10,10 @@ meal: Dinner
 - Lemon x1
 - Feta Cheese, crumbled 1/4 cup
 - Garlic, cloves 1
-- White Wine Vinegar 1tbsp
+- White Wine Vinegar 1tbsp  
 - Mediterranean Spice Blend 1tbsp
 - Sugar 1tbsp
-# Directions
+---
 0. Start Here
 	- Before Starting, preheat the oven to 450f
 	- Wash and dry all produce

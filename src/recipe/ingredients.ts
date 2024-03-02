@@ -24,7 +24,15 @@ export async function get_ingredient_set(recipes: Recipe[]) {
 }
 
 export async function get_ingredients(recipe_file: TFile) {
-    const content = await recipe_file.vault.read(recipe_file);
+    const filecontent = await recipe_file.vault.read(recipe_file);
+
+    const contentStart = getFrontMatterInfo(filecontent).contentStart;
+    const content = filecontent.substring(contentStart);
+
+    if (get(settings).recipe_format === RecipeFormat.RecipeMD) {
+        return parse_ingredients_recipemd(content);
+    }
+
     return parse_ingredients(content);
 }
 
@@ -41,6 +49,25 @@ function parse_ingredients(content: string): Ingredient[] {
     const end = content.indexOf('#');
 
     const ingredients = content.substring(0, end);
+    for (const line of ingredients.split('\n').filter((line) => {
+        return line.length > 0;
+    })) {
+        const i = parse_ingredient(line);
+        if (i === undefined) continue;
+        recipes.push(i);
+    }
+
+    return recipes;
+}
+
+function parse_ingredients_recipemd(content: string): Ingredient[] {
+    const recipes: Ingredient[] = new Array();
+    const ingredients = content.split('---')[1];
+
+    if (ingredients === undefined || ingredients.length <= 0) {
+        return new Array();
+    }
+
     for (const line of ingredients.split('\n').filter((line) => {
         return line.length > 0;
     })) {

@@ -1,4 +1,4 @@
-import { TFile, type App } from 'obsidian';
+import { type App, TFile } from 'obsidian';
 
 export async function open_note_file(app: App, file: TFile) {
     open_note_path(app, file.path);

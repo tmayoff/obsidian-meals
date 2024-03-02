@@ -23,3 +23,9 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+*.swp
+
+test/vault/.obsidian
+!.obsidian/plugins/hot-reload
+!.obsidian/plugins/tmayoff-meals/.hotreload
