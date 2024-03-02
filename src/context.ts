@@ -35,7 +35,6 @@ export class Context {
     }
 
     async load_recipes(file: TAbstractFile | undefined) {
-        console.log(this.app);
         const recipe_folder_path = get(this.settings).recipe_directory;
         const recipe_folder = this.app.vault.getFolderByPath(recipe_folder_path);
         if (recipe_folder == null) {
@@ -51,7 +50,5 @@ export class Context {
         get_recipes(this, recipe_folder!).then((r) => {
             this.recipes.set(r);
         });
-
-        console.log('loaded recipes');
     }
 }
