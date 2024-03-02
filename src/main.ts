@@ -1,17 +1,17 @@
 import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
 import { get } from 'svelte/store';
-import { load_recipes } from './load_recipes';
 import { open_meal_plan_note } from './meal_plan/plan';
 import { clear_checked_ingredients, generate_shopping_list } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat, settings } from './settings';
+import { load_recipes } from './store';
 import 'virtual:uno.css';
 
 export default class MealPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        load_recipes(this.app);
+        load_recipes(this.app, undefined);
 
         this.registerEvent(
             this.app.vault.on('create', (file) => {
