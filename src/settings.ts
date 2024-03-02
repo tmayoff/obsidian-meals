@@ -1,5 +1,3 @@
-import { writable } from 'svelte/store';
-
 export enum RecipeFormat {
     Meal_Plan = 'Meal Plan',
     RecipeMD = 'RecipeMD',
@@ -13,6 +11,6 @@ export class MealSettings {
     recipe_format: RecipeFormat = RecipeFormat.Meal_Plan;
 
     shopping_list_ignore: Array<string> = ['salt', 'pepper', 'olive oil', 'garlic powder'];
-}
 
-export const settings = writable(new MealSettings());
+    advanced_ingredient_parsing = false;
+}
