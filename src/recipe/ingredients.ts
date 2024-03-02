@@ -1,9 +1,9 @@
-import type { TFile } from 'obsidian';
+import { getFrontMatterInfo, type TFile } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import type { Recipe } from './recipe';
 import { get } from 'svelte/store';
-import { settings } from '../settings';
+import { RecipeFormat, settings } from '../settings';
 
 export async function get_ingredient_set(recipes: Recipe[]) {
     const recipes_files = recipes.map((r) => r.path);

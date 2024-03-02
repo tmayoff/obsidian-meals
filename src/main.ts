@@ -205,7 +205,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                     });
 
                     await this.plugin.saveSettings();
-                    await load_recipes();
+                    await load_recipes(this.app, undefined);
                 });
             });
     }
