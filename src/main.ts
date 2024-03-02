@@ -194,5 +194,22 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+
+        new Setting(containerEl)
+            .setName('EXPERIMENTAL: Advanced ingredient parsing')
+            .setDesc(
+                "This will add some extra rules to parsing an ingredient's name, ignoring text after the first comma and turning the name singular",
+            )
+            .addToggle((toggle) => {
+                toggle.setValue(get(this.ctx.settings).advanced_ingredient_parsing).onChange(async (val) => {
+                    this.ctx.settings.update((s) => {
+                        s.advanced_ingredient_parsing = val;
+                        return s;
+                    });
+
+                    await this.plugin.saveSettings();
+                    await this.ctx.load_recipes(undefined);
+                });
+            });
     }
 }

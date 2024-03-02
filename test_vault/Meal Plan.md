@@ -1,11 +1,9 @@
 # Week of February 25th
 ## Sunday
-- [[Creamy Garlic Chicken & Potatoes]]
-
 ## Monday
 
 ## Tuesday
-
+- [[Creamy Garlic Chicken & Potatoes]]
 ## Wednesday
 
 ## Thursday

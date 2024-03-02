@@ -41,8 +41,8 @@ export async function generate_shopping_list(ctx: Context) {
     }
 
     let ingredients: Array<Ingredient> = [];
-    const meal_plan_file = ctx.app.vault.getAbstractFileByPath(file_path);
-    if (meal_plan_file instanceof TFile) {
+    const meal_plan_file = ctx.app.vault.getFileByPath(file_path);
+    if (meal_plan_file != null) {
         ingredients = get_ingredients(ctx, meal_plan_file);
     }
 

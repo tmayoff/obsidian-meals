@@ -1,6 +1,7 @@
 import type { TFile } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
+import { singular } from 'pluralize';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
 import { RecipeFormat } from '../settings';
@@ -35,13 +36,13 @@ export async function get_ingredients(ctx: Context, recipe_file: TFile) {
     const content = filecontent.substring(contentStart);
 
     if (get(ctx.settings).recipe_format === RecipeFormat.RecipeMD) {
-        return parse_ingredients_recipemd(content);
+        return parse_ingredients_recipemd(ctx, content);
     }
 
-    return parse_ingredients(content);
+    return parse_ingredients(ctx, content);
 }
 
-function parse_ingredients(content: string): Ingredient[] {
+function parse_ingredients(ctx: Context, content: string): Ingredient[] {
     const recipes: Ingredient[] = new Array();
 
     const HEADER_STRING = '# Ingredients';
@@ -57,7 +58,7 @@ function parse_ingredients(content: string): Ingredient[] {
     for (const line of ingredients.split('\n').filter((line) => {
         return line.length > 0;
     })) {
-        const i = parse_ingredient(line);
+        const i = parse_ingredient(ctx, line);
         if (i === undefined) continue;
         recipes.push(i);
     }
@@ -65,7 +66,7 @@ function parse_ingredients(content: string): Ingredient[] {
     return recipes;
 }
 
-function parse_ingredients_recipemd(content: string): Ingredient[] {
+function parse_ingredients_recipemd(ctx: Context, content: string): Ingredient[] {
     const recipes: Ingredient[] = new Array();
     const ingredients = content.split('---')[1];
 
@@ -76,7 +77,7 @@ function parse_ingredients_recipemd(content: string): Ingredient[] {
     for (const line of ingredients.split('\n').filter((line) => {
         return line.length > 0;
     })) {
-        const i = parse_ingredient(line);
+        const i = parse_ingredient(ctx, line);
         if (i === undefined) continue;
         recipes.push(i);
     }
@@ -84,13 +85,33 @@ function parse_ingredients_recipemd(content: string): Ingredient[] {
     return recipes;
 }
 
-function parse_ingredient(content: string): Ingredient {
+function parse_ingredient(ctx: Context, content: string): Ingredient {
+    // Parse the ingredient line
     const LINE_PREFIX = '- ';
-    if (content.match(/^ *-/)) {
-        content = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
-        content = content.replace(/\*/g, '');
-        return parseIngredient(content)[0];
+    let ingredient_content = content.substring(content.indexOf(LINE_PREFIX) + LINE_PREFIX.length);
+
+    const do_advanced_parse = get(ctx.settings).advanced_ingredient_parsing;
+
+    if (do_advanced_parse) {
+        // ============================
+        // Special ingredient parsing
+        // =============================
+
+        // Ingredient name ignores everything after the first comma
+        // 200g onions, chopped
+        // ~~~~~~~~~~~
+        // 200g onion
+
+        const first_comma = ingredient_content.indexOf(',');
+
+        if (first_comma >= 0) ingredient_content = ingredient_content.substring(0, first_comma);
     }
 
-    return parseIngredient('')[0];
+    const ingredient = parseIngredient(ingredient_content)[0];
+
+    if (do_advanced_parse && ingredient !== undefined) {
+        ingredient.description = singular(ingredient.description);
+    }
+
+    return ingredient;
 }

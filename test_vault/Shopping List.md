@@ -1,7 +1,5 @@
 - [ ] 1600 g Chicken Breasts
 - [ ] 1600 g Yellow Potatoes
-- [ ] 6  Garlic Cloves, minced
-- [ ] 2 tbsp Onion Powder
 - [ ] 4 tbsp Za'atar
 - [ ] 4 tbsp Chili Flakes
 - [ ] 4 tbsp Paprika
