@@ -24,15 +24,15 @@ export const ingredients = derived(recipes, ($recipes) => {
     return ingredients;
 });
 
-export async function load_recipes(file:TAbstractFile) {
+export async function load_recipes(file: TAbstractFile) {
     const recipe_folder = get(APP).vault.getAbstractFileByPath(get(settings).recipe_directory);
-    
-    if (recipe_folder instanceof TFolder) {
-      if (file instanceof TFolder && file != recipe_folder) return
-      if (file instanceof TFile && file.parent != recipe_folder) return
 
-      get_recipes(recipe_folder).then((r) => {
-          recipes.set(r);
-      });
-    } 
+    if (recipe_folder instanceof TFolder) {
+        if (file instanceof TFolder && file != recipe_folder) return;
+        if (file instanceof TFile && file.parent != recipe_folder) return;
+
+        get_recipes(recipe_folder).then((r) => {
+            recipes.set(r);
+        });
+    }
 }

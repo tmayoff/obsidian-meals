@@ -17,7 +17,7 @@ export async function clear_checked_ingredients(app: App) {
         if (list_items === undefined) return;
 
         // Get current files content
-        let content = await  app.vault.read(file);
+        let content = await app.vault.read(file);
 
         // Since we're modifying the content but keeping the original content's metadata we need to keep track of
         // how much we remove and offset all removals by that amount

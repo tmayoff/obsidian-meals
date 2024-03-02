@@ -164,17 +164,18 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setName('Recipe Format')
             .setDesc('RecipeMD or Meal Planner')
             .addDropdown((dropdown) => {
-              dropdown.addOption("RecipeMD",RecipeFormat.RecipeMD)
-              .addOption("Meal Planner",RecipeFormat.Meal_Plan)
-              .setValue(get(settings).recipe_format)
-              .onChange(async (value) => {
-                  settings.update((s) => {
-                      s.recipe_format = <RecipeFormat> value;
-                      return s;
-                  });
+                dropdown
+                    .addOption('RecipeMD', RecipeFormat.RecipeMD)
+                    .addOption('Meal Planner', RecipeFormat.Meal_Plan)
+                    .setValue(get(settings).recipe_format)
+                    .onChange(async (value) => {
+                        settings.update((s) => {
+                            s.recipe_format = <RecipeFormat>value;
+                            return s;
+                        });
 
-                  await this.plugin.saveSettings();
-              });
+                        await this.plugin.saveSettings();
+                    });
             });
         new Setting(containerEl)
             .setName('Shopping list ignore')
