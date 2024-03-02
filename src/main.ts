@@ -33,7 +33,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-recipe-search',
             name: 'Find a recipe',
             callback: () => {
-                new RecipeSearch(this.app, get(this.ctx.settings)).open();
+                new RecipeSearch(this.ctx).open();
             },
         });
 
@@ -60,6 +60,8 @@ export default class MealPlugin extends Plugin {
                 clear_checked_ingredients(this.ctx);
             },
         });
+
+        console.log('tmayoff-meals loaded');
     }
 
     onunload() {}
@@ -75,20 +77,17 @@ export default class MealPlugin extends Plugin {
 
 class RecipeSearch extends Modal {
     recipeView: SearchRecipe | undefined;
-    settings: MealSettings;
-    app: App;
+    ctx: Context;
 
-    constructor(app: App, settings: MealSettings) {
-        super(app);
-
-        this.app = app;
-        this.settings = settings;
+    constructor(ctx: Context) {
+        super(ctx.app);
+        this.ctx = ctx;
     }
     async onOpen() {
         this.recipeView = new SearchRecipe({
             target: this.containerEl.children[1].children[2],
             props: {
-                app: this.app,
+                ctx: this.ctx,
             },
         });
 

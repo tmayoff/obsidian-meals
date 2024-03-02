@@ -1,19 +1,11 @@
-- [ ] 100 g Bacon
-- [ ] 340 g Pizza Dough
-- [ ] 1  Tomato
-- [ ] 28 g Baby Spinach
-- [ ] 0.25 cup Basil Pesto
-- [ ] 0.75 cup Mozzarella Cheese, shredded
-- [ ] 1  Garlic cloves
-- [ ] 4 tbsp Mayonnaise
-- [ ] 800 g Chicken Breasts
-- [ ] 800 g Yellow Potatoes
-- [ ] 3  Garlic Cloves, minced
-- [ ] 1 tbsp Onion Powder
-- [ ] 2 tbsp Za'atar
-- [ ] 2 tbsp Chili Flakes
-- [ ] 2 tbsp Paprika
-- [ ] 0.5 cup Milk
-- [ ] 100 g cream cheese
-- [ ] 40 g Parmesan cheese, shredded
-- [ ] 50 g Mozzarella, shredded
+- [ ] 1600 g Chicken Breasts
+- [ ] 1600 g Yellow Potatoes
+- [ ] 6  Garlic Cloves, minced
+- [ ] 2 tbsp Onion Powder
+- [ ] 4 tbsp Za'atar
+- [ ] 4 tbsp Chili Flakes
+- [ ] 4 tbsp Paprika
+- [ ] 1 cup Milk
+- [ ] 200 g cream cheese
+- [ ] 80 g Parmesan cheese, shredded
+- [ ] 100 g Mozzarella, shredded

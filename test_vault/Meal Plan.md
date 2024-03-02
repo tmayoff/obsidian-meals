@@ -1,15 +1,15 @@
 # Week of February 25th
 ## Sunday
-- [[Bacon Pesto Tomato Pizza]]
+- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Monday
 
 ## Tuesday
-- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Wednesday
 
 ## Thursday
+- [[Creamy Garlic Chicken & Potatoes]]
 
 ## Friday
 

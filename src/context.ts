@@ -35,13 +35,23 @@ export class Context {
     }
 
     async load_recipes(file: TAbstractFile | undefined) {
-        const recipe_folder = this.app.vault.getFolderByPath(get(this.settings).recipe_directory);
+        console.log(this.app);
+        const recipe_folder_path = get(this.settings).recipe_directory;
+        const recipe_folder = this.app.vault.getFolderByPath(recipe_folder_path);
+        if (recipe_folder == null) {
+            console.error(`Failed to load recipes, can't access directory: ${recipe_folder_path}`);
+            return;
+        }
 
-        if (file instanceof TFolder && file !== recipe_folder) return;
-        if (file instanceof TFile && file.parent !== recipe_folder) return;
+        if (file !== undefined) {
+            if (file instanceof TFolder && file !== recipe_folder) return;
+            if (file instanceof TFile && file.parent !== recipe_folder) return;
+        }
 
-        get_recipes(recipe_folder!).then((r) => {
+        get_recipes(this, recipe_folder!).then((r) => {
             this.recipes.set(r);
         });
+
+        console.log('loaded recipes');
     }
 }

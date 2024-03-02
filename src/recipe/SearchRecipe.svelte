@@ -7,7 +7,6 @@
     import type { Context } from "../context";
 
   export let ctx: Context;
-  let app = ctx.app;
 
   let ingredients = ctx.ingredients;
   
@@ -122,7 +121,7 @@
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $found_recipes as recipe}
-          <RecipeButton on:close_modal {app} {recipe} />
+          <RecipeButton on:close_modal {ctx} {recipe} />
         {/each}
       </div>
     </div>

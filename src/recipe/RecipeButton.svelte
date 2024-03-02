@@ -1,12 +1,12 @@
 <script lang="ts">
-  import type { App } from "obsidian";
   import { DAYS_OF_WEEK } from "../constants";
+  import type { Context } from "../context";
   import { add_recipe_to_meal_plan } from "../meal_plan/plan";
   import { open_note_file } from "../utils/filesystem";
   import type { Recipe } from "./recipe";
   import { createEventDispatcher } from "svelte";
 
-  export let app: App;
+  export let ctx: Context;
   export let recipe: Recipe;
 
   let open = false;
@@ -58,7 +58,7 @@
       <button
         class="rounded-none"
         on:click={async () => {
-          await add_recipe_to_meal_plan(app, recipe, day);
+          await add_recipe_to_meal_plan(ctx, recipe, day);
           open = false;
         }}>{day}</button
       >

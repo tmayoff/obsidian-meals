@@ -25,7 +25,11 @@ export async function get_ingredient_set(ctx: Context, recipes: Recipe[]) {
 }
 
 export async function get_ingredients(ctx: Context, recipe_file: TFile) {
-    const filecontent = await recipe_file.vault.read(recipe_file);
+    if (recipe_file === undefined) {
+        console.log('FAILED', recipe_file);
+    }
+
+    const filecontent = await ctx.app.vault.read(recipe_file);
 
     const contentStart = getFrontMatterInfo(filecontent).contentStart;
     const content = filecontent.substring(contentStart);
