@@ -1,7 +1,7 @@
 import type { TFile } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
 import { type Ingredient, parseIngredient } from 'parse-ingredient';
-import {singular} from 'pluralize';
+import { singular } from 'pluralize';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
 import { RecipeFormat } from '../settings';
