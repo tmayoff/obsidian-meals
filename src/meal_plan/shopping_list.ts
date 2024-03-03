@@ -3,58 +3,52 @@ import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
 import { get_current_week } from './utils';
+import { append_markdown_ext } from '../utils/filesystem';
 
 export async function clear_checked_ingredients(ctx: Context) {
-    let file_path = get(ctx.settings).shopping_list_note;
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
+    const file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
+
+    const file = ctx.app.vault.getFileByPath(file_path);
+    if (file == null) return;
+
+    const list_items = ctx.app.metadataCache.getFileCache(file)?.listItems?.filter((i) => {
+        return i.task !== undefined && i.task !== ' ';
+    });
+    if (list_items === undefined) return;
+
+    // Get current files content
+    let content = await ctx.app.vault.read(file);
+
+    // Since we're modifying the content but keeping the original content's metadata we need to keep track of
+    // how much we remove and offset all removals by that amount
+    let offset = 0;
+
+    for (const item of list_items) {
+        const pos = item.position;
+        const start = pos.start.offset - offset;
+        const length = pos.end.offset - pos.start.offset + 1;
+
+        content = content.substring(0, start) + content.substring(start + length);
+        offset += length;
     }
 
-    const file = ctx.app.vault.getAbstractFileByPath(file_path);
-    if (file instanceof TFile) {
-        const list_items = ctx.app.metadataCache.getFileCache(file)?.listItems;
-        if (list_items === undefined) return;
-
-        // Get current files content
-        let content = await ctx.app.vault.read(file);
-
-        // Since we're modifying the content but keeping the original content's metadata we need to keep track of
-        // how much we remove and offset all removals by that amount
-        let offset = 0;
-        for (const item of list_items) {
-            if (item.task !== undefined && item.task !== ' ') {
-                const pos = item.position;
-                content = content.substring(0, pos.start.offset - offset) + content.substring(pos.end.offset + 1 - offset);
-                offset += pos.start.offset + pos.end.offset + 1;
-            }
-        }
-
-        // Save the new content
-        ctx.app.vault.modify(file, content);
-    }
+    // Save the new content
+    ctx.app.vault.modify(file, content);
 }
 
 export async function generate_shopping_list(ctx: Context) {
-    let file_path = get(ctx.settings).meal_plan_note;
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
-    }
+    const meal_plan_file_path = append_markdown_ext(get(ctx.settings).meal_plan_note);
 
-    let ingredients: Array<Ingredient> = [];
-    const meal_plan_file = ctx.app.vault.getFileByPath(file_path);
-    if (meal_plan_file != null) {
-        ingredients = get_ingredients(ctx, meal_plan_file);
-    }
+    const meal_plan_file = ctx.app.vault.getFileByPath(meal_plan_file_path);
+    if (meal_plan_file == null) return;
+    const ingredients = get_ingredients(ctx, meal_plan_file);
 
-    file_path = get(ctx.settings).shopping_list_note;
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
-    }
+    const shopping_list_file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
 
-    let file = ctx.app.vault.getAbstractFileByPath(file_path);
+    let file = ctx.app.vault.getFileByPath(shopping_list_file_path);
     if (file == null) {
-        ctx.app.vault.create(file_path, '');
-        file = ctx.app.vault.getAbstractFileByPath(file_path);
+        ctx.app.vault.create(shopping_list_file_path, '');
+        file = ctx.app.vault.getFileByPath(shopping_list_file_path);
     }
 
     if (file instanceof TFile) {
@@ -112,29 +106,29 @@ function get_ingredients(ctx: Context, file: TFile) {
             const r = get(ctx.recipes).find((r) => {
                 return r.path.path === recipeFile.path;
             });
-            if (r !== undefined) {
-                //  Before adding an ingredient check if it's already in the list
-                //  If it is add the quanities together otherwise add it to the list
-                for (const i of r.ingredients) {
-                    const existing = ingredients.findIndex((existing) => {
-                        return existing.description === i.description && i.unitOfMeasure === existing.unitOfMeasure;
-                    });
+            if (r === undefined) continue;
 
-                    if (
-                        ignore_list.find((ignored) => {
-                            return i.description.toLowerCase() === ignored.toLowerCase();
-                        }) != null
-                    ) {
-                        continue;
-                    }
+            //  Before adding an ingredient check if it's already in the list
+            //  If it is add the quanities together otherwise add it to the list
+            for (const i of r.ingredients) {
+                const existing = ingredients.findIndex((existing) => {
+                    return existing.description === i.description && i.unitOfMeasure === existing.unitOfMeasure;
+                });
 
-                    if (existing === -1) {
-                        ingredients.push(i);
-                    } else {
-                        let raw = ingredients[existing].quantity ?? 0;
-                        raw += i.quantity ?? 0;
-                        ingredients[existing].quantity = raw;
-                    }
+                if (
+                    ignore_list.find((ignored) => {
+                        return i.description.toLowerCase() === ignored.toLowerCase();
+                    }) != null
+                ) {
+                    continue;
+                }
+
+                if (existing === -1) {
+                    ingredients.push(i);
+                } else {
+                    let raw = ingredients[existing].quantity ?? 0;
+                    raw += i.quantity ?? 0;
+                    ingredients[existing].quantity = raw;
                 }
             }
         }

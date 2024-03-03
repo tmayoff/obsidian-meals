@@ -4,7 +4,6 @@ servings: "4"
 meal: Dinner
 ---
 # Ingredients
----
 - 800g Chicken Breasts
 - 800g Yellow Potatoes
 - 3 Garlic Cloves, minced
@@ -19,7 +18,6 @@ meal: Dinner
 - 100g cream cheese
 - 40g Parmesan cheese, shredded
 - 50g Mozzarella, shredded
----
 
 # Directions 
 0. Before starting
