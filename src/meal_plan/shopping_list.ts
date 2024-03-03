@@ -2,8 +2,8 @@ import { TFile } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
-import { get_current_week } from './utils';
 import { append_markdown_ext } from '../utils/filesystem';
+import { get_current_week } from './utils';
 
 export async function clear_checked_ingredients(ctx: Context) {
     const file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
