@@ -179,6 +179,23 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+
+        new Setting(containerEl)
+            .setName('Shopping list format')
+            .setDesc('Which elements of the ingredients to add to the shopping list. Place the ingredients properties in {} properties are from here: https://www.npmjs.com/package/parse-ingredient')
+            .addText((text) => {
+                text.setPlaceholder('{description} {quantity} {unitOfMeasure}')
+                    .setValue(get(this.ctx.settings).shopping_list_format)
+                    .onChange(async (value) => {
+                        this.ctx.settings.update((s) => {
+                            s.shopping_list_format = value;
+                            return s;
+                        });
+
+                        await this.plugin.saveSettings();
+                    });
+            });
+
         new Setting(containerEl)
             .setName('Shopping list ignore')
             .setDesc('CSV list of ingredients to not add to the shopping list automatically')
