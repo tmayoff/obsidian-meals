@@ -182,7 +182,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Shopping list format')
-            .setDesc('Which elements of the ingredients to add to the shopping list. Place the ingredients properties in {} properties are from here: https://www.npmjs.com/package/parse-ingredient')
+            .setDesc(
+                'Which elements of the ingredients to add to the shopping list. Place the ingredients properties in {} properties are from here: https://www.npmjs.com/package/parse-ingredient',
+            )
             .addText((text) => {
                 text.setPlaceholder('{description} {quantity} {unitOfMeasure}')
                     .setValue(get(this.ctx.settings).shopping_list_format)
