@@ -13,4 +13,6 @@ export class MealSettings {
     shopping_list_ignore: Array<string> = ['salt', 'pepper', 'olive oil', 'garlic powder'];
 
     advanced_ingredient_parsing = false;
+
+    shopping_list_format = '{description} {quantity} {unitOfMeasure}';
 }
