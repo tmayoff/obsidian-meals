@@ -84,7 +84,7 @@ class RecipeSearch extends Modal {
         this.ctx = ctx;
     }
     async onOpen() {
-        this.containerEl.children[1].setAttribute("style", "bottom: unset !important;");
+        this.containerEl.children[1].setAttribute('style', 'bottom: unset !important;');
         this.recipeView = new SearchRecipe({
             target: this.containerEl.children[1].children[2],
             props: {
