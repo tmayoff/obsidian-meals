@@ -5,6 +5,7 @@
   import { createEventDispatcher, onMount } from "svelte";
   import { open_note_file } from "../utils/filesystem";
   import { add_recipe_to_meal_plan } from "../meal_plan/plan";
+  import { DAYS_OF_WEEK } from "../constants";
 
   export let ctx: Context;
   export let recipe: Recipe;
@@ -20,7 +21,7 @@
     cb: Callback | undefined;
   }
 
-  const button_targets: Array<ButtonTarget> = [
+  let button_targets: Array<ButtonTarget> = [
     {
       name: "Go to recipe",
       cb: async () => {
@@ -28,49 +29,16 @@
         dispatch("close_modal");
       },
     },
-    {
-      name: "Monday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Monday");
-      },
-    },
-    {
-      name: "Tuesday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Tuesday");
-      },
-    },
-    {
-      name: "Wednesday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Wednesday");
-      },
-    },
-    {
-      name: "Thursday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Thursday");
-      },
-    },
-    {
-      name: "Friday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Friday");
-      },
-    },
-    {
-      name: "Saturday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Saturday");
-      },
-    },
-    {
-      name: "Sunday",
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, "Sunday");
-      },
-    },
   ];
+
+  for (const d of DAYS_OF_WEEK) {
+    button_targets.push({
+      name: d,
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, d);
+      },
+    });
+  }
 
   class ButtonModal extends SuggestModal<ButtonTarget> {
     getSuggestions(_query: string): ButtonTarget[] | Promise<ButtonTarget[]> {
