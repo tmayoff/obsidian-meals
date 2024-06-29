@@ -4,12 +4,12 @@
   import { TextComponent } from "obsidian";
   import { onMount } from "svelte";
   import RecipeButton from "./RecipeButton.svelte";
-    import type { Context } from "../context";
+  import type { Context } from "../context";
 
   export let ctx: Context;
 
   let ingredients = ctx.ingredients;
-  
+
   let search_operation = writable("any of");
 
   const search_ingredients = writable(new Set<string>());
@@ -43,7 +43,7 @@
           });
         }
       });
-    }
+    },
   );
 
   let suggester_parent: HTMLElement;
