@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { DAYS_OF_WEEK } from "../constants";
+  import { SuggestModal } from "obsidian";
   import type { Context } from "../context";
-  import { add_recipe_to_meal_plan } from "../meal_plan/plan";
-  import { open_note_file } from "../utils/filesystem";
   import type { Recipe } from "./recipe";
-  import { createEventDispatcher } from "svelte";
+  import { createEventDispatcher, onMount } from "svelte";
+  import { open_note_file } from "../utils/filesystem";
+  import { add_recipe_to_meal_plan } from "../meal_plan/plan";
 
   export let ctx: Context;
   export let recipe: Recipe;
@@ -12,12 +12,96 @@
   let open = false;
 
   let dispatch = createEventDispatcher();
+
+  type Callback = () => Promise<void>;
+
+  class ButtonTarget {
+    name: string = "";
+    cb: Callback | undefined;
+  }
+
+  const button_targets: Array<ButtonTarget> = [
+    {
+      name: "Go to recipe",
+      cb: async () => {
+        await open_note_file(ctx.app, recipe.path);
+        dispatch("close_modal");
+      },
+    },
+    {
+      name: "Monday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Monday");
+      },
+    },
+    {
+      name: "Tuesday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Tuesday");
+      },
+    },
+    {
+      name: "Wednesday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Wednesday");
+      },
+    },
+    {
+      name: "Thursday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Thursday");
+      },
+    },
+    {
+      name: "Friday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Friday");
+      },
+    },
+    {
+      name: "Saturday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Saturday");
+      },
+    },
+    {
+      name: "Sunday",
+      cb: async () => {
+        await add_recipe_to_meal_plan(ctx, recipe, "Sunday");
+      },
+    },
+  ];
+
+  class ButtonModal extends SuggestModal<ButtonTarget> {
+    getSuggestions(_query: string): ButtonTarget[] | Promise<ButtonTarget[]> {
+      // TODO search actions
+      return button_targets;
+    }
+    onChooseSuggestion(item: ButtonTarget, _evt: KeyboardEvent | MouseEvent) {
+      if (item.cb) {
+        item.cb();
+      }
+      this.close();
+    }
+    renderSuggestion(item: ButtonTarget, el: HTMLElement): void {
+      el.createEl("div", { text: item.name });
+    }
+  }
+
+  let modal: ButtonModal;
+  let open_recipe_dropdown = function () {
+    modal.open();
+  };
+
+  onMount(() => {
+    modal = new ButtonModal(ctx.app);
+  });
 </script>
 
 <div class="realtive inline-block text-left">
   <div>
     <button
-      on:click={() => (open = !open)}
+      on:click={open_recipe_dropdown}
       type="button"
       class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300"
       id="menu-button"
@@ -41,27 +125,8 @@
   <div
     class="flex-col fixed z-10 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 bg-[--background-primary] border-[--background-modifier-border] border-2"
     role="menu"
-    class:hidden={!open}
-    class:flex={open}
     aria-orientation="vertical"
     aria-labelledby="menu-button"
     tabindex="-1"
-  >
-    <button
-      on:click={async () => {
-        await open_note_file(ctx.app, recipe.path);
-        open = false;
-        dispatch("close_modal");
-      }}>Go to recipe</button
-    >
-    {#each DAYS_OF_WEEK as day}
-      <button
-        class="rounded-none"
-        on:click={async () => {
-          await add_recipe_to_meal_plan(ctx, recipe, day);
-          open = false;
-        }}>{day}</button
-      >
-    {/each}
-  </div>
+  ></div>
 </div>
