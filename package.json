@@ -1,6 +1,6 @@
 {
   "name": "obsidian-meals",
-  "version": "0.0.4",
+  "version": "0.0.11",
   "description": "This is a recipe manager and meal planner",
   "main": "main.js",
   "scripts": {
