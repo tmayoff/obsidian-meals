@@ -28,8 +28,7 @@
 			"style": {
 				"useSingleVarDeclarator": "off",
 				"noParameterAssign": "off",
-				"noNonNullAssertion": "off",
-				"useNamingConvention": "snake_case"
+				"noNonNullAssertion": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off"

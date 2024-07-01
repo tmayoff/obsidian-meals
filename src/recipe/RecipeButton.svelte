@@ -1,69 +1,69 @@
 <script lang="ts">
-  import { SuggestModal } from "obsidian";
-  import type { Context } from "../context";
-  import type { Recipe } from "./recipe";
-  import { createEventDispatcher, onMount } from "svelte";
-  import { open_note_file } from "../utils/filesystem";
-  import { add_recipe_to_meal_plan } from "../meal_plan/plan";
-  import { DAYS_OF_WEEK } from "../constants";
+import { SuggestModal } from 'obsidian';
+import type { Context } from '../context';
+import type { Recipe } from './recipe';
+import { createEventDispatcher, onMount } from 'svelte';
+import { open_note_file } from '../utils/filesystem';
+import { add_recipe_to_meal_plan } from '../meal_plan/plan';
+import { DAYS_OF_WEEK } from '../constants';
 
-  export let ctx: Context;
-  export let recipe: Recipe;
+export let ctx: Context;
+export let recipe: Recipe;
 
-  let open = false;
+let open = false;
 
-  let dispatch = createEventDispatcher();
+let dispatch = createEventDispatcher();
 
-  type Callback = () => Promise<void>;
+type Callback = () => Promise<void>;
 
-  class ButtonTarget {
-    name: string = "";
+class ButtonTarget {
+    name: string = '';
     cb: Callback | undefined;
-  }
+}
 
-  let button_targets: Array<ButtonTarget> = [
+let button_targets: Array<ButtonTarget> = [
     {
-      name: "Go to recipe",
-      cb: async () => {
-        await open_note_file(ctx.app, recipe.path);
-        dispatch("close_modal");
-      },
+        name: 'Go to recipe',
+        cb: async () => {
+            await open_note_file(ctx.app, recipe.path);
+            dispatch('close_modal');
+        },
     },
-  ];
+];
 
-  for (const d of DAYS_OF_WEEK) {
+for (const d of DAYS_OF_WEEK) {
     button_targets.push({
-      name: d,
-      cb: async () => {
-        await add_recipe_to_meal_plan(ctx, recipe, d);
-      },
+        name: d,
+        cb: async () => {
+            await add_recipe_to_meal_plan(ctx, recipe, d);
+        },
     });
-  }
+}
 
-  class ButtonModal extends SuggestModal<ButtonTarget> {
+class ButtonModal extends SuggestModal<ButtonTarget> {
     getSuggestions(_query: string): ButtonTarget[] | Promise<ButtonTarget[]> {
-      // TODO search actions
-      return button_targets;
+        // TODO search actions
+        return button_targets;
     }
     onChooseSuggestion(item: ButtonTarget, _evt: KeyboardEvent | MouseEvent) {
-      if (item.cb) {
-        item.cb();
-      }
-      this.close();
+        if (item.cb) {
+            item.cb();
+        }
+        this.close();
     }
     renderSuggestion(item: ButtonTarget, el: HTMLElement): void {
-      el.createEl("div", { text: item.name });
+        el.createEl('div', { text: item.name });
     }
-  }
+}
 
-  let modal: ButtonModal;
-  let open_recipe_dropdown = function () {
+let modal: ButtonModal;
+let open_recipe_dropdown = function () {
     modal.open();
-  };
+};
 
-  onMount(() => {
+onMount(() => {
     modal = new ButtonModal(ctx.app);
-  });
+});
 </script>
 
 <div class="realtive inline-block text-left">

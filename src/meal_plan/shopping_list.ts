@@ -65,7 +65,6 @@ export async function add_meal_plan_to_shopping_list(ctx: Context) {
 }
 
 export async function add_file_to_shopping_list(ctx: Context, recipe_file: TFile) {
-
     const shopping_list_file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
     let file = ctx.app.vault.getFileByPath(shopping_list_file_path);
     if (file == null) {
@@ -83,7 +82,6 @@ export async function add_file_to_shopping_list(ctx: Context, recipe_file: TFile
 
         return data;
     });
-    
 }
 
 function get_meal_plan_ingredients(ctx: Context, file: TFile) {
@@ -158,9 +156,10 @@ function get_ingredients_recipe(ctx: Context, recipe_note: TFile) {
     const ignore_list = get(ctx.settings).shopping_list_ignore;
 
     return r.ingredients.filter((i) => {
-        let found = ignore_list.find((ignored) => {
-            return i.description.toLowerCase() !== ignored.toLowerCase();
-        }) === undefined;
+        let found =
+            ignore_list.find((ignored) => {
+                return i.description.toLowerCase() !== ignored.toLowerCase();
+            }) === undefined;
         return !found;
     });
 }

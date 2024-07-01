@@ -62,15 +62,19 @@ export default class MealPlugin extends Plugin {
         });
 
         this.registerEvent(
-        this.app.workspace.on("file-menu", (e, t) => {
-            if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipe_directory)) {
-                e.addItem((e) => {
-                    return e.setTitle("Add to shopping list").setIcon("shopping-basket").onClick(() => {
-                        add_file_to_shopping_list(this.ctx, t);
+            this.app.workspace.on('file-menu', (e, t) => {
+                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipe_directory)) {
+                    e.addItem((e) => {
+                        return e
+                            .setTitle('Add to shopping list')
+                            .setIcon('shopping-basket')
+                            .onClick(() => {
+                                add_file_to_shopping_list(this.ctx, t);
+                            });
                     });
-                });
-            }
-        }));
+                }
+            }),
+        );
 
         console.log('tmayoff-meals loaded');
     }

@@ -1,7 +1,7 @@
 <script lang="ts">
-    export let text: string;
+export let text: string;
 
-    let open = false;
+let open = false;
 </script>
 
 <div class="realtive inline-block text-left">
