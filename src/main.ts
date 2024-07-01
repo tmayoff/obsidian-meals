@@ -1,8 +1,8 @@
-import { App, Modal, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context';
 import { open_meal_plan_note } from './meal_plan/plan';
-import { clear_checked_ingredients, generate_shopping_list } from './meal_plan/shopping_list';
+import { clear_checked_ingredients, add_meal_plan_to_shopping_list, add_file_to_shopping_list } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
@@ -49,7 +49,7 @@ export default class MealPlugin extends Plugin {
             id: 'create-shopping-list',
             name: "Add week's shopping list",
             callback: async () => {
-                generate_shopping_list(this.ctx);
+                add_meal_plan_to_shopping_list(this.ctx);
             },
         });
 
@@ -60,6 +60,17 @@ export default class MealPlugin extends Plugin {
                 clear_checked_ingredients(this.ctx);
             },
         });
+
+        this.registerEvent(
+        this.app.workspace.on("file-menu", (e, t) => {
+            if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipe_directory)) {
+                e.addItem((e) => {
+                    return e.setTitle("Add to shopping list").setIcon("shopping-basket").onClick(() => {
+                        add_file_to_shopping_list(this.ctx, t);
+                    });
+                });
+            }
+        }));
 
         console.log('tmayoff-meals loaded');
     }
