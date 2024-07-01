@@ -1,6 +1,6 @@
 import { TFile, type TFolder } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
-import { Context } from '../context';
+import type { Context } from '../context';
 import { get_ingredients } from './ingredients';
 
 export class Recipe {
@@ -20,10 +20,10 @@ export class Recipe {
     }
 }
 
-export async function get_recipes(ctx: Context, recipe_dir: TFolder) {
+export async function get_recipes(ctx: Context, recipeDir: TFolder) {
     const recipes: Recipe[] = new Array();
 
-    for (const file of recipe_dir.children) {
+    for (const file of recipeDir.children) {
         if (file instanceof TFile) {
             const recipe = new Recipe(file);
             await recipe.fill_ingredients(ctx);

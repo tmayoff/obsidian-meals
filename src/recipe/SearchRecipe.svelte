@@ -8,55 +8,56 @@ import type { Context } from '../context';
 
 export let ctx: Context;
 
-let ingredients = ctx.ingredients;
+const ingredients = ctx.ingredients;
 
-let search_operation = writable('any of');
+const searchOperation = writable('any of');
 
-const search_ingredients = writable(new Set<string>());
+const searchIngredients = writable(new Set<string>());
 
-function add_ingredient(ingredient: string) {
-    search_ingredients.update((items) => {
+function addIngredient(ingredient: string) {
+    searchIngredients.update((items) => {
         items.add(ingredient);
         return items;
     });
 }
 
-const found_recipes = derived([search_ingredients, search_operation, ctx.recipes], ([$search_ingredients, $search_operation, $recipes]) => {
+const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
     return $recipes.filter((recipe) => {
-        let descs = recipe.ingredients.map((i) => {
-            if (i == undefined || i.description === undefined) {
+        const descs = recipe.ingredients.map((i) => {
+            if (i === undefined || i.description === undefined) {
                 return '';
             }
 
             return i.description.toLocaleLowerCase();
         });
 
-        if ($search_operation == 'all of') {
-            return [...$search_ingredients].every((i) => {
+        if ($searchOperation === 'all of') {
+            return [...$searchIngredients].every((i) => {
                 return descs.contains(i);
             });
-        } else if ($search_operation == 'any of') {
-            return [...$search_ingredients].some((i) => {
+        }
+        if ($searchOperation === 'any of') {
+            return [...$searchIngredients].some((i) => {
                 return descs.contains(i);
             });
         }
     });
 });
 
-let suggester_parent: HTMLElement;
+let suggesterParent: HTMLElement;
 onMount(() => {
-    let suggester_text = new TextComponent(suggester_parent);
-    suggester_text.inputEl.addClass('w-full');
+    const suggesterText = new TextComponent(suggesterParent);
+    suggesterText.inputEl.addClass('w-full');
 
-    let suggester = new IngredientSuggestionModal(ctx.app, suggester_text, [...$ingredients]);
+    const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [...$ingredients]);
 
-    suggester_text.onChange(() => {
+    suggesterText.onChange(() => {
         suggester.shouldNotOpen = false;
         suggester.open();
     });
 
     suggester.onClose = () => {
-        add_ingredient(suggester.text.getValue());
+        addIngredient(suggester.text.getValue());
         suggester.text.setValue('');
     };
 });
@@ -69,22 +70,22 @@ onMount(() => {
       <h2>Ingredients</h2>
       <div class="w-full flex flex-row justify-evenly items-center m-1 ml-0">
         <label for="filter-combination">recipes containing</label>
-        <select name="filter-combination" bind:value={$search_operation}>
+        <select name="filter-combination" bind:value={$searchOperation}>
           <option>all of</option>
           <option>any of</option>
         </select>
       </div>
       <div class="search-container ml-0">
-        <div bind:this={suggester_parent} />
+        <div bind:this={suggesterParent} />
         <div class="m-2">
           <div>
-            {#each $search_ingredients as ingredient}
+            {#each $searchIngredients as ingredient}
               <div class="flex flex-row justify-between items-center">
                 <div>{ingredient}</div>
                 <div>
                   <button
                     on:click|preventDefault={() => {
-                      search_ingredients.update((items) => {
+                      searchIngredients.update((items) => {
                         items.delete(ingredient);
                         return items;
                       });
@@ -115,7 +116,7 @@ onMount(() => {
     <div class="basis-1/2">
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
-        {#each $found_recipes as recipe}
+        {#each $foundRecipes as recipe}
           <RecipeButton on:close_modal {ctx} {recipe} />
         {/each}
       </div>

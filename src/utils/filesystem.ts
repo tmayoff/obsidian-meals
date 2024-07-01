@@ -1,34 +1,34 @@
 import { type App, TFile } from 'obsidian';
 
-export async function open_note_file(app: App, file: TFile) {
-    open_note_path(app, file.path);
+export async function OpenNoteFile(app: App, file: TFile) {
+    await OpenNotePath(app, file.path);
 }
 
-export async function open_note_path(app: App, file_path: string) {
+export async function OpenNotePath(app: App, filePath: string) {
     let found = false;
 
-    const file_name = file_path.substring(file_path.lastIndexOf('/') + 1, file_path.lastIndexOf('.'));
+    const fileName = filePath.substring(filePath.lastIndexOf('/') + 1, filePath.lastIndexOf('.'));
     app.workspace.iterateAllLeaves((leaf) => {
-        if (leaf.getDisplayText() === file_name) {
+        if (leaf.getDisplayText() === fileName) {
             app.workspace.setActiveLeaf(leaf);
             found = true;
         }
     });
 
     if (!found) {
-        await app.workspace.openLinkText(file_path, '', true);
+        await app.workspace.openLinkText(filePath, '', true);
     }
 }
 
-export function note_exists(app: App, file_path: string) {
-    const file = app.vault.getAbstractFileByPath(file_path);
+export function NoteExists(app: App, filePath: string) {
+    const file = app.vault.getAbstractFileByPath(filePath);
     return file != null && file instanceof TFile;
 }
 
-export function append_markdown_ext(file_path: string) {
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
+export function AppendMarkdownExt(filePath: string) {
+    if (!filePath.endsWith('.md')) {
+        filePath += '.md';
     }
 
-    return file_path;
+    return filePath;
 }

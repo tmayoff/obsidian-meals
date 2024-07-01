@@ -1,18 +1,18 @@
 export enum RecipeFormat {
-    Meal_Plan = 'Meal Plan',
+    MealPlan = 'Meal Plan',
     RecipeMD = 'RecipeMD',
 }
 
 export class MealSettings {
-    recipe_directory = 'Meals';
-    meal_plan_note = 'Meal Plan';
-    shopping_list_note = 'Shopping List';
+    recipeDirectory = 'Meals';
+    mealPlanNote = 'Meal Plan';
+    shoppingListNote = 'Shopping List';
 
-    recipe_format: RecipeFormat = RecipeFormat.Meal_Plan;
+    recipeFormat: RecipeFormat = RecipeFormat.MealPlan;
 
-    shopping_list_ignore: Array<string> = ['salt', 'pepper', 'olive oil', 'garlic powder'];
+    shoppingListIgnore: string[] = ['salt', 'pepper', 'olive oil', 'garlic powder'];
 
-    advanced_ingredient_parsing = false;
+    advancedIngredientParsing = false;
 
-    shopping_list_format = '{description} {quantity} {unitOfMeasure}';
+    shoppingListFormat = '{description} {quantity} {unitOfMeasure}';
 }
