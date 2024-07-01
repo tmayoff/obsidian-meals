@@ -2,7 +2,7 @@ import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsid
 import { get } from 'svelte/store';
 import { Context } from './context';
 import { open_meal_plan_note } from './meal_plan/plan';
-import { add_meal_plan_to_shopping_list, add_file_to_shopping_list, clear_checked_ingredients } from './meal_plan/shopping_list';
+import { add_file_to_shopping_list, add_meal_plan_to_shopping_list, clear_checked_ingredients } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
