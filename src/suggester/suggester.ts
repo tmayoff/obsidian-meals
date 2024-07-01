@@ -1,5 +1,5 @@
 import { type Instance as PopperInstance, createPopper } from '@popperjs/core';
-import { App, type FuzzyMatch, FuzzySuggestModal, Scope, SuggestModal } from 'obsidian';
+import { type App, type FuzzyMatch, FuzzySuggestModal, Scope, type SuggestModal } from 'obsidian';
 
 declare module 'obsidian' {
     interface App {

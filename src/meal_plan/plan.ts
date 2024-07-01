@@ -1,44 +1,44 @@
-import { App, TFile } from 'obsidian';
+import { type App, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { DAYS_OF_WEEK } from '../constants';
 import type { Context } from '../context';
 import type { Recipe } from '../recipe/recipe';
 import { get_current_week } from './utils';
 
-export async function add_recipe_to_meal_plan(ctx: Context, recipe: Recipe, day: string) {
-    let file_path = get(ctx.settings).meal_plan_note;
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
+export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
+    let filePath = get(ctx.settings).meal_plan_note;
+    if (!filePath.endsWith('.md')) {
+        filePath += '.md';
     }
 
-    await fill_meal_plan_note(ctx.app, file_path);
+    await fillMealPlanNote(ctx.app, filePath);
 
-    const file = ctx.app.vault.getAbstractFileByPath(file_path);
+    const file = ctx.app.vault.getAbstractFileByPath(filePath);
     if (file instanceof TFile) {
         file.vault.process(file, (content) => {
             const header = `Week of ${get_current_week()}`;
-            const header_index = content.indexOf(header) + header.length;
-            const day_header = `## ${day}`;
-            const day_header_index = content.indexOf(day_header, header_index) + day_header.length;
+            const headerIndex = content.indexOf(header) + header.length;
+            const dayHeader = `## ${day}`;
+            const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
 
-            const recipe_line = `\n- [[${recipe.name}]]`;
+            const recipeLine = `\n- [[${recipe.name}]]`;
 
-            content = content.slice(0, day_header_index) + recipe_line + content.slice(day_header_index);
+            content = content.slice(0, dayHeaderIndex) + recipeLine + content.slice(dayHeaderIndex);
 
             return content;
         });
     }
 }
 
-export async function open_meal_plan_note(app: App, file_path: string) {
-    if (!file_path.endsWith('.md')) {
-        file_path += '.md';
+export async function OpenMealPlanNote(app: App, filePath: string) {
+    if (!filePath.endsWith('.md')) {
+        filePath += '.md';
     }
-    await create_meal_plan_note(app, file_path);
+    await createMealPlanNote(app, filePath);
 
     let found = false;
     app.workspace.iterateAllLeaves((leaf) => {
-        if (leaf.getDisplayText() === file_path.substring(0, file_path.length - 3)) {
+        if (leaf.getDisplayText() === filePath.substring(0, filePath.length - 3)) {
             // console.log(leaf.getDisplayText());
             app.workspace.setActiveLeaf(leaf);
             found = true;
@@ -46,37 +46,35 @@ export async function open_meal_plan_note(app: App, file_path: string) {
     });
 
     if (!found) {
-        await app.workspace.openLinkText(file_path, '', true);
+        await app.workspace.openLinkText(filePath, '', true);
     }
 
-    fill_meal_plan_note(app, file_path);
+    fillMealPlanNote(app, filePath);
 }
 
-async function fill_meal_plan_note(app: App, file_path: string) {
+async function fillMealPlanNote(app: App, filePath: string) {
     const header = `Week of ${get_current_week()}`;
-    const day_headers = DAYS_OF_WEEK.map((day) => {
+    const dayHeaders = DAYS_OF_WEEK.map((day) => {
         return `## ${day}`;
     });
 
-    const file = app.vault.getAbstractFileByPath(file_path);
+    const file = app.vault.getAbstractFileByPath(filePath);
     if (file instanceof TFile) {
         app.vault.process(file, (content) => {
             if (content.contains(header)) {
                 return content;
             }
 
-            return `# ${header}\n${day_headers.join('\n\n')}\n${content}`;
+            return `# ${header}\n${dayHeaders.join('\n\n')}\n${content}`;
         });
     }
 }
 
-async function create_meal_plan_note(app: App, file_path: string) {
-    const file = app.vault.getAbstractFileByPath(file_path);
+async function createMealPlanNote(app: App, filePath: string) {
+    const file = app.vault.getAbstractFileByPath(filePath);
     if (file === undefined) {
-        await app.vault.create(file_path, '');
-    } else {
-        if (!(file instanceof TFile)) {
-            console.error('Meal plan note is not a file');
-        }
+        await app.vault.create(filePath, '');
+    } else if (!(file instanceof TFile)) {
+        console.error('Meal plan note is not a file');
     }
 }

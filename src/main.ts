@@ -1,8 +1,8 @@
 import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context';
-import { open_meal_plan_note } from './meal_plan/plan';
-import { add_file_to_shopping_list, add_meal_plan_to_shopping_list, clear_checked_ingredients } from './meal_plan/shopping_list';
+import { OpenMealPlanNote } from './meal_plan/plan';
+import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
@@ -13,17 +13,17 @@ export default class MealPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        this.ctx.load_recipes(undefined);
+        this.ctx.loadRecipes(undefined);
 
         this.registerEvent(
             this.app.vault.on('create', (file) => {
-                this.ctx.load_recipes(file);
+                this.ctx.loadRecipes(file);
             }),
         );
 
         this.registerEvent(
             this.app.vault.on('modify', (file) => {
-                this.ctx.load_recipes(file);
+                this.ctx.loadRecipes(file);
             }),
         );
 
@@ -41,7 +41,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-meal-plan',
             name: 'Open meal plan note',
             callback: async () => {
-                await open_meal_plan_note(this.app, get(this.ctx.settings).meal_plan_note);
+                await OpenMealPlanNote(this.app, get(this.ctx.settings).mealPlanNote);
             },
         });
 
@@ -49,7 +49,7 @@ export default class MealPlugin extends Plugin {
             id: 'create-shopping-list',
             name: "Add week's shopping list",
             callback: async () => {
-                await add_meal_plan_to_shopping_list(this.ctx);
+                await AddMealPlanToShoppingList(this.ctx);
             },
         });
 
@@ -57,26 +57,24 @@ export default class MealPlugin extends Plugin {
             id: 'clear-shopping-list',
             name: 'Clear checked shopping list items',
             callback: async () => {
-                await clear_checked_ingredients(this.ctx);
+                await ClearCheckedIngredients(this.ctx);
             },
         });
 
         this.registerEvent(
             this.app.workspace.on('file-menu', (e, t) => {
-                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipe_directory)) {
+                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipeDirectory)) {
                     e.addItem((e) => {
                         return e
                             .setTitle('Add to shopping list')
                             .setIcon('shopping-basket')
                             .onClick(() => {
-                                add_file_to_shopping_list(this.ctx, t);
+                                AddFileToShoppingList(this.ctx, t);
                             });
                     });
                 }
             }),
         );
-
-        console.log('tmayoff-meals loaded');
     }
 
     onunload() {}
@@ -136,9 +134,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setName('Recipe directory')
             .setDesc('Parent folder where recipes are stored')
             .addText(async (text) => {
-                text.setValue(get(this.ctx.settings).recipe_directory).onChange(async (value) => {
+                text.setValue(get(this.ctx.settings).recipeDirectory).onChange(async (value) => {
                     this.ctx.settings.update((s) => {
-                        s.recipe_directory = value;
+                        s.recipeDirectory = value;
                         return s;
                     });
                     await this.plugin.saveSettings();
@@ -150,10 +148,10 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .addText((text) =>
                 text
                     .setPlaceholder('Meal Plan')
-                    .setValue(get(this.ctx.settings).meal_plan_note)
+                    .setValue(get(this.ctx.settings).mealPlanNote)
                     .onChange(async (value) => {
                         this.ctx.settings.update((s) => {
-                            s.meal_plan_note = value;
+                            s.mealPlanNote = value;
                             return s;
                         });
                         await this.plugin.saveSettings();
@@ -166,10 +164,10 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .addText((text) =>
                 text
                     .setPlaceholder('Shopping List')
-                    .setValue(get(this.ctx.settings).shopping_list_note)
+                    .setValue(get(this.ctx.settings).shoppingListNote)
                     .onChange(async (value) => {
                         this.ctx.settings.update((s) => {
-                            s.shopping_list_note = value;
+                            s.shoppingListNote = value;
                             return s;
                         });
 
@@ -183,11 +181,11 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .addDropdown((dropdown) => {
                 dropdown
                     .addOption('RecipeMD', RecipeFormat.RecipeMD)
-                    .addOption('Meal Planner', RecipeFormat.Meal_Plan)
-                    .setValue(get(this.ctx.settings).recipe_format)
+                    .addOption('Meal Planner', RecipeFormat.MealPlan)
+                    .setValue(get(this.ctx.settings).recipeFormat)
                     .onChange(async (value) => {
                         this.ctx.settings.update((s) => {
-                            s.recipe_format = <RecipeFormat>value;
+                            s.recipeFormat = <RecipeFormat>value;
                             return s;
                         });
 
@@ -202,10 +200,10 @@ class MealPluginSettingsTab extends PluginSettingTab {
             )
             .addText((text) => {
                 text.setPlaceholder('{description} {quantity} {unitOfMeasure}')
-                    .setValue(get(this.ctx.settings).shopping_list_format)
+                    .setValue(get(this.ctx.settings).shoppingListFormat)
                     .onChange(async (value) => {
                         this.ctx.settings.update((s) => {
-                            s.shopping_list_format = value;
+                            s.shoppingListFormat = value;
                             return s;
                         });
 
@@ -218,10 +216,10 @@ class MealPluginSettingsTab extends PluginSettingTab {
             .setDesc('CSV list of ingredients to not add to the shopping list automatically')
             .addText((text) => {
                 text.setPlaceholder('salt,pepper')
-                    .setValue(get(this.ctx.settings).shopping_list_ignore.join(','))
+                    .setValue(get(this.ctx.settings).shoppingListIgnore.join(','))
                     .onChange(async (value) => {
                         this.ctx.settings.update((s) => {
-                            s.shopping_list_ignore = value.split(',');
+                            s.shoppingListIgnore = value.split(',');
                             return s;
                         });
 
@@ -235,14 +233,14 @@ class MealPluginSettingsTab extends PluginSettingTab {
                 "This will add some extra rules to parsing an ingredient's name, ignoring text after the first comma and turning the name singular",
             )
             .addToggle((toggle) => {
-                toggle.setValue(get(this.ctx.settings).advanced_ingredient_parsing).onChange(async (val) => {
+                toggle.setValue(get(this.ctx.settings).advancedIngredientParsing).onChange(async (val) => {
                     this.ctx.settings.update((s) => {
-                        s.advanced_ingredient_parsing = val;
+                        s.advancedIngredientParsing = val;
                         return s;
                     });
 
                     await this.plugin.saveSettings();
-                    await this.ctx.load_recipes(undefined);
+                    await this.ctx.loadRecipes(undefined);
                 });
             });
     }

@@ -3,39 +3,39 @@ import { SuggestModal } from 'obsidian';
 import type { Context } from '../context';
 import type { Recipe } from './recipe';
 import { createEventDispatcher, onMount } from 'svelte';
-import { open_note_file } from '../utils/filesystem';
-import { add_recipe_to_meal_plan } from '../meal_plan/plan';
+import { OpenNoteFile } from '../utils/filesystem';
+import { AddRecipeToMealPlan } from '../meal_plan/plan';
 import { DAYS_OF_WEEK } from '../constants';
 
 export let ctx: Context;
 export let recipe: Recipe;
 
-let open = false;
+const open = false;
 
-let dispatch = createEventDispatcher();
+const dispatch = createEventDispatcher();
 
 type Callback = () => Promise<void>;
 
 class ButtonTarget {
-    name: string = '';
+    name = '';
     cb: Callback | undefined;
 }
 
-let button_targets: Array<ButtonTarget> = [
+const buttonTargets: ButtonTarget[] = [
     {
         name: 'Go to recipe',
         cb: async () => {
-            await open_note_file(ctx.app, recipe.path);
+            await OpenNoteFile(ctx.app, recipe.path);
             dispatch('close_modal');
         },
     },
 ];
 
 for (const d of DAYS_OF_WEEK) {
-    button_targets.push({
+    buttonTargets.push({
         name: d,
         cb: async () => {
-            await add_recipe_to_meal_plan(ctx, recipe, d);
+            await AddRecipeToMealPlan(ctx, recipe, d);
         },
     });
 }
@@ -43,7 +43,7 @@ for (const d of DAYS_OF_WEEK) {
 class ButtonModal extends SuggestModal<ButtonTarget> {
     getSuggestions(_query: string): ButtonTarget[] | Promise<ButtonTarget[]> {
         // TODO search actions
-        return button_targets;
+        return buttonTargets;
     }
     onChooseSuggestion(item: ButtonTarget, _evt: KeyboardEvent | MouseEvent) {
         if (item.cb) {
@@ -57,7 +57,7 @@ class ButtonModal extends SuggestModal<ButtonTarget> {
 }
 
 let modal: ButtonModal;
-let open_recipe_dropdown = function () {
+const openRecipeDropdown = () => {
     modal.open();
 };
 
@@ -69,7 +69,7 @@ onMount(() => {
 <div class="realtive inline-block text-left">
   <div>
     <button
-      on:click={open_recipe_dropdown}
+      on:click={openRecipeDropdown}
       type="button"
       class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300"
       id="menu-button"

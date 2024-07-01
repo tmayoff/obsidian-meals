@@ -2,19 +2,21 @@ import { TFile } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
-import { append_markdown_ext } from '../utils/filesystem';
-import { formatUniforn as formatUnicorn, get_current_week } from './utils';
+import { AppendMarkdownExt } from '../utils/filesystem';
+import { formatUnicorn, get_current_week } from './utils';
 
-export async function clear_checked_ingredients(ctx: Context) {
-    const file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
+export async function ClearCheckedIngredients(ctx: Context) {
+    const filePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
 
-    const file = ctx.app.vault.getFileByPath(file_path);
-    if (file == null) return;
+    const file = ctx.app.vault.getFileByPath(filePath);
+    if (file == null) {
+        return;
+    }
 
-    const list_items = ctx.app.metadataCache.getFileCache(file)?.listItems?.filter((i) => {
+    const listItems = ctx.app.metadataCache.getFileCache(file)?.listItems?.filter((i) => {
         return i.task !== undefined && i.task !== ' ';
     });
-    if (list_items === undefined) {
+    if (listItems === undefined) {
         return;
     }
 
@@ -25,7 +27,7 @@ export async function clear_checked_ingredients(ctx: Context) {
     // how much we remove and offset all removals by that amount
     let offset = 0;
 
-    for (const item of list_items) {
+    for (const item of listItems) {
         const pos = item.position;
         const start = pos.start.offset - offset;
         const length = pos.end.offset - pos.start.offset + 1;
@@ -38,19 +40,21 @@ export async function clear_checked_ingredients(ctx: Context) {
     ctx.app.vault.modify(file, content);
 }
 
-export async function add_meal_plan_to_shopping_list(ctx: Context) {
-    const meal_plan_file_path = append_markdown_ext(get(ctx.settings).meal_plan_note);
+export async function AddMealPlanToShoppingList(ctx: Context) {
+    const mealPlanFilePath = AppendMarkdownExt(get(ctx.settings).meal_plan_note);
 
-    const meal_plan_file = ctx.app.vault.getFileByPath(meal_plan_file_path);
-    if (meal_plan_file == null) return;
-    const ingredients = get_meal_plan_ingredients(ctx, meal_plan_file);
+    const mealPlanFile = ctx.app.vault.getFileByPath(mealPlanFilePath);
+    if (mealPlanFile == null) {
+        return;
+    }
+    const ingredients = getMealPlanIngredients(ctx, mealPlanFile);
 
-    const shopping_list_file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
+    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
 
-    let file = ctx.app.vault.getFileByPath(shopping_list_file_path);
+    let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
-        ctx.app.vault.create(shopping_list_file_path, '');
-        file = ctx.app.vault.getFileByPath(shopping_list_file_path);
+        ctx.app.vault.create(shoppingListFilePath, '');
+        file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
 
     if (file instanceof TFile) {
@@ -64,19 +68,20 @@ export async function add_meal_plan_to_shopping_list(ctx: Context) {
     }
 }
 
-export async function add_file_to_shopping_list(ctx: Context, recipe_file: TFile) {
-    const shopping_list_file_path = append_markdown_ext(get(ctx.settings).shopping_list_note);
-    let file = ctx.app.vault.getFileByPath(shopping_list_file_path);
+export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
+    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
+    let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
-        ctx.app.vault.create(shopping_list_file_path, '');
-        file = ctx.app.vault.getFileByPath(shopping_list_file_path);
+        ctx.app.vault.create(shoppingListFilePath, '');
+        file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
-    if (file == null) return;
+    if (file == null) {
+        return;
+    }
 
     ctx.app.vault.process(file, (data) => {
-        const ingredients = get_ingredients_recipe(ctx, recipe_file);
+        const ingredients = getIngredientsRecipe(ctx, recipeFile);
         for (const i of ingredients) {
-            console.log(`${i}`);
             data += formatUnicorn(`- [ ] ${get(ctx.settings).shopping_list_format} \n`, i);
         }
 
@@ -84,8 +89,8 @@ export async function add_file_to_shopping_list(ctx: Context, recipe_file: TFile
     });
 }
 
-function get_meal_plan_ingredients(ctx: Context, file: TFile) {
-    const this_week = get_current_week();
+function getMealPlanIngredients(ctx: Context, file: TFile) {
+    const thisWeek = get_current_week();
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
 
     const topLevel = fileCache.headings!.filter((h) => {
@@ -95,7 +100,7 @@ function get_meal_plan_ingredients(ctx: Context, file: TFile) {
     let end = -1;
     if (topLevel.length > 1) {
         end = topLevel.findIndex((h) => {
-            return h.level === 1 && h.heading.contains(this_week);
+            return h.level === 1 && h.heading.contains(thisWeek);
         });
         if (end < topLevel.length - 1) {
             end += 1;
@@ -117,16 +122,16 @@ function get_meal_plan_ingredients(ctx: Context, file: TFile) {
             continue;
         }
 
-        const recipe_file = ctx.app.metadataCache.getFirstLinkpathDest(i.link, file.path);
-        if (recipe_file != null) {
-            ingredients = merge_ingredient_lists(ingredients, get_ingredients_recipe(ctx, recipe_file));
+        const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(i.link, file.path);
+        if (recipeFile != null) {
+            ingredients = mergeIngredientLists(ingredients, getIngredientsRecipe(ctx, recipeFile));
         }
     }
 
     return ingredients;
 }
 
-function merge_ingredient_lists(left: Ingredient[], right: Ingredient[]) {
+function mergeIngredientLists(left: Ingredient[], right: Ingredient[]) {
     //  Before adding an ingredient check if it's already in the list
     //  If it is add the quanities together otherwise add it to the list
     for (const i of right) {
@@ -145,19 +150,19 @@ function merge_ingredient_lists(left: Ingredient[], right: Ingredient[]) {
     return left;
 }
 
-function get_ingredients_recipe(ctx: Context, recipe_note: TFile) {
+function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
     const r = get(ctx.recipes).find((r) => {
-        return r.path.path === recipe_note.path;
+        return r.path.path === recipeNote.path;
     });
     if (r === undefined) {
         return [];
     }
 
-    const ignore_list = get(ctx.settings).shopping_list_ignore;
+    const ignoreList = get(ctx.settings).shopping_list_ignore;
 
     return r.ingredients.filter((i) => {
         const found =
-            ignore_list.find((ignored) => {
+            ignoreList.find((ignored) => {
                 return i.description.toLowerCase() !== ignored.toLowerCase();
             }) === undefined;
         return !found;

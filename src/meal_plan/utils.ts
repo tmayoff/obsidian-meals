@@ -1,19 +1,19 @@
 import moment from 'moment';
 
 export function get_current_week() {
-    const current_date = new Date();
-    const last_sunday_date = new Date(current_date.setDate(current_date.getDate() - current_date.getDay()));
+    const currentDate = new Date();
+    const lastSundayDate = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
 
-    return moment(last_sunday_date).format('MMMM Do');
+    return moment(lastSundayDate).format('MMMM Do');
 }
 
 // https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format#4673436
-export function formatUniforn(fmt_string: string, obj: object) {
-    let str = fmt_string;
+export function formatUnicorn(fmtString: string, obj: object) {
+    let str = fmtString;
 
-    for (const [key, raw_value] of Object.entries(obj)) {
-        let value = raw_value;
-        if (raw_value == null) {
+    for (const [key, rawValue] of Object.entries(obj)) {
+        let value = rawValue;
+        if (rawValue == null) {
             value = '';
         }
         str = str.replace(new RegExp(`\\{${key}\\}`, 'gi'), value);
