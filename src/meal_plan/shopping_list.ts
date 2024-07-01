@@ -156,7 +156,7 @@ function get_ingredients_recipe(ctx: Context, recipe_note: TFile) {
     const ignore_list = get(ctx.settings).shopping_list_ignore;
 
     return r.ingredients.filter((i) => {
-        let found =
+        const found =
             ignore_list.find((ignored) => {
                 return i.description.toLowerCase() !== ignored.toLowerCase();
             }) === undefined;
