@@ -28,7 +28,13 @@
 			"style": {
 				"useSingleVarDeclarator": "off",
 				"noParameterAssign": "off",
-				"noNonNullAssertion": "off"
+				"noNonNullAssertion": "off",
+				"useNamingConvention": {
+					"options": {
+						"strictCase": false
+					}
+				},
+				"useFilenamingConvention": "off"
 			},
 			"suspicious": {
 				"noExplicitAny": "off"
@@ -37,6 +43,23 @@
 				"all": false
 			}
 		}
-	}
+	},
+	"overrides": [
+    {
+        "include": ["*.svelte"],
+        "linter": {
+          "rules": {
+            "style": {
+              "useConst": "off"            
+            },
+            "correctness": {
+            	"noUnusedImports": "off",
+            	"noUnusedVariables": "off",
+            	"noUndeclaredVariables": "off"
+            }
+          }
+        }
+      }
+    ]
 }
 

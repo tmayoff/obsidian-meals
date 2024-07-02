@@ -3,10 +3,10 @@ import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
 import { AppendMarkdownExt } from '../utils/filesystem';
-import { formatUnicorn, get_current_week } from './utils';
+import { GetCurrentWeek, formatUnicorn } from './utils';
 
 export async function ClearCheckedIngredients(ctx: Context) {
-    const filePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
+    const filePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
 
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file == null) {
@@ -41,7 +41,7 @@ export async function ClearCheckedIngredients(ctx: Context) {
 }
 
 export async function AddMealPlanToShoppingList(ctx: Context) {
-    const mealPlanFilePath = AppendMarkdownExt(get(ctx.settings).meal_plan_note);
+    const mealPlanFilePath = AppendMarkdownExt(get(ctx.settings).mealPlanNote);
 
     const mealPlanFile = ctx.app.vault.getFileByPath(mealPlanFilePath);
     if (mealPlanFile == null) {
@@ -49,7 +49,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
     }
     const ingredients = getMealPlanIngredients(ctx, mealPlanFile);
 
-    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
+    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
 
     let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
@@ -60,7 +60,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
     if (file instanceof TFile) {
         ctx.app.vault.process(file, (data) => {
             for (const i of ingredients) {
-                data += formatUnicorn(`- [ ] ${get(ctx.settings).shopping_list_format} \n`, i);
+                data += formatUnicorn(`- [ ] ${get(ctx.settings).shoppingListFormat} \n`, i);
             }
 
             return data;
@@ -69,7 +69,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
 }
 
 export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
-    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shopping_list_note);
+    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
     let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
         ctx.app.vault.create(shoppingListFilePath, '');
@@ -82,7 +82,7 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     ctx.app.vault.process(file, (data) => {
         const ingredients = getIngredientsRecipe(ctx, recipeFile);
         for (const i of ingredients) {
-            data += formatUnicorn(`- [ ] ${get(ctx.settings).shopping_list_format} \n`, i);
+            data += formatUnicorn(`- [ ] ${get(ctx.settings).shoppingListFormat} \n`, i);
         }
 
         return data;
@@ -90,7 +90,7 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
 }
 
 function getMealPlanIngredients(ctx: Context, file: TFile) {
-    const thisWeek = get_current_week();
+    const thisWeek = GetCurrentWeek();
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
 
     const topLevel = fileCache.headings!.filter((h) => {
@@ -158,7 +158,7 @@ function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
         return [];
     }
 
-    const ignoreList = get(ctx.settings).shopping_list_ignore;
+    const ignoreList = get(ctx.settings).shoppingListIgnore;
 
     return r.ingredients.filter((i) => {
         const found =

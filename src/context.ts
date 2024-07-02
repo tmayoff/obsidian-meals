@@ -1,7 +1,7 @@
 import { type App, type TAbstractFile, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
-import type MealPlugin from './main';
-import { type Recipe, get_recipes } from './recipe/recipe';
+import type { MealPlugin } from './main';
+import { GetRecipes, type Recipe } from './recipe/recipe';
 import { MealSettings } from './settings';
 
 export class Context {
@@ -35,7 +35,7 @@ export class Context {
     }
 
     async loadRecipes(file: TAbstractFile | undefined) {
-        const recipeFolderPath = get(this.settings).recipe_directory;
+        const recipeFolderPath = get(this.settings).recipeDirectory;
         const recipeFolder = this.app.vault.getFolderByPath(recipeFolderPath);
         if (recipeFolder == null) {
             console.error(`Failed to load recipes, can't access directory: ${recipeFolderPath}`);
@@ -51,7 +51,7 @@ export class Context {
             }
         }
 
-        get_recipes(this, recipeFolder!).then((r) => {
+        GetRecipes(this, recipeFolder!).then((r) => {
             this.recipes.set(r);
         });
     }

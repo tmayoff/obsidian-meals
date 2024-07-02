@@ -43,7 +43,9 @@ class Suggester<T> {
         });
     }
     chooseSuggestion(evt: KeyboardEvent) {
-        if (!this.items || !this.items.length) return;
+        if (!this.items?.length) {
+            return;
+        }
         const currentValue = this.items[this.selectedItem];
         if (currentValue) {
             this.owner.onChooseSuggestion(currentValue, evt);
@@ -51,7 +53,9 @@ class Suggester<T> {
     }
     onSuggestionClick(event: MouseEvent, el: HTMLElement): void {
         event.preventDefault();
-        if (!this.suggestions || !this.suggestions.length) return;
+        if (!this.suggestions?.length) {
+            return;
+        }
 
         const item = this.suggestions.indexOf(el);
         this.setSelectedItem(item, false);
@@ -59,7 +63,9 @@ class Suggester<T> {
     }
 
     onSuggestionMouseover(_event: MouseEvent, el: HTMLElement): void {
-        if (!this.suggestions || !this.suggestions.length) return;
+        if (!this.suggestions?.length) {
+            return;
+        }
         const item = this.suggestions.indexOf(el);
         this.setSelectedItem(item, false);
     }
@@ -80,7 +86,9 @@ class Suggester<T> {
         this.setSelectedItem(0, false);
     }
     useSelectedItem(event: MouseEvent | KeyboardEvent) {
-        if (!this.items || !this.items.length) return;
+        if (!this.items?.length) {
+            return;
+        }
         const currentValue = this.items[this.selectedItem];
         if (currentValue) {
             this.owner.selectSuggestion(currentValue, event);
@@ -94,8 +102,12 @@ class Suggester<T> {
         const prev = this.suggestions[this.selectedItem];
         const next = this.suggestions[nIndex];
 
-        if (prev) prev.removeClass('is-selected');
-        if (next) next.addClass('is-selected');
+        if (prev) {
+            prev.removeClass('is-selected');
+        }
+        if (next) {
+            next.addClass('is-selected');
+        }
 
         this.selectedItem = nIndex;
 
@@ -144,7 +156,9 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
     }
     shouldRender = true;
     onInputChanged(): void {
-        if (this.shouldNotOpen) return;
+        if (this.shouldNotOpen) {
+            return;
+        }
         const inputStr = this.modifyInput(this.inputEl.value);
         const suggestions = this.getSuggestions(inputStr ?? '');
         if (suggestions.length > 0) {
@@ -207,7 +221,9 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
         this.suggestEl.detach();
     }
     createPrompt(prompts: HTMLSpanElement[]) {
-        if (!this.promptEl) this.promptEl = this.suggestEl.createDiv('prompt-instructions');
+        if (!this.promptEl) {
+            this.promptEl = this.suggestEl.createDiv('prompt-instructions');
+        }
         const prompt = this.promptEl.createDiv('prompt-instruction');
         for (const p of prompts) {
             prompt.appendChild(p);
