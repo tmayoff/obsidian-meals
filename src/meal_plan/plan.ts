@@ -3,10 +3,10 @@ import { get } from 'svelte/store';
 import { DAYS_OF_WEEK } from '../constants';
 import type { Context } from '../context';
 import type { Recipe } from '../recipe/recipe';
-import { get_current_week } from './utils';
+import { GetCurrentWeek } from './utils';
 
 export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
-    let filePath = get(ctx.settings).meal_plan_note;
+    let filePath = get(ctx.settings).mealPlanNote;
     if (!filePath.endsWith('.md')) {
         filePath += '.md';
     }
@@ -16,7 +16,7 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
     const file = ctx.app.vault.getAbstractFileByPath(filePath);
     if (file instanceof TFile) {
         file.vault.process(file, (content) => {
-            const header = `Week of ${get_current_week()}`;
+            const header = `Week of ${GetCurrentWeek()}`;
             const headerIndex = content.indexOf(header) + header.length;
             const dayHeader = `## ${day}`;
             const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
@@ -53,7 +53,7 @@ export async function OpenMealPlanNote(app: App, filePath: string) {
 }
 
 async function fillMealPlanNote(app: App, filePath: string) {
-    const header = `Week of ${get_current_week()}`;
+    const header = `Week of ${GetCurrentWeek()}`;
     const dayHeaders = DAYS_OF_WEEK.map((day) => {
         return `## ${day}`;
     });
