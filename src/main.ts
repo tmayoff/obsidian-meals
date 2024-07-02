@@ -7,7 +7,8 @@ import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
 
-export class MealPlugin extends Plugin {
+// biome-ignore lint/style/noDefaultExport: <explanation>
+export default class MealPlugin extends Plugin {
     ctx = new Context(this);
 
     async onload() {
