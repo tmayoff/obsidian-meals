@@ -1,10 +1,10 @@
 <script lang="ts">
-import { derived, writable } from 'svelte/store';
-import { IngredientSuggestionModal } from '../suggester/IngredientSuggest';
 import { TextComponent } from 'obsidian';
 import { onMount } from 'svelte';
-import RecipeButton from './RecipeButton.svelte';
+import { derived, writable } from 'svelte/store';
 import type { Context } from '../context';
+import { IngredientSuggestionModal } from '../suggester/IngredientSuggest';
+import RecipeButton from './RecipeButton.svelte';
 
 export let ctx: Context;
 
@@ -117,6 +117,7 @@ onMount(() => {
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $foundRecipes as recipe}
+          <!-- svelte-ignore missing-declaration -->
           <RecipeButton on:close_modal {ctx} {recipe} />
         {/each}
       </div>

@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export function get_current_week() {
+export function GetCurrentWeek() {
     const currentDate = new Date();
     const lastSundayDate = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
 

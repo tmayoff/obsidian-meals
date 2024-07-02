@@ -7,12 +7,12 @@ import type { Context } from '../context';
 import { RecipeFormat } from '../settings';
 import type { Recipe } from './recipe';
 
-export async function get_ingredient_set(ctx: Context, recipes: Recipe[]) {
+export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
     const recipesFiles = recipes.map((r) => r.path);
 
     return Promise.all(
         recipesFiles.map(async (dir) => {
-            return await get_ingredients(ctx, dir);
+            return await GetIngredients(ctx, dir);
         }),
     ).then((ingredients) => {
         const allIngredients: Set<string> = new Set();
@@ -25,9 +25,9 @@ export async function get_ingredient_set(ctx: Context, recipes: Recipe[]) {
     });
 }
 
-export async function get_ingredients(ctx: Context, recipeFile: TFile) {
+export async function GetIngredients(ctx: Context, recipeFile: TFile) {
     if (recipeFile === undefined) {
-        console.log('FAILED', recipeFile);
+        console.error('Failed to get ingredients', recipeFile);
     }
 
     const filecontent = await ctx.app.vault.read(recipeFile);
@@ -35,7 +35,7 @@ export async function get_ingredients(ctx: Context, recipeFile: TFile) {
     const contentStart = getFrontMatterInfo(filecontent).contentStart;
     const content = filecontent.substring(contentStart);
 
-    if (get(ctx.settings).recipe_format === RecipeFormat.RecipeMD) {
+    if (get(ctx.settings).recipeFormat === RecipeFormat.RecipeMD) {
         return parseIngredientsRecipemd(ctx, content);
     }
 
@@ -58,8 +58,10 @@ function parseIngredients(ctx: Context, content: string): Ingredient[] {
     for (const line of ingredients.split('\n').filter((line) => {
         return line.length > 0;
     })) {
-        const i = parse_ingredient(ctx, line);
-        if (i === undefined) continue;
+        const i = ParseIngredient(ctx, line);
+        if (i === undefined) {
+            continue;
+        }
         recipes.push(i);
     }
 
@@ -77,20 +79,22 @@ function parseIngredientsRecipemd(ctx: Context, content: string): Ingredient[] {
     for (const line of ingredients.split('\n').filter((line) => {
         return line.length > 0;
     })) {
-        const i = parse_ingredient(ctx, line);
-        if (i === undefined) continue;
+        const i = ParseIngredient(ctx, line);
+        if (i === undefined) {
+            continue;
+        }
         recipes.push(i);
     }
 
     return recipes;
 }
 
-function parse_ingredient(ctx: Context, content: string): Ingredient {
+function ParseIngredient(ctx: Context, content: string): Ingredient {
     // Parse the ingredient line
     const linePrefix = '- ';
     let ingredientContent = content.substring(content.indexOf(linePrefix) + linePrefix.length);
 
-    const doAdvancedParse = get(ctx.settings).advanced_ingredient_parsing;
+    const doAdvancedParse = get(ctx.settings).advancedIngredientParsing;
 
     if (doAdvancedParse) {
         // ============================
@@ -104,7 +108,9 @@ function parse_ingredient(ctx: Context, content: string): Ingredient {
 
         const firstComma = ingredientContent.indexOf(',');
 
-        if (firstComma >= 0) ingredientContent = ingredientContent.substring(0, firstComma);
+        if (firstComma >= 0) {
+            ingredientContent = ingredientContent.substring(0, firstComma);
+        }
     }
 
     const ingredient = parseIngredient(ingredientContent)[0];

@@ -7,7 +7,7 @@ import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
 
-export default class MealPlugin extends Plugin {
+export class MealPlugin extends Plugin {
     ctx = new Context(this);
 
     async onload() {
@@ -76,8 +76,6 @@ export default class MealPlugin extends Plugin {
             }),
         );
     }
-
-    onunload() {}
 
     async loadSettings() {
         this.ctx.settings.set(Object.assign({}, new MealSettings(), await this.loadData()));

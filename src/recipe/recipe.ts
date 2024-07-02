@@ -1,7 +1,7 @@
 import { TFile, type TFolder } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import type { Context } from '../context';
-import { get_ingredients } from './ingredients';
+import { GetIngredients } from './ingredients';
 
 export class Recipe {
     name: string;
@@ -15,18 +15,18 @@ export class Recipe {
         this.ingredients = new Array();
     }
 
-    public async fill_ingredients(ctx: Context) {
-        this.ingredients = await get_ingredients(ctx, this.path);
+    public async fillIngredients(ctx: Context) {
+        this.ingredients = await GetIngredients(ctx, this.path);
     }
 }
 
-export async function get_recipes(ctx: Context, recipeDir: TFolder) {
+export async function GetRecipes(ctx: Context, recipeDir: TFolder) {
     const recipes: Recipe[] = new Array();
 
     for (const file of recipeDir.children) {
         if (file instanceof TFile) {
             const recipe = new Recipe(file);
-            await recipe.fill_ingredients(ctx);
+            await recipe.fillIngredients(ctx);
             recipes.push(recipe);
         }
     }
