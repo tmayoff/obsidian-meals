@@ -118,6 +118,7 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
         const regex = /\((.*)\)/;
         if (regex.test(ingredientContent)) {
+            // Regex match all '(...)'
             const match = regex.exec(ingredientContent);
             if (match != null) {
                 // This hack is required due to the parseIngredient function expected a description, without it 200g is parsed into: {quantity: 200, description: 'g'}
