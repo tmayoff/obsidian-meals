@@ -1,6 +1,6 @@
 import type { TFile } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
-import { type Ingredient, parseIngredient } from 'parse-ingredient';
+import { type Ingredient, type ParseIngredientOptions, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
@@ -96,6 +96,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
 
     const doAdvancedParse = get(ctx.settings).advancedIngredientParsing;
 
+    const ingredientParseOptions: ParseIngredientOptions = {
+        normalizeUOM: true,
+    };
+
     if (doAdvancedParse) {
         // ============================
         // Special ingredient parsing
@@ -113,7 +117,8 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         }
     }
 
-    const ingredient = parseIngredient(ingredientContent)[0];
+    const ingredient = parseIngredient(ingredientContent, ingredientParseOptions)[0];
+    console.log(ingredient);
 
     if (doAdvancedParse && ingredient !== undefined) {
         ingredient.description = singular(ingredient.description);
