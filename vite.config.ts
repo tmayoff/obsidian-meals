@@ -1,7 +1,7 @@
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import builtins from 'builtin-modules';
 import UnoCSS from 'unocss/vite';
-import { PluginOption, defineConfig } from 'vite';
+import { type PluginOption, defineConfig } from 'vite';
 
 const setOutDir = (mode: string) => {
     switch (mode) {
@@ -12,6 +12,7 @@ const setOutDir = (mode: string) => {
     }
 };
 
+// biome-ignore lint/style/noDefaultExport: <explanation>
 export default defineConfig(({ mode }) => {
   return {
     plugins: [
