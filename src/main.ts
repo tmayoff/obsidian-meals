@@ -1,4 +1,4 @@
-import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
+import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile, requestUrl } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context';
 import { OpenMealPlanNote } from './meal_plan/plan';
@@ -6,6 +6,7 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
+import init, { scrape } from 'recipe-rs';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -13,6 +14,10 @@ export default class MealPlugin extends Plugin {
 
     async onload() {
         await this.loadSettings();
+        await init();
+
+        let dom_text = await requestUrl('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/').text;
+        console.log(scrape('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/', dom_text));
 
         this.ctx.loadRecipes(undefined);
 
