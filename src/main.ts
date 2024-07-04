@@ -6,7 +6,7 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
-import init, { scrape } from 'recipe-rs';
+import init, { type Recipe, scrape } from 'recipe-rs';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -14,10 +14,15 @@ export default class MealPlugin extends Plugin {
 
     async onload() {
         await this.loadSettings();
-        await init();
 
-        let dom_text = await requestUrl('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/').text;
-        console.log(scrape('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/', dom_text));
+        const wasmPath = this.app.vault.adapter.getResourcePath(
+            `${this.app.vault.configDir}/plugins/${this.manifest.id}/assets/recipe_rs_bg.wasm`,
+        );
+        await init(wasmPath);
+
+        const domText = await requestUrl('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/').text;
+        const recipe: Recipe = scrape('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/', domText);
+        console.log(recipe);
 
         this.ctx.loadRecipes(undefined);
 
@@ -81,6 +86,8 @@ export default class MealPlugin extends Plugin {
                 }
             }),
         );
+
+        console.info('obisidan-meals plugin loaded');
     }
 
     async loadSettings() {
