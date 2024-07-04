@@ -20,10 +20,6 @@ export default class MealPlugin extends Plugin {
         );
         await init(wasmPath);
 
-        const domText = await requestUrl('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/').text;
-        const recipe: Recipe = scrape('https://www.allrecipes.com/recipe/21014/good-old-fashioned-pancakes/', domText);
-        console.log(recipe);
-
         this.ctx.loadRecipes(undefined);
 
         this.registerEvent(
