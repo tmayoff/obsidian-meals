@@ -1,4 +1,4 @@
-import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile, requestUrl } from 'obsidian';
+import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context';
 import { OpenMealPlanNote } from './meal_plan/plan';
@@ -6,7 +6,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
-import init, { type Recipe, scrape } from 'recipe-rs';
+import init from 'recipe-rs';
+import { DownloadRecipeCommand } from './recipe/downloader';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -65,6 +66,14 @@ export default class MealPlugin extends Plugin {
             name: 'Clear checked shopping list items',
             callback: async () => {
                 await ClearCheckedIngredients(this.ctx);
+            },
+        });
+
+        this.addCommand({
+            id: 'download-url',
+            name: 'Download recipe from url',
+            callback: async () => {
+                await DownloadRecipeCommand(this.ctx);
             },
         });
 
