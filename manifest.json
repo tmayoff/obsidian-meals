@@ -1,7 +1,7 @@
 {
     "id": "tmayoff-meals",
     "name": "Meal Plan",
-    "version": "0.0.11",
+    "version": "0.0.12",
     "minAppVersion": "0.15.0",
     "description": "Store and manage recipes, create weekly meal plans and generate shopping lists.",
     "author": "Tyler Mayoff",
