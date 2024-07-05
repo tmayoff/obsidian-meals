@@ -82,7 +82,10 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     ctx.app.vault.process(file, (data) => {
         const ingredients = getIngredientsRecipe(ctx, recipeFile);
         for (const i of ingredients) {
-            data += formatUnicorn(`- [ ] ${get(ctx.settings).shoppingListFormat} \n`, i);
+            let formatted = formatUnicorn(`${get(ctx.settings).shoppingListFormat}`, i);
+            formatted = formatted.replaceAll(/\([\s-]*\)/g, '');
+            formatted.trim();
+            data += `- [ ] ${formatted}\n`;
         }
 
         return data;
