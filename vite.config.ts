@@ -17,7 +17,7 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            wasmPack(['./recipe-rs']),
+            wasmPack([], ['recipe-rs']),
             UnoCSS(),
             svelte({
                 preprocess: vitePreprocess(),
