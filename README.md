@@ -34,3 +34,6 @@ Properties are:
 - altQuantity: Quantity taken from inside () of the ingredient line
 - altUnitOfMeasure: Unit of measurement from inside () of the ingredient line
 - altUnitOfMeasureID: Unit of measurement id from inside () of the ingredient line
+
+## Developer Notes
+- https://docs.obsidian.md/Home
