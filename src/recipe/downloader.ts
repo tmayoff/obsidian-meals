@@ -1,4 +1,4 @@
-import { SuggestModal, requestUrl } from 'obsidian';
+import { type App, Modal, SuggestModal, requestUrl } from 'obsidian';
 import { type Recipe, format, scrape } from 'recipe-rs';
 import { get } from 'svelte/store';
 import type { Context } from '../context';
@@ -29,19 +29,47 @@ class DownloadRecipeModal extends SuggestModal<string> {
     }
 }
 
+class ErrorDialog extends Modal {
+    message = 'unknown error';
+
+    constructor(app: App, message: string) {
+        super(app);
+        this.message = message;
+    }
+
+    onOpen() {
+        this.contentEl.createEl('h4', { text: 'An error occured' });
+        this.contentEl.createEl('p', { text: this.message });
+        let div = this.contentEl.createEl('div', {
+            text: 'Please make an issue <a href="https://github.com/tmayoff/recipe-rs/issues/new">here</a> so I can help resolve the issue',
+        });
+    }
+
+    onClose() {
+        this.contentEl.empty();
+    }
+}
+
 export function DownloadRecipeCommand(ctx: Context) {
     new DownloadRecipeModal(ctx).open();
 }
 
 async function DownloadRecipe(ctx: Context, url: string) {
     const dom = await requestUrl(url).text;
-    const recipe: Recipe = scrape(url, dom);
 
-    const formatted: string = format(recipe);
+    let recipe: Recipe | null = null;
+    let formatted = '';
+    try {
+        recipe = scrape(url, dom);
+        formatted = format(recipe);
+    } catch (exception) {
+        new ErrorDialog(ctx.app, `${exception}`).open();
+        return;
+    }
 
     const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${recipe.name}`);
     if (NoteExists(ctx.app, newRecipeNotePath)) {
-        console.error('Recipe with that name already exists');
+        new ErrorDialog(ctx.app, 'Recipe with that name already exists').open();
         await OpenNotePath(ctx.app, newRecipeNotePath);
         return;
     }
