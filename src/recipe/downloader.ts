@@ -41,9 +41,10 @@ class ErrorDialog extends Modal {
         this.contentEl.createEl('h4', { text: 'An error occured' });
         this.contentEl.createEl('p', { text: this.message });
         this.contentEl.createEl('a', {
-            href: "https://github.com/tmayoff/recipe-rs/issues/new",
+            href: 'https://github.com/tmayoff/recipe-rs/issues/new',
             text: 'Please make an issue here so I can help resolve the issue',
-        });    }
+        });
+    }
 
     onClose() {
         this.contentEl.empty();
