@@ -6,6 +6,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
+import init from 'recipe-rs';
+import { DownloadRecipeCommand } from './recipe/downloader';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -13,6 +15,11 @@ export default class MealPlugin extends Plugin {
 
     async onload() {
         await this.loadSettings();
+
+        const wasmPath = this.app.vault.adapter.getResourcePath(
+            `${this.app.vault.configDir}/plugins/${this.manifest.id}/assets/recipe_rs_bg.wasm`,
+        );
+        await init(wasmPath);
 
         this.ctx.loadRecipes(undefined);
 
@@ -62,6 +69,14 @@ export default class MealPlugin extends Plugin {
             },
         });
 
+        this.addCommand({
+            id: 'download-url',
+            name: 'Download recipe from url',
+            callback: async () => {
+                await DownloadRecipeCommand(this.ctx);
+            },
+        });
+
         this.registerEvent(
             this.app.workspace.on('file-menu', (e, t) => {
                 if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipeDirectory)) {
@@ -76,6 +91,8 @@ export default class MealPlugin extends Plugin {
                 }
             }),
         );
+
+        console.info('obisidan-meals plugin loaded');
     }
 
     async loadSettings() {
