@@ -16,10 +16,10 @@ export default class MealPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        const wasmPath = this.app.vault.adapter.getResourcePath(
-            `${this.app.vault.configDir}/plugins/${this.manifest.id}/assets/recipe_rs_bg.wasm`,
-        );
-        await init(wasmPath);
+        // const wasmPath = this.app.vault.adapter.getResourcePath(
+        //     `${this.app.vault.configDir}/plugins/${this.manifest.id}/assets/recipe_rs_bg.wasm`,
+        // );
+        await init();
 
         this.ctx.loadRecipes(undefined);
 
