@@ -6,7 +6,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings';
 import 'virtual:uno.css';
-import init from 'recipe-rs';
+import initWasm from 'recipe-rs';
+import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { DownloadRecipeCommand } from './recipe/downloader';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
@@ -16,10 +17,7 @@ export default class MealPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        // const wasmPath = this.app.vault.adapter.getResourcePath(
-        //     `${this.app.vault.configDir}/plugins/${this.manifest.id}/assets/recipe_rs_bg.wasm`,
-        // );
-        await init();
+        await initWasm(wasmData);
 
         this.ctx.loadRecipes(undefined);
 
