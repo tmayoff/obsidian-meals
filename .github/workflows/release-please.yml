@@ -27,5 +27,5 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} ./build/*
+        run: gh release upload ${{ steps.release.outputs.tag_name }} build/main.js build/styles.css manifest.json
 
