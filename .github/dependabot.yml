@@ -9,6 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "friday"
+    commit-message:
+      prefix: "chore(deps)"
     groups:
       prod-dependencies:
         dependency-type: production
@@ -16,5 +19,8 @@ updates:
         dependency-type: development
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
+    commit-message:
+      prefix: "chore(deps)"
     schedule:
       interval: "weekly"
+      day: "friday"
