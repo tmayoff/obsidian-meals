@@ -2,7 +2,6 @@ import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import builtins from 'builtin-modules';
 import UnoCSS from 'unocss/vite';
 import { type PluginOption, defineConfig } from 'vite';
-import wasmPack from 'vite-plugin-wasm-pack';
 
 const setOutDir = (mode: string) => {
     switch (mode) {
@@ -17,7 +16,6 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            wasmPack([], ['recipe-rs']),
             UnoCSS(),
             svelte({
                 preprocess: vitePreprocess(),
