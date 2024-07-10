@@ -19,8 +19,6 @@ export default class MealPlugin extends Plugin {
 
         await initWasm(wasmData);
 
-        this.ctx.loadRecipes(undefined);
-
         this.registerEvent(
             this.app.vault.on('create', (file) => {
                 this.ctx.loadRecipes(file);
@@ -92,8 +90,16 @@ export default class MealPlugin extends Plugin {
 
         if (get(this.ctx.settings).debugMode) {
             console.debug('Debug mode enabled');
-            this.addCommand({ id: 'reload-recipes', name: 'Reload all recipes' });
+            this.addCommand({
+                id: 'reload-recipes',
+                name: 'Reload all recipes',
+                callback: () => {
+                    this.ctx.loadRecipes(undefined);
+                },
+            });
         }
+
+        this.ctx.loadRecipes(undefined);
 
         console.info('obisidan-meals plugin loaded');
     }
