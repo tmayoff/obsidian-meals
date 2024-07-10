@@ -107,8 +107,12 @@ function parseIngredientsRecipemd(ctx: Context, content: string): Ingredient[] {
 
 function ParseIngredient(ctx: Context, content: string): Ingredient {
     // Parse the ingredient line
-    const linePrefix = '- ';
-    let ingredientContent = content.substring(content.indexOf(linePrefix) + linePrefix.length);
+    const linePrefix = '-';
+    const prefixIndex = content.indexOf(linePrefix);
+    let ingredientContent = content;
+    if (prefixIndex >= 0) {
+        ingredientContent = ingredientContent.substring(prefixIndex).trim();
+    }
 
     const doAdvancedParse = get(ctx.settings).advancedIngredientParsing;
 
