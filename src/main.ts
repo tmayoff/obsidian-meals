@@ -70,8 +70,8 @@ export default class MealPlugin extends Plugin {
         this.addCommand({
             id: 'download-url',
             name: 'Download recipe from url',
-            callback: async () => {
-                await DownloadRecipeCommand(this.ctx);
+            callback: () => {
+                DownloadRecipeCommand(this.ctx);
             },
         });
 
@@ -89,6 +89,11 @@ export default class MealPlugin extends Plugin {
                 }
             }),
         );
+
+        if (get(this.ctx.settings).debugMode) {
+            console.debug('Debug mode enabled');
+            this.addCommand({ id: 'reload-recipes', name: 'Reload all recipes' });
+        }
 
         console.info('obisidan-meals plugin loaded');
     }
@@ -250,6 +255,21 @@ class MealPluginSettingsTab extends PluginSettingTab {
                 toggle.setValue(get(this.ctx.settings).advancedIngredientParsing).onChange(async (val) => {
                     this.ctx.settings.update((s) => {
                         s.advancedIngredientParsing = val;
+                        return s;
+                    });
+
+                    await this.plugin.saveSettings();
+                    await this.ctx.loadRecipes(undefined);
+                });
+            });
+
+        new Setting(containerEl)
+            .setName('Debug mode')
+            .setDesc('This enables extra debugging tools: logging, menu options, etc...')
+            .addToggle((toggle) => {
+                toggle.setValue(get(this.ctx.settings).debugMode).onChange(async (val) => {
+                    this.ctx.settings.update((s) => {
+                        s.debugMode = val;
                         return s;
                     });
 
