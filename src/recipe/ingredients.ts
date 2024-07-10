@@ -51,6 +51,10 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
 }
 
 function parseIngredients(ctx: Context, content: string): Ingredient[] {
+    if (ctx.debugMode()) {
+        console.debug('Parsing ingredients as: RecipeMD');
+    }
+
     const recipes: Ingredient[] = new Array();
 
     const headerString = '# Ingredients';
@@ -77,6 +81,10 @@ function parseIngredients(ctx: Context, content: string): Ingredient[] {
 }
 
 function parseIngredientsRecipemd(ctx: Context, content: string): Ingredient[] {
+    if (ctx.debugMode()) {
+        console.debug('Parsing ingredients as: RecipeMD');
+    }
+
     const recipes: Ingredient[] = new Array();
     const ingredients = content.split('---')[1];
 
@@ -111,6 +119,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
     };
 
     if (doAdvancedParse) {
+        if (ctx.debugMode()) {
+            console.debug('Advanced parsing; original line:', content);
+        }
+
         // ============================
         // Special ingredient parsing
         // =============================
@@ -151,6 +163,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
 
     if (doAdvancedParse && tingredient !== undefined) {
         tingredient.description = singular(tingredient.description);
+    }
+
+    if (ctx.debugMode()) {
+        console.debug('Final ingredient output', tingredient, altIngredients);
     }
 
     return {
