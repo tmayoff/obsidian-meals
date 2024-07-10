@@ -36,6 +36,9 @@ export class Context {
 
     async loadRecipes(file: TAbstractFile | undefined) {
         const recipeFolderPath = get(this.settings).recipeDirectory;
+        if (this.debugMode()) {
+            console.debug("Recipe Folder:", recipeFolderPath);
+        }
         const recipeFolder = this.app.vault.getFolderByPath(recipeFolderPath);
         if (recipeFolder == null) {
             console.error(`Failed to load recipes, can't access directory: ${recipeFolderPath}`);
@@ -54,5 +57,9 @@ export class Context {
         GetRecipes(this, recipeFolder!).then((r) => {
             this.recipes.set(r);
         });
+    }
+
+    debugMode() {
+        return get(this.settings).debugMode;
     }
 }
