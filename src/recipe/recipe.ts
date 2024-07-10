@@ -26,7 +26,7 @@ export async function GetRecipes(ctx: Context, recipeDir: TFolder) {
     for (const file of recipeDir.children) {
         if (file instanceof TFile) {
             if (ctx.debugMode()) {
-                console.debug("Parsing recipe:", file.path);
+                console.debug('Parsing recipe:', file.path);
             }
             const recipe = new Recipe(file);
             await recipe.fillIngredients(ctx);

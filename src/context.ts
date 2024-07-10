@@ -37,7 +37,7 @@ export class Context {
     async loadRecipes(file: TAbstractFile | undefined) {
         const recipeFolderPath = get(this.settings).recipeDirectory;
         if (this.debugMode()) {
-            console.debug("Recipe Folder:", recipeFolderPath);
+            console.debug('Recipe Folder:', recipeFolderPath);
         }
         const recipeFolder = this.app.vault.getFolderByPath(recipeFolderPath);
         if (recipeFolder == null) {
