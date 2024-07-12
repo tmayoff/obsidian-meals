@@ -93,13 +93,30 @@ export default class MealPlugin extends Plugin {
             this.addCommand({
                 id: 'reload-recipes',
                 name: 'Reload all recipes',
-                callback: () => {
-                    this.ctx.loadRecipes(undefined);
+                callback: async () => {
+                    await this.ctx.loadRecipes(undefined);
                 },
             });
+
+            this.registerEvent(
+                this.app.workspace.on('file-menu', (e, file) => {
+                    if (file instanceof TFile && file.path.contains(get(this.ctx.settings).recipeDirectory)) {
+                        e.addItem((e) => {
+                            return e
+                                .setTitle('Reload recipe')
+                                .setIcon('carrot')
+                                .onClick(async () => {
+                                    await this.ctx.loadRecipes(file);
+                                });
+                        });
+                    }
+                }),
+            );
         }
 
-        this.ctx.loadRecipes(undefined);
+        this.app.workspace.onLayoutReady(async () => {
+            await this.ctx.loadRecipes(undefined);
+        });
 
         console.info('obisidan-meals plugin loaded');
     }

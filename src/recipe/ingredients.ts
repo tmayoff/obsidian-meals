@@ -44,6 +44,10 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
     const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
     if (fileMetadata == null) {
         console.error('Failed to load recipe metadata');
+        ctx.failedFiles.update((files) => {
+            files.push(recipeFile);
+            return files;
+        });
         return;
     }
 
@@ -106,7 +110,7 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     }
 
     if (start == null || end == null) {
-        console.error('Recipe is missing the Ingredients heading');
+        console.error('Recipe is missing the Ingredients heading\n', fileContent);
         return [];
     }
 

@@ -51,6 +51,7 @@
             act
             just
             wasm-pack
+            funzzy
           ];
         };
       }

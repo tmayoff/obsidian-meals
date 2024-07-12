@@ -1,6 +1,6 @@
 import { type App, type TAbstractFile, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
-import type { MealPlugin } from './main';
+import type MealPlugin from './main';
 import { GetRecipes, type Recipe } from './recipe/recipe';
 import { MealSettings } from './settings';
 
@@ -26,6 +26,8 @@ export class Context {
 
         return ingredients;
     });
+
+    failedFiles = writable(new Array<TFile>());
 
     settings = writable(new MealSettings());
 
