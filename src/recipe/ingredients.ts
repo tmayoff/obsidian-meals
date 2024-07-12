@@ -103,7 +103,7 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
                 break;
             }
 
-            if (heading.heading.localeCompare('Ingredients', undefined, { sensitivity: 'base' })) {
+            if (heading.heading.contains('Ingredient') || heading.heading.contains('ingredient')) {
                 start = heading.position.end;
             }
         }
