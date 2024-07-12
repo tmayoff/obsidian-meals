@@ -146,9 +146,20 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         altIngredients = obj.altIngredients;
     }
 
-    const tingredient: TIngredient = parseIngredient(ingredientContent)[0];
+    let tingredient: TIngredient | null = null;
+    for (const candidate of parseIngredient(ingredientContent)) {
+        if (!candidate.isGroupHeader) {
+            tingredient = candidate;
+            break;
+        }
+    }
 
-    if (doAdvancedParse && tingredient !== undefined) {
+    if (tingredient == null) {
+        console.error('Failed to parse ingredient', ingredientContent);
+        return new Ingredient();
+    }
+
+    if (doAdvancedParse) {
         tingredient.description = singular(tingredient.description);
     }
 
