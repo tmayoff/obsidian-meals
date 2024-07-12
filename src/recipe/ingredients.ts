@@ -55,6 +55,10 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
         rawIngredientLists = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
     }
 
+    if (ctx.debugMode()) {
+        console.debug(rawIngredientLists);
+    }
+
     const ingredients: Ingredient[] = [];
     for (const rawIngredient of rawIngredientLists) {
         ingredients.push(ParseIngredient(ctx, rawIngredient));
@@ -125,6 +129,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         ingredientContent = ingredientContent.substring(prefixIndex).trim();
     }
 
+    if (ctx.debugMode()) {
+        console.debug('Parsing; original line:', content);
+    }
+
     const doAdvancedParse = get(ctx.settings).advancedIngredientParsing;
 
     let altIngredients: AltIngredient = {
@@ -132,46 +140,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         altUnitOfMeasure: null,
         altUnitOfMeasureID: null,
     };
-
     if (doAdvancedParse) {
-        if (ctx.debugMode()) {
-            console.debug('Advanced parsing; original line:', content);
-        }
-
-        // ============================
-        // Special ingredient parsing
-        // =============================
-
-        // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
-        const regex = /\((.*)\)/;
-        if (regex.test(ingredientContent)) {
-            // Regex match all '(...)'
-            const match = regex.exec(ingredientContent);
-            if (match != null) {
-                // This hack is required due to the parseIngredient function expected a description, without it 200g is parsed into: {quantity: 200, description: 'g'}
-                const extraQuantity = `DUMMY_INGREDIENT ${match[1]}`;
-                const ingredients = parseIngredient(extraQuantity);
-                if (ingredients.length > 0) {
-                    altIngredients = {
-                        altQuantity: ingredients[0].quantity,
-                        altUnitOfMeasure: ingredients[0].unitOfMeasure,
-                        altUnitOfMeasureID: ingredients[0].unitOfMeasureID,
-                    };
-                }
-                ingredientContent = ingredientContent.replace(regex, '');
-            }
-        }
-
-        // Ingredient name ignores everything after the first comma
-        // 200g onions, chopped
-        // ~~~~~~~~~~~
-        // 200g onion
-
-        const firstComma = ingredientContent.indexOf(',');
-
-        if (firstComma >= 0) {
-            ingredientContent = ingredientContent.substring(0, firstComma);
-        }
+        const obj = AdvancedParse(ingredientContent);
+        ingredientContent = obj.ingredientContent;
+        altIngredients = obj.altIngredients;
     }
 
     const tingredient: TIngredient = parseIngredient(ingredientContent)[0];
@@ -188,4 +160,49 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         ...tingredient,
         ...altIngredients,
     };
+}
+
+function AdvancedParse(ingredientContent: string) {
+    // ============================
+    // Special ingredient parsing
+    // =============================
+
+    let altIngredients: AltIngredient = {
+        altQuantity: null,
+        altUnitOfMeasure: null,
+        altUnitOfMeasureID: null,
+    };
+
+    // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
+    const regex = /\((.*?)\)/;
+    if (regex.test(ingredientContent)) {
+        // Regex match all '(...)'
+        const match = regex.exec(ingredientContent);
+        if (match != null) {
+            // This hack is required due to the parseIngredient function expected a description, without it 200g is parsed into: {quantity: 200, description: 'g'}
+            const extraQuantity = `DUMMY_INGREDIENT ${match[0]}`;
+            const ingredients = parseIngredient(extraQuantity);
+            if (ingredients.length > 0) {
+                altIngredients = {
+                    altQuantity: ingredients[0].quantity,
+                    altUnitOfMeasure: ingredients[0].unitOfMeasure,
+                    altUnitOfMeasureID: ingredients[0].unitOfMeasureID,
+                };
+            }
+            ingredientContent = ingredientContent.replace(regex, '');
+        }
+    }
+
+    // Ingredient name ignores everything after the first comma
+    // 200g onions, chopped
+    // ~~~~~~~~~~~
+    // 200g onion
+
+    const firstComma = ingredientContent.indexOf(',');
+
+    if (firstComma >= 0) {
+        ingredientContent = ingredientContent.substring(0, firstComma);
+    }
+
+    return { ingredientContent, altIngredients };
 }
