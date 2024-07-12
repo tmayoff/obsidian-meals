@@ -44,10 +44,6 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
     const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
     if (fileMetadata == null) {
         console.error('Failed to load recipe metadata');
-        ctx.failedFiles.update((files) => {
-            files.push(recipeFile);
-            return files;
-        });
         return;
     }
 

@@ -27,8 +27,6 @@ export class Context {
         return ingredients;
     });
 
-    failedFiles = writable(new Array<TFile>());
-
     settings = writable(new MealSettings());
 
     constructor(plugin: MealPlugin) {

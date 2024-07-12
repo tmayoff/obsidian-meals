@@ -1,71 +1,66 @@
 <script lang="ts">
-  import { TextComponent } from "obsidian";
-  import { onMount } from "svelte";
-  import { derived, writable } from "svelte/store";
-  import type { Context } from "../context";
-  import { IngredientSuggestionModal } from "../suggester/IngredientSuggest";
-  import RecipeButton from "./RecipeButton.svelte";
+import { TextComponent } from 'obsidian';
+import { onMount } from 'svelte';
+import { derived, writable } from 'svelte/store';
+import type { Context } from '../context';
+import { IngredientSuggestionModal } from '../suggester/IngredientSuggest';
+import RecipeButton from './RecipeButton.svelte';
 
-  export let ctx: Context;
+export let ctx: Context;
 
-  const ingredients = ctx.ingredients;
+const ingredients = ctx.ingredients;
 
-  const searchOperation = writable("any of");
+const searchOperation = writable('any of');
 
-  const searchIngredients = writable(new Set<string>());
+const searchIngredients = writable(new Set<string>());
 
-  function addIngredient(ingredient: string) {
+function addIngredient(ingredient: string) {
     searchIngredients.update((items) => {
-      items.add(ingredient);
-      return items;
+        items.add(ingredient);
+        return items;
     });
-  }
+}
 
-  const foundRecipes = derived(
-    [searchIngredients, searchOperation, ctx.recipes],
-    ([$searchIngredients, $searchOperation, $recipes]) => {
-      return $recipes.filter((recipe) => {
+const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
+    return $recipes.filter((recipe) => {
         const descs = recipe.ingredients.map((i) => {
-          if (i === undefined || i.description === undefined) {
-            return "";
-          }
+            if (i === undefined || i.description === undefined) {
+                return '';
+            }
 
-          return i.description.toLocaleLowerCase();
+            return i.description.toLocaleLowerCase();
         });
 
-        if ($searchOperation === "all of") {
-          return [...$searchIngredients].every((i) => {
-            return descs.contains(i);
-          });
+        if ($searchOperation === 'all of') {
+            return [...$searchIngredients].every((i) => {
+                return descs.contains(i);
+            });
         }
-        if ($searchOperation === "any of") {
-          return [...$searchIngredients].some((i) => {
-            return descs.contains(i);
-          });
+        if ($searchOperation === 'any of') {
+            return [...$searchIngredients].some((i) => {
+                return descs.contains(i);
+            });
         }
-      });
-    },
-  );
+    });
+});
 
-  let suggesterParent: HTMLElement;
-  onMount(async () => {
+let suggesterParent: HTMLElement;
+onMount(async () => {
     const suggesterText = new TextComponent(suggesterParent);
-    suggesterText.inputEl.addClass("w-full");
+    suggesterText.inputEl.addClass('w-full');
 
-    const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [
-      ...$ingredients,
-    ]);
+    const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [...$ingredients]);
 
     suggesterText.onChange(() => {
-      suggester.shouldNotOpen = false;
-      suggester.open();
+        suggester.shouldNotOpen = false;
+        suggester.open();
     });
 
     suggester.onClose = () => {
-      addIngredient(suggester.text.getValue());
-      suggester.text.setValue("");
+        addIngredient(suggester.text.getValue());
+        suggester.text.setValue('');
     };
-  });
+});
 </script>
 
 <div>
