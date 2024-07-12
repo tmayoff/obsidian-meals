@@ -45,7 +45,7 @@ const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], 
 });
 
 let suggesterParent: HTMLElement;
-onMount(async () => {
+onMount(() => {
     const suggesterText = new TextComponent(suggesterParent);
     suggesterText.inputEl.addClass('w-full');
 
