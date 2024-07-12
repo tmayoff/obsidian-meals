@@ -4,7 +4,7 @@
   "description": "This is a recipe manager and meal planner",
   "main": "main.js",
   "scripts": {
-    "dev": "vite build --mode development --watch",
+    "dev": "vite build --mode development",
     "build": "vite build --mode production",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "wasm": "wasm-pack build ./recipe-rs --target web"

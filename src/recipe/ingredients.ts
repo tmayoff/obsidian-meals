@@ -1,4 +1,4 @@
-import type { TFile } from 'obsidian';
+import type { CachedMetadata, Loc, TFile } from 'obsidian';
 import { getFrontMatterInfo } from 'obsidian';
 import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
@@ -25,8 +25,10 @@ export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
     ).then((ingredients) => {
         const allIngredients: Set<string> = new Set();
         for (const ingredient of ingredients) {
-            for (const i of ingredient) {
-                allIngredients.add(i.description.toLocaleLowerCase());
+            if (ingredient !== undefined) {
+                for (const i of ingredient) {
+                    allIngredients.add(i.description.toLocaleLowerCase());
+                }
             }
         }
         return allIngredients;
@@ -38,71 +40,80 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
         console.error('Failed to get ingredients', recipeFile);
     }
 
-    const filecontent = await ctx.app.vault.read(recipeFile);
+    const fileContent = await ctx.app.vault.read(recipeFile);
+    const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
+    if (fileMetadata == null) {
+        console.error('Failed to load recipe metadata');
+        return;
+    }
 
-    const contentStart = getFrontMatterInfo(filecontent).contentStart;
-    const content = filecontent.substring(contentStart);
+    let rawIngredientLists: string[] = [];
 
     if (get(ctx.settings).recipeFormat === RecipeFormat.RecipeMD) {
-        return parseIngredientsRecipemd(ctx, content);
+        rawIngredientLists = GetRecipeMDFormatBoundedList(fileContent);
+    } else {
+        rawIngredientLists = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
     }
 
-    return parseIngredients(ctx, content);
+    const ingredients: Ingredient[] = [];
+    for (const rawIngredient of rawIngredientLists) {
+        ingredients.push(ParseIngredient(ctx, rawIngredient));
+    }
+
+    return ingredients;
 }
 
-function parseIngredients(ctx: Context, content: string): Ingredient[] {
-    if (ctx.debugMode()) {
-        console.debug('Parsing ingredients as: RecipeMD');
+function GetRecipeMDFormatBoundedList(fileContent: string): string[] {
+    // Ingredient content is between --- & ---
+    const frontmatter = getFrontMatterInfo(fileContent);
+    const contentStart = frontmatter.contentStart;
+    let content = fileContent.substring(contentStart);
+
+    const start = content.indexOf('---') + '---'.length;
+    if (start < 0) {
+        console.error('Not a RecipeMD recipe');
+        return [];
     }
+    content = content.substring(start).trim();
 
-    const recipes: Ingredient[] = new Array();
-
-    const headerString = '# Ingredients';
-    if (!content.contains(headerString)) {
-        return new Array();
+    const end = content.indexOf('---') - '---'.length;
+    if (end < 0) {
+        console.error('No end to ingredient list');
+        return [];
     }
+    content = content.substring(0, end).trim();
 
-    const start = content.indexOf(headerString) + headerString.length;
-    content = content.substring(start);
-    const end = content.indexOf('#');
-
-    const ingredients = content.substring(0, end);
-    for (const line of ingredients.split('\n').filter((line) => {
+    return content.split('\n').filter((line) => {
         return line.length > 0;
-    })) {
-        const i = ParseIngredient(ctx, line);
-        if (i === undefined) {
-            continue;
-        }
-        recipes.push(i);
-    }
-
-    return recipes;
+    });
 }
 
-function parseIngredientsRecipemd(ctx: Context, content: string): Ingredient[] {
-    if (ctx.debugMode()) {
-        console.debug('Parsing ingredients as: RecipeMD');
-    }
+function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedMetadata): string[] {
+    // Ingredient content is between Ingredients heading and the next heading
+    let start: Loc | null = null;
+    let end: Loc | null = null;
+    if (fileMetadata.headings != null) {
+        for (const heading of fileMetadata.headings) {
+            if (start != null) {
+                end = heading.position.start;
+                break;
+            }
 
-    const recipes: Ingredient[] = new Array();
-    const ingredients = content.split('---')[1];
-
-    if (ingredients === undefined || ingredients.length <= 0) {
-        return new Array();
-    }
-
-    for (const line of ingredients.split('\n').filter((line) => {
-        return line.length > 0;
-    })) {
-        const i = ParseIngredient(ctx, line);
-        if (i === undefined) {
-            continue;
+            if (heading.heading.localeCompare('Ingredients', undefined, { sensitivity: 'base' })) {
+                start = heading.position.end;
+            }
         }
-        recipes.push(i);
     }
 
-    return recipes;
+    if (start == null || end == null) {
+        console.error('Recipe is missing the Ingredients heading\n', fileContent);
+        return [];
+    }
+
+    const content = fileContent.substring(start.offset, end.offset);
+    return content.split('\n').filter((line) => {
+        return line.length > 0;
+    });
 }
 
 function ParseIngredient(ctx: Context, content: string): Ingredient {
