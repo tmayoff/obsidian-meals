@@ -1,5 +1,5 @@
 import type { CachedMetadata, Loc, TFile } from 'obsidian';
-import { getFrontMatterInfo, Notice } from 'obsidian';
+import { getFrontMatterInfo } from 'obsidian';
 import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { get } from 'svelte/store';
