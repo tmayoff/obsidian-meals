@@ -227,3 +227,9 @@ function AdvancedParse(ingredientContent: string) {
 
     return { ingredientContent, altIngredients };
 }
+
+if (process.env.NODE_ENV === 'development') {
+    module.exports.testingExports = {
+        AdvancedParse
+    };
+}
