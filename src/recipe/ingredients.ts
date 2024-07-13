@@ -114,9 +114,13 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
         }
     }
 
-    if (start == null || end == null) {
+    if (start == null) {
         console.error('Recipe is missing the Ingredients heading\n', fileContent);
         return [];
+    }
+
+    if (end == null) {
+        end = { offset: fileContent.length, line: 0, col: 0 }; // this is kind of a hack to be able to use the Loc type, might not be entirely necessary though
     }
 
     const content = fileContent.substring(start.offset, end.offset);
