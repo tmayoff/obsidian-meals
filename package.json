@@ -7,7 +7,6 @@
     "dev": "vite build --mode development",
     "build": "vite build --mode production",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "test": "vitest",
     "wasm": "wasm-pack build ./recipe-rs --target web"
   },
   "keywords": [],

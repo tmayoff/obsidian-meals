@@ -6,3 +6,6 @@ dev:
 
 build: 
 	bun run build
+
+test:
+	bun test

@@ -13,4 +13,4 @@ jobs:
       - run: bun install
       - run: bunx @biomejs/biome ci src/
       - run: bun run build
-
+      - run: bun test
