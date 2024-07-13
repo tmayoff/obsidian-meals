@@ -7,7 +7,8 @@
     "dev": "vite build --mode development",
     "build": "vite build --mode production",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "wasm": "wasm-pack build ./recipe-rs --target web"
+    "wasm": "wasm-pack build ./recipe-rs --target web",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -18,11 +19,13 @@
     "@popperjs/core": "^2.11.8",
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/bun": "^1.1.6",
     "@types/node": "^20.14.10",
     "@types/pluralize": "^0.0.33",
     "autoprefixer": "^10.4.19",
     "builtin-modules": "^4.0.0",
     "bun-types": "latest",
+    "jest-environment-obsidian": "^0.0.1",
     "obsidian": "^1.5.7",
     "parse-ingredient": "^1.2.1",
     "postcss": "^8.4.39",
