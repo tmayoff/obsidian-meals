@@ -1,4 +1,3 @@
-/// <reference types="vitest" />
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import builtins from 'builtin-modules';
 import UnoCSS from 'unocss/vite';
@@ -25,9 +24,6 @@ export default defineConfig(({ mode }) => {
                 },
             }) as PluginOption,
         ],
-        test: {
-            watch: false,
-        },
         build: {
             ssrEmitAssets: true,
             lib: {
