@@ -1,7 +1,7 @@
 import { type App, type TAbstractFile, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
 import type MealPlugin from './main';
-import { GetRecipes, type Recipe } from './recipe/recipe';
+import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe';
 import { MealSettings } from './settings';
 
 export class Context {
@@ -50,6 +50,12 @@ export class Context {
                 return;
             }
             if (file instanceof TFile && file.parent !== recipeFolder) {
+                GetRecipe(this, file).then((r) => {
+                    this.recipes.update((arr) => {
+                        arr.push(r);
+                        return arr;
+                    });
+                });
                 return;
             }
         }
