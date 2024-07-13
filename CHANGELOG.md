@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.2.1](https://github.com/tmayoff/obsidian-meals/compare/0.2.0...0.2.1) (2024-07-13)
+
+
+### Bug Fixes
+
+* Fix Ingredients with ':' in their text ([#126](https://github.com/tmayoff/obsidian-meals/issues/126)) ([b3f01a3](https://github.com/tmayoff/obsidian-meals/commit/b3f01a3ac6714e0303af1a8f287faae998e71973))
+* Fixed regex matching for parentheses ([#125](https://github.com/tmayoff/obsidian-meals/issues/125)) ([b9b969b](https://github.com/tmayoff/obsidian-meals/commit/b9b969bca8ec4696f010f269915076dae2531a0c))
+* Fixed the ingredient 'bounding boxes' ([#121](https://github.com/tmayoff/obsidian-meals/issues/121)) ([357ab0a](https://github.com/tmayoff/obsidian-meals/commit/357ab0a95e87f8a8f4f13462e52065163bfe4f7b))
+
 ## [0.2.0](https://github.com/tmayoff/obsidian-meals/compare/0.1.1...0.2.0) (2024-07-10)
 
 
