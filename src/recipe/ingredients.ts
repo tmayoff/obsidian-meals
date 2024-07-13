@@ -1,5 +1,5 @@
 import type { CachedMetadata, Loc, TFile } from 'obsidian';
-import { getFrontMatterInfo } from 'obsidian';
+import { getFrontMatterInfo, Notice } from 'obsidian';
 import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { get } from 'svelte/store';
@@ -61,7 +61,10 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
 
     const ingredients: Ingredient[] = [];
     for (const rawIngredient of rawIngredientLists) {
-        ingredients.push(ParseIngredient(ctx, rawIngredient));
+        const ingredient = ParseIngredient(ctx, rawIngredient);
+        if (ingredient != null) {
+            ingredients.push(ingredient);
+        }
     }
 
     return ingredients;
@@ -96,15 +99,17 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     // Ingredient content is between Ingredients heading and the next heading
     let start: Loc | null = null;
     let end: Loc | null = null;
+    let ingredientHeadingLevel = 0;
     if (fileMetadata.headings != null) {
         for (const heading of fileMetadata.headings) {
-            if (start != null) {
+            if (start != null && heading.level === ingredientHeadingLevel) {
                 end = heading.position.start;
                 break;
             }
 
             if (heading.heading.contains('Ingredient') || heading.heading.contains('ingredient')) {
                 start = heading.position.end;
+                ingredientHeadingLevel = heading.level;
             }
         }
     }
@@ -120,13 +125,13 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     });
 }
 
-function ParseIngredient(ctx: Context, content: string): Ingredient {
+function ParseIngredient(ctx: Context, content: string): Ingredient | null {
     // Parse the ingredient line
     const linePrefix = '-';
     const prefixIndex = content.indexOf(linePrefix);
     let ingredientContent = content;
     if (prefixIndex >= 0) {
-        ingredientContent = ingredientContent.substring(prefixIndex).trim();
+        ingredientContent = ingredientContent.substring(prefixIndex + 1).trim();
     }
 
     if (ctx.debugMode()) {
@@ -148,15 +153,16 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
 
     let tingredient: TIngredient | null = null;
     for (const candidate of parseIngredient(ingredientContent)) {
-        if (!candidate.isGroupHeader) {
-            tingredient = candidate;
-            break;
+        if (candidate.isGroupHeader) {
+            return null;
         }
+        tingredient = candidate;
     }
 
     if (tingredient == null) {
         console.error('Failed to parse ingredient', ingredientContent);
-        return new Ingredient();
+        new Notice(`Failed to parse ingredient '${ingredientContent}'`); // TODO improve the message
+        return null;
     }
 
     if (doAdvancedParse) {
