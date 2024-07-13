@@ -1,5 +1,6 @@
 format: 
 	biome format --write src/
+	biome format --write tests/
 
 dev: 
 	find src/ -name '*.*' | funzzy 'bun run dev'
