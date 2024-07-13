@@ -61,7 +61,10 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile) {
 
     const ingredients: Ingredient[] = [];
     for (const rawIngredient of rawIngredientLists) {
-        ingredients.push(ParseIngredient(ctx, rawIngredient));
+        const ingredient = ParseIngredient(ctx, rawIngredient);
+        if (ingredient != null) {
+            ingredients.push(ingredient);
+        }
     }
 
     return ingredients;
@@ -96,22 +99,28 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     // Ingredient content is between Ingredients heading and the next heading
     let start: Loc | null = null;
     let end: Loc | null = null;
+    let ingredientHeadingLevel = 0;
     if (fileMetadata.headings != null) {
         for (const heading of fileMetadata.headings) {
-            if (start != null) {
+            if (start != null && heading.level === ingredientHeadingLevel) {
                 end = heading.position.start;
                 break;
             }
 
-            if (heading.heading.localeCompare('Ingredients', undefined, { sensitivity: 'base' })) {
+            if (heading.heading.contains('Ingredient') || heading.heading.contains('ingredient')) {
                 start = heading.position.end;
+                ingredientHeadingLevel = heading.level;
             }
         }
     }
 
-    if (start == null || end == null) {
+    if (start == null) {
         console.error('Recipe is missing the Ingredients heading\n', fileContent);
         return [];
+    }
+
+    if (end == null) {
+        end = { offset: fileContent.length, line: 0, col: 0 }; // this is kind of a hack to be able to use the Loc type, might not be entirely necessary though
     }
 
     const content = fileContent.substring(start.offset, end.offset);
@@ -120,13 +129,13 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     });
 }
 
-function ParseIngredient(ctx: Context, content: string): Ingredient {
+function ParseIngredient(ctx: Context, content: string): Ingredient | null {
     // Parse the ingredient line
     const linePrefix = '-';
     const prefixIndex = content.indexOf(linePrefix);
     let ingredientContent = content;
     if (prefixIndex >= 0) {
-        ingredientContent = ingredientContent.substring(prefixIndex).trim();
+        ingredientContent = ingredientContent.substring(prefixIndex + 1).trim();
     }
 
     if (ctx.debugMode()) {
@@ -146,9 +155,21 @@ function ParseIngredient(ctx: Context, content: string): Ingredient {
         altIngredients = obj.altIngredients;
     }
 
-    const tingredient: TIngredient = parseIngredient(ingredientContent)[0];
+    let tingredient: TIngredient | null = null;
+    for (const candidate of parseIngredient(ingredientContent)) {
+        if (candidate.isGroupHeader) {
+            return null;
+        }
+        tingredient = candidate;
+    }
 
-    if (doAdvancedParse && tingredient !== undefined) {
+    if (tingredient == null) {
+        console.error('Failed to parse ingredient', ingredientContent);
+        new Notice(`Failed to parse ingredient '${ingredientContent}'`); // TODO improve the message
+        return null;
+    }
+
+    if (doAdvancedParse) {
         tingredient.description = singular(tingredient.description);
     }
 

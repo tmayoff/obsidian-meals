@@ -28,11 +28,19 @@ export async function GetRecipes(ctx: Context, recipeDir: TFolder) {
             if (ctx.debugMode()) {
                 console.debug('Parsing recipe:', file.path);
             }
-            const recipe = new Recipe(file);
-            await recipe.fillIngredients(ctx);
-            recipes.push(recipe);
+
+            recipes.push(await GetRecipe(ctx, file));
         }
     }
 
     return recipes;
+}
+
+export async function GetRecipe(ctx: Context, file: TFile) {
+    if (ctx.debugMode()) {
+        console.debug('Parsing recipe:', file.path);
+    }
+    const recipe = new Recipe(file);
+    await recipe.fillIngredients(ctx);
+    return recipe;
 }
