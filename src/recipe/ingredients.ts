@@ -138,6 +138,10 @@ function ParseIngredient(ctx: Context, content: string): Ingredient | null {
         ingredientContent = ingredientContent.substring(prefixIndex + 1).trim();
     }
 
+    if (ingredientContent === '') {
+        return null;
+    }
+
     if (ctx.debugMode()) {
         console.debug('Parsing; original line:', content);
     }
