@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.2](https://github.com/tmayoff/obsidian-meals/compare/0.2.1...0.2.2) (2024-08-20)
+
+
+### Bug Fixes
+
+* Skip empty ingredient lines '-' with nothing else ([#131](https://github.com/tmayoff/obsidian-meals/issues/131)) ([151bea4](https://github.com/tmayoff/obsidian-meals/commit/151bea43d743d0e20c5f9a8dff2cfc313f6ad6e9))
+
 ## [0.2.1](https://github.com/tmayoff/obsidian-meals/compare/0.2.0...0.2.1) (2024-07-13)
 
 
