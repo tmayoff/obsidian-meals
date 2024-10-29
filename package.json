@@ -34,10 +34,10 @@
     "vite": "^5.4.9"
   },
   "dependencies": {
-    "@unocss/extractor-svelte": "^0.63.4",
+    "@unocss/extractor-svelte": "^0.63.6",
     "moment": "^2.30.1",
     "pluralize": "^8.0.0",
     "recipe-rs": "^0.1.5",
-    "unocss": "^0.63.4"
+    "unocss": "^0.63.6"
   }
 }
