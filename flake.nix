@@ -2,7 +2,7 @@
   description = "Dev environment";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
@@ -48,6 +48,7 @@
             nodePackages.typescript-language-server
             bun
             biome
+            vite
             act
             just
             wasm-pack

@@ -4,6 +4,7 @@ servings: "2"
 meal: Dinner
 ---
 # Ingredients
+---
 - 100g Bacon
 - 340g Pizza Dough
 - 1 Tomato
@@ -12,6 +13,7 @@ meal: Dinner
 - 0.75 cup Mozzarella Cheese, shredded
 - 1 Garlic cloves
 - 4 tbsp Mayonnaise
+---
 # Directions
 0. Get Started
 	- **Remove pizza dough from fridge and let rest in a warm spot for 20 min.**
