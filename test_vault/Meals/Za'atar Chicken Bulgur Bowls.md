@@ -4,6 +4,7 @@ servings: "2"
 meal: Dinner
 ---
 # Ingredients
+---
 - 2 Chicken Breasts 
 - Bulgur Wheat 1/2 cup
 - Mixed Olives 30g
@@ -16,6 +17,7 @@ meal: Dinner
 - White Wine Vinegar 1tbsp
 - Mediterranean Spice Blend 1tbsp
 - Sugar 1tbsp
+---
 # Directions
 0. Start Here
 	- Before Starting, preheat the oven to 450f
