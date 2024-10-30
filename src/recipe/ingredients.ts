@@ -95,17 +95,14 @@ function GetRecipeMDFormatBoundedList(fileContent: string): Result<string[], Par
 
     const start = content.indexOf('---') + '---'.length;
     if (start < 0) {
-        // console.error('Not a RecipeMD recipe');
         return Err('NOT_RECIPE_MD_FORMAT');
     }
-    content = content.substring(start).trim();
 
-    const end = content.indexOf('---') - '---'.length;
+    const end = content.indexOf('---', start);
     if (end < 0) {
-        // console.error('No end to ingredient list');
         return Err('INGREDIENT_SECTION_DOESNT_END');
     }
-    content = content.substring(0, end).trim();
+    content = content.substring(start, end).trim();
 
     return Ok(
         content.split('\n').filter((line) => {
