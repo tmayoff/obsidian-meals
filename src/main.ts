@@ -15,23 +15,27 @@ export default class MealPlugin extends Plugin {
     ctx = new Context(this);
 
     async onload() {
-        await this.loadSettings();
-
-        await initWasm(wasmData);
-
-        this.registerEvent(
-            this.app.vault.on('create', (file) => {
-                this.ctx.loadRecipes(file);
-            }),
-        );
-
-        this.registerEvent(
-            this.app.vault.on('modify', (file) => {
-                this.ctx.loadRecipes(file);
-            }),
-        );
-
         this.addSettingTab(new MealPluginSettingsTab(this.app, this));
+
+        this.app.workspace.onLayoutReady(async () => {
+            await this.loadSettings();
+
+            await initWasm(wasmData);
+
+            await this.ctx.loadRecipes(undefined);
+
+            this.registerEvent(
+                this.app.vault.on('create', (file) => {
+                    this.ctx.loadRecipes(file);
+                }),
+            );
+
+            this.registerEvent(
+                this.app.vault.on('modify', (file) => {
+                    this.ctx.loadRecipes(file);
+                }),
+            );
+        });
 
         this.addCommand({
             id: 'open-recipe-search',
@@ -113,10 +117,6 @@ export default class MealPlugin extends Plugin {
                 }),
             );
         }
-
-        this.app.workspace.onLayoutReady(async () => {
-            await this.ctx.loadRecipes(undefined);
-        });
 
         console.info('obisidan-meals plugin loaded');
     }
