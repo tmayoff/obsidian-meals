@@ -1,9 +1,9 @@
 import { type App, TFile } from 'obsidian';
 import { get } from 'svelte/store';
-import { DAYS_OF_WEEK } from '../constants';
-import type { Context } from '../context';
-import type { Recipe } from '../recipe/recipe';
-import { GetCurrentWeek } from './utils';
+import { DAYS_OF_WEEK } from '../constants.ts';
+import type { Context } from '../context.ts';
+import type { Recipe } from '../recipe/recipe.ts';
+import { GetCurrentWeek } from './utils.ts';
 
 export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
     let filePath = get(ctx.settings).mealPlanNote;

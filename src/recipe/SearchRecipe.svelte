@@ -2,8 +2,8 @@
 import { TextComponent } from 'obsidian';
 import { onMount } from 'svelte';
 import { derived, writable } from 'svelte/store';
-import type { Context } from '../context';
-import { IngredientSuggestionModal } from '../suggester/IngredientSuggest';
+import type { Context } from '../context.ts';
+import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
 import RecipeButton from './RecipeButton.svelte';
 
 export let ctx: Context;

@@ -1,5 +1,5 @@
 import type { App, CachedMetadata, FuzzyMatch, TextComponent } from 'obsidian';
-import { SuggestionModal } from './suggester';
+import { SuggestionModal } from './suggester.ts';
 
 export class IngredientSuggestionModal extends SuggestionModal<string> {
     text: TextComponent;

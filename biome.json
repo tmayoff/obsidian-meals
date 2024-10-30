@@ -1,65 +1,69 @@
 {
-	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": true,
-		"indentStyle": "space",
-		"indentWidth": 4,
-		"lineWidth": 140
-	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "single",
-			"jsxQuoteStyle": "single"
-		},
-		"globals": ["__DEV__"]
-	},
-	"linter": {
-		"enabled": true,
-		"ignore": ["node_modules"],
-		"rules": {
-			"all": true,
-			"complexity": {
-				"noUselessFragments": "off"
-			},
-			"style": {
-				"useSingleVarDeclarator": "off",
-				"noParameterAssign": "off",
-				"noNonNullAssertion": "off",
-				"useNamingConvention": {
-					"options": {
-						"strictCase": false
-					}
-				},
-				"useFilenamingConvention": "off"
-			},
-			"suspicious": {
-				"noExplicitAny": "off"
-			},
-			"nursery": {
-				"all": false
-			}
-		}
-	},
-	"overrides": [
-    {
-        "include": ["*.svelte"],
-        "linter": {
-          "rules": {
-            "style": {
-              "useConst": "off"            
+    "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+    "organizeImports": {
+        "enabled": true
+    },
+    "formatter": {
+        "enabled": true,
+        "formatWithErrors": true,
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 140
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "jsxQuoteStyle": "single"
+        },
+        "globals": ["__DEV__"]
+    },
+    "linter": {
+        "enabled": true,
+        "ignore": ["node_modules"],
+        "rules": {
+            "all": true,
+            "complexity": {
+                "noUselessFragments": "off"
             },
-            "correctness": {
-            	"noUnusedImports": "off",
-            	"noUnusedVariables": "off",
-            	"noUndeclaredVariables": "off"
+            "style": {
+                "useSingleVarDeclarator": "off",
+                "noParameterAssign": "off",
+                "noNonNullAssertion": "off",
+                "useNamingConvention": {
+                    "options": {
+                        "strictCase": false
+                    }
+                },
+                "useFilenamingConvention": "off"
+            },
+            "suspicious": {
+                "noExplicitAny": "off",
+                "noConsole": {
+                    "options": {
+                        "allow": ["debug", "info", "error"]
+                    }
+                }
+            },
+            "nursery": {
+                "all": false
             }
-          }
         }
-      }
+    },
+    "overrides": [
+        {
+            "include": ["*.svelte"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useConst": "off"
+                    },
+                    "correctness": {
+                        "noUnusedImports": "off",
+                        "noUnusedVariables": "off",
+                        "noUndeclaredVariables": "off"
+                    }
+                }
+            }
+        }
     ]
 }
-

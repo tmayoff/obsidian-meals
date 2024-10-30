@@ -1,14 +1,14 @@
 import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
-import { Context } from './context';
-import { OpenMealPlanNote } from './meal_plan/plan';
-import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list';
+import { Context } from './context.ts';
+import { OpenMealPlanNote } from './meal_plan/plan.ts';
+import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings, RecipeFormat } from './settings';
+import { MealSettings, RecipeFormat } from './settings.ts';
 import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
-import { DownloadRecipeCommand } from './recipe/downloader';
+import { DownloadRecipeCommand } from './recipe/downloader.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
