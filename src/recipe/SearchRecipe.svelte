@@ -1,66 +1,71 @@
 <script lang="ts">
-import { TextComponent } from 'obsidian';
-import { onMount } from 'svelte';
-import { derived, writable } from 'svelte/store';
-import type { Context } from '../context.ts';
-import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
-import RecipeButton from './RecipeButton.svelte';
+  import { TextComponent } from "obsidian";
+  import { onMount } from "svelte";
+  import { derived, writable } from "svelte/store";
+  import type { Context } from "../context.ts";
+  import { IngredientSuggestionModal } from "../suggester/IngredientSuggest.ts";
+  import RecipeButton from "./RecipeButton.svelte";
 
-export let ctx: Context;
+  type Props = {
+    ctx: Context;
+    onClose: () => void,
+  };
 
-const ingredients = ctx.ingredients;
+  let { ctx, onClose }: Props = $props();
 
-const searchOperation = writable('any of');
+  const ingredients = ctx.ingredients;
 
-const searchIngredients = writable(new Set<string>());
+  const searchOperation = writable('any of');
 
-function addIngredient(ingredient: string) {
-    searchIngredients.update((items) => {
-        items.add(ingredient);
-        return items;
-    });
-}
+  const searchIngredients = writable(new Set<string>());
 
-const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
-    return $recipes.filter((recipe) => {
-        const descs = recipe.ingredients.map((i) => {
-            if (i === undefined || i.description === undefined) {
-                return '';
-            }
+  function addIngredient(ingredient: string) {
+      searchIngredients.update((items) => {
+          items.add(ingredient);
+          return items;
+      });
+  }
 
-            return i.description.toLocaleLowerCase();
-        });
+  const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
+      return $recipes.filter((recipe) => {
+          const descs = recipe.ingredients.map((i) => {
+              if (i === undefined || i.description === undefined) {
+                  return '';
+              }
 
-        if ($searchOperation === 'all of') {
-            return [...$searchIngredients].every((i) => {
-                return descs.contains(i);
-            });
-        }
-        if ($searchOperation === 'any of') {
-            return [...$searchIngredients].some((i) => {
-                return descs.contains(i);
-            });
-        }
-    });
-});
+              return i.description.toLocaleLowerCase();
+          });
 
-let suggesterParent: HTMLElement;
-onMount(() => {
-    const suggesterText = new TextComponent(suggesterParent);
-    suggesterText.inputEl.addClass('w-full');
+          if ($searchOperation === 'all of') {
+              return [...$searchIngredients].every((i) => {
+                  return descs.contains(i);
+              });
+          }
+          if ($searchOperation === 'any of') {
+              return [...$searchIngredients].some((i) => {
+                  return descs.contains(i);
+              });
+          }
+      });
+  });
 
-    const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [...$ingredients]);
+  let suggesterParent: HTMLElement;
+  onMount(() => {
+      const suggesterText = new TextComponent(suggesterParent);
+      suggesterText.inputEl.addClass('w-full');
 
-    suggesterText.onChange(() => {
-        suggester.shouldNotOpen = false;
-        suggester.open();
-    });
+      const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [...$ingredients]);
 
-    suggester.onClose = () => {
-        addIngredient(suggester.text.getValue());
-        suggester.text.setValue('');
-    };
-});
+      suggesterText.onChange(() => {
+          suggester.shouldNotOpen = false;
+          suggester.open();
+      });
+
+      suggester.onClose = () => {
+          addIngredient(suggester.text.getValue());
+          suggester.text.setValue('');
+      };
+  });
 </script>
 
 <div>
@@ -76,7 +81,7 @@ onMount(() => {
         </select>
       </div>
       <div class="search-container ml-0">
-        <div bind:this={suggesterParent} />
+        <div bind:this={suggesterParent}></div>
         <div class="m-2">
           <div>
             {#each $searchIngredients as ingredient}
@@ -84,12 +89,13 @@ onMount(() => {
                 <div>{ingredient}</div>
                 <div>
                   <button
-                    on:click|preventDefault={() => {
+                    onclick={() => {
                       searchIngredients.update((items) => {
                         items.delete(ingredient);
                         return items;
                       });
                     }}
+                    aria-label={ingredient}
                     ><svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -117,8 +123,7 @@ onMount(() => {
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $foundRecipes as recipe}
-          <!-- svelte-ignore missing-declaration -->
-          <RecipeButton on:close_modal {ctx} {recipe} />
+          <RecipeButton {onClose} {ctx} {recipe} />
         {/each}
       </div>
     </div>
