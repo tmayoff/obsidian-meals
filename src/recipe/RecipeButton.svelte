@@ -8,9 +8,9 @@ import { OpenNoteFile } from '../utils/filesystem.ts';
 import type { Recipe } from './recipe.ts';
 
 type Props = {
-  ctx: Context;
-  recipe: Recipe;
-  onClose: () => void,
+    ctx: Context;
+    recipe: Recipe;
+    onClose: () => void;
 };
 
 let { ctx, recipe, onClose }: Props = $props();
