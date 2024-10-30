@@ -8,6 +8,7 @@ import { MealSettings, RecipeFormat } from './settings.ts';
 import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
+import { mount, unmount } from 'svelte';
 import { DownloadRecipeCommand } from './recipe/downloader.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
@@ -26,13 +27,17 @@ export default class MealPlugin extends Plugin {
 
             this.registerEvent(
                 this.app.vault.on('create', (file) => {
-                    this.ctx.loadRecipes(file);
+                    if (file instanceof TFile) {
+                        this.ctx.loadRecipes(file);
+                    }
                 }),
             );
 
             this.registerEvent(
                 this.app.vault.on('modify', (file) => {
-                    this.ctx.loadRecipes(file);
+                    if (file instanceof TFile) {
+                        this.ctx.loadRecipes(file as TFile);
+                    }
                 }),
             );
         });
@@ -131,29 +136,28 @@ export default class MealPlugin extends Plugin {
 }
 
 class RecipeSearch extends Modal {
-    recipeView: SearchRecipe | undefined;
+    component: Record<string, any> | null = null;
     ctx: Context;
-
     constructor(ctx: Context) {
         super(ctx.app);
         this.ctx = ctx;
     }
-    async onOpen() {
-        this.recipeView = new SearchRecipe({
+
+    onOpen() {
+        this.component = mount(SearchRecipe, {
             target: this.containerEl.children[1].children[2],
             props: {
                 ctx: this.ctx,
+                onClose: () => {
+                    this.close();
+                },
             },
         });
-
-        this.recipeView.$on('close_modal', () => {
-            this.close();
-        });
     }
-
     onClose(): void {
-        this.contentEl.empty();
-        this.recipeView?.$destroy();
+        if (this.component != null) {
+            unmount(this.component);
+        }
     }
 }
 
@@ -169,9 +173,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
 
     display(): void {
         const { containerEl } = this;
-
         containerEl.empty();
-
         new Setting(containerEl)
             .setName('Recipe directory')
             .setDesc('Parent folder where recipes are stored')
@@ -184,6 +186,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+
         new Setting(containerEl)
             .setName('Meal plan note')
             .setDesc('Note to store the the weekly meal plans')
@@ -212,7 +215,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListNote = value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     }),
             );
@@ -230,7 +232,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.recipeFormat = <RecipeFormat>value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
@@ -248,7 +249,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListFormat = value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
@@ -264,11 +264,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListIgnore = value.split(',');
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
-
         new Setting(containerEl)
             .setName('EXPERIMENTAL: Advanced ingredient parsing')
             .setDesc(
@@ -280,7 +278,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         s.advancedIngredientParsing = val;
                         return s;
                     });
-
                     await this.plugin.saveSettings();
                     await this.ctx.loadRecipes(undefined);
                 });
@@ -295,7 +292,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         s.debugMode = val;
                         return s;
                     });
-
                     await this.plugin.saveSettings();
                     await this.ctx.loadRecipes(undefined);
                 });
