@@ -186,6 +186,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+
         new Setting(containerEl)
             .setName('Meal plan note')
             .setDesc('Note to store the the weekly meal plans')
@@ -201,6 +202,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
         new Setting(containerEl)
             .setName('Shopping List note')
             .setDesc('Note for storing your shopping list')
@@ -216,6 +218,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
         new Setting(containerEl)
             .setName('Recipe Format')
             .setDesc('RecipeMD or Meal Planner')
@@ -232,6 +235,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+
         new Setting(containerEl)
             .setName('Shopping list format')
             .setDesc(
@@ -248,6 +252,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     });
             });
+
         new Setting(containerEl)
             .setName('Shopping list ignore')
             .setDesc('CSV list of ingredients to not add to the shopping list automatically')
@@ -277,6 +282,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                     await this.ctx.loadRecipes(undefined);
                 });
             });
+
         new Setting(containerEl)
             .setName('Debug mode')
             .setDesc('This enables extra debugging tools: logging, menu options, etc...')
