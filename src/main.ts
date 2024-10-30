@@ -3,7 +3,7 @@ import { get } from 'svelte/store';
 import { Context } from './context.ts';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
-import SearchRecipe from './recipe/SearchRecipe.svelte';
+// import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings.ts';
 import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
@@ -41,7 +41,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-recipe-search',
             name: 'Find a recipe',
             callback: () => {
-                new RecipeSearch(this.ctx).open();
+                // new RecipeSearch(this.ctx).open();
             },
         });
 
@@ -131,30 +131,30 @@ export default class MealPlugin extends Plugin {
 }
 
 class RecipeSearch extends Modal {
-    recipeView: SearchRecipe | undefined;
-    ctx: Context;
+    // recipeView: SearchRecipe | undefined;
+    // ctx: Context;
 
-    constructor(ctx: Context) {
-        super(ctx.app);
-        this.ctx = ctx;
-    }
-    async onOpen() {
-        this.recipeView = new SearchRecipe({
-            target: this.containerEl.children[1].children[2],
-            props: {
-                ctx: this.ctx,
-            },
-        });
+    // constructor(ctx: Context) {
+    //     super(ctx.app);
+    //     this.ctx = ctx;
+    // }
+    // async onOpen() {
+    //     this.recipeView = new SearchRecipe({
+    //         target: this.containerEl.children[1].children[2],
+    //         props: {
+    //             ctx: this.ctx,
+    //         },
+    //     });
 
-        this.recipeView.$on('close_modal', () => {
-            this.close();
-        });
-    }
+    //     this.recipeView.$on('close_modal', () => {
+    //         this.close();
+    //     });
+    // }
 
-    onClose(): void {
-        this.contentEl.empty();
-        this.recipeView?.$destroy();
-    }
+    // onClose(): void {
+    //     this.contentEl.empty();
+    //     this.recipeView?.$destroy();
+    // }
 }
 
 class MealPluginSettingsTab extends PluginSettingTab {
