@@ -68,7 +68,9 @@ async function DownloadRecipe(ctx: Context, url: string) {
         return;
     }
 
-    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${recipe.name}`);
+    const sanitized = recipe.name.replace(/[:?\/<>"\|\*\\-]/gi, ' ').trim();
+
+    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${sanitized}`);
     if (NoteExists(ctx.app, newRecipeNotePath)) {
         new ErrorDialog(ctx.app, 'Recipe with that name already exists').open();
         await OpenNotePath(ctx.app, newRecipeNotePath);
