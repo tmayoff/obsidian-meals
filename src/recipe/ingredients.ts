@@ -1,13 +1,13 @@
 import type { CachedMetadata, Loc, TFile } from 'obsidian';
-import { getFrontMatterInfo, Notice } from 'obsidian';
+import { Notice, getFrontMatterInfo } from 'obsidian';
 import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { get } from 'svelte/store';
+import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { RecipeFormat } from '../settings.js';
-import type { Recipe } from './recipe.ts';
 import { ErrCtx } from '../utils/result.ts';
-import { Ok, Err, type Result } from 'ts-results-es';
+import type { Recipe } from './recipe.ts';
 
 interface AltIngredient {
     altQuantity: number | null;
