@@ -1,11 +1,13 @@
 import type { CachedMetadata, Loc, TFile } from 'obsidian';
-import { getFrontMatterInfo } from 'obsidian';
+import { getFrontMatterInfo, Notice } from 'obsidian';
 import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { get } from 'svelte/store';
-import type { Context } from '../context';
-import { RecipeFormat } from '../settings';
-import type { Recipe } from './recipe';
+import type { Context } from '../context.ts';
+import { RecipeFormat } from '../settings.js';
+import type { Recipe } from './recipe.ts';
+import { ErrCtx } from '../utils/result.ts';
+import { Ok, Err, type Result } from 'ts-results-es';
 
 interface AltIngredient {
     altQuantity: number | null;
@@ -14,6 +16,13 @@ interface AltIngredient {
 }
 
 type Ingredient = TIngredient & AltIngredient;
+
+type ParseErrors =
+    | 'INGREDIENT_FAILED_TO_PARSE'
+    | 'INGREDIENT_EMPTY'
+    | 'NOT_RECIPE_MD_FORMAT'
+    | 'INGREDIENT_SECTION_DOESNT_END'
+    | 'MISSING_INGREDIENT_HEADING';
 
 export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
     const recipesFiles = recipes.map((r) => r.path);
@@ -35,42 +44,50 @@ export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
     });
 }
 
-export async function GetIngredients(ctx: Context, recipeFile: TFile) {
+export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<Result<Ingredient[], ErrCtx>> {
     if (recipeFile === undefined) {
-        console.error('Failed to get ingredients', recipeFile);
+        return Err(new ErrCtx(recipeFile, 'File is undefined'));
     }
 
     const fileContent = await ctx.app.vault.read(recipeFile);
     const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
     if (fileMetadata == null) {
-        console.error('Failed to load recipe metadata');
-        return;
+        // console.error('Failed to load recipe metadata');
+        return Err(new ErrCtx(recipeFile.path, 'Failed to load recipe metadata'));
     }
 
-    let rawIngredientLists: string[] = [];
+    let res: Result<string[], ParseErrors>;
 
     if (get(ctx.settings).recipeFormat === RecipeFormat.RecipeMD) {
-        rawIngredientLists = GetRecipeMDFormatBoundedList(fileContent);
+        res = GetRecipeMDFormatBoundedList(fileContent);
     } else {
-        rawIngredientLists = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
+        res = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
     }
 
+    if (res.isErr()) {
+        return Err(new ErrCtx(recipeFile.path, res.error));
+    }
+
+    const rawIngredient = res.value;
+
     if (ctx.debugMode()) {
-        console.debug(rawIngredientLists);
+        console.debug(rawIngredient);
     }
 
     const ingredients: Ingredient[] = [];
-    for (const rawIngredient of rawIngredientLists) {
+    for (const rawIngredient of res) {
         const ingredient = ParseIngredient(ctx, rawIngredient);
-        if (ingredient != null) {
-            ingredients.push(ingredient);
+        if (ingredient.isOk()) {
+            ingredients.push(ingredient.value);
+        } else {
+            return Err(new ErrCtx(rawIngredient, ingredient.error));
         }
     }
 
-    return ingredients;
+    return Ok(ingredients);
 }
 
-function GetRecipeMDFormatBoundedList(fileContent: string): string[] {
+function GetRecipeMDFormatBoundedList(fileContent: string): Result<string[], ParseErrors> {
     // Ingredient content is between --- & ---
     const frontmatter = getFrontMatterInfo(fileContent);
     const contentStart = frontmatter.contentStart;
@@ -78,24 +95,26 @@ function GetRecipeMDFormatBoundedList(fileContent: string): string[] {
 
     const start = content.indexOf('---') + '---'.length;
     if (start < 0) {
-        console.error('Not a RecipeMD recipe');
-        return [];
+        // console.error('Not a RecipeMD recipe');
+        return Err('NOT_RECIPE_MD_FORMAT');
     }
     content = content.substring(start).trim();
 
     const end = content.indexOf('---') - '---'.length;
     if (end < 0) {
-        console.error('No end to ingredient list');
-        return [];
+        // console.error('No end to ingredient list');
+        return Err('INGREDIENT_SECTION_DOESNT_END');
     }
     content = content.substring(0, end).trim();
 
-    return content.split('\n').filter((line) => {
-        return line.length > 0;
-    });
+    return Ok(
+        content.split('\n').filter((line) => {
+            return line.length > 0;
+        }),
+    );
 }
 
-function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedMetadata): string[] {
+function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedMetadata): Result<string[], ParseErrors> {
     // Ingredient content is between Ingredients heading and the next heading
     let start: Loc | null = null;
     let end: Loc | null = null;
@@ -115,8 +134,7 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     }
 
     if (start == null) {
-        console.error('Recipe is missing the Ingredients heading\n', fileContent);
-        return [];
+        return Err('MISSING_INGREDIENT_HEADING');
     }
 
     if (end == null) {
@@ -124,12 +142,14 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
     }
 
     const content = fileContent.substring(start.offset, end.offset);
-    return content.split('\n').filter((line) => {
-        return line.length > 0;
-    });
+    return Ok(
+        content.split('\n').filter((line) => {
+            return line.length > 0;
+        }),
+    );
 }
 
-function ParseIngredient(ctx: Context, content: string): Ingredient | null {
+function ParseIngredient(ctx: Context, content: string): Result<Ingredient, ParseErrors> {
     // Parse the ingredient line
     const linePrefix = '-';
     const prefixIndex = content.indexOf(linePrefix);
@@ -139,7 +159,7 @@ function ParseIngredient(ctx: Context, content: string): Ingredient | null {
     }
 
     if (ingredientContent === '') {
-        return null;
+        return Err('INGREDIENT_EMPTY');
     }
 
     if (ctx.debugMode()) {
@@ -162,15 +182,15 @@ function ParseIngredient(ctx: Context, content: string): Ingredient | null {
     let tingredient: TIngredient | null = null;
     for (const candidate of parseIngredient(ingredientContent)) {
         if (candidate.isGroupHeader) {
-            return null;
+            return Err('INGREDIENT_EMPTY');
         }
         tingredient = candidate;
     }
 
     if (tingredient == null) {
-        console.error('Failed to parse ingredient', ingredientContent);
+        // console.error('Failed to parse ingredient', ingredientContent);
         new Notice(`Failed to parse ingredient '${ingredientContent}'`); // TODO improve the message
-        return null;
+        return Err('INGREDIENT_FAILED_TO_PARSE');
     }
 
     if (doAdvancedParse) {
@@ -181,11 +201,13 @@ function ParseIngredient(ctx: Context, content: string): Ingredient | null {
         console.debug('Final ingredient output', tingredient, altIngredients);
     }
 
-    return {
+    return Ok({
         ...tingredient,
         ...altIngredients,
-    };
+    });
 }
+
+const regex = /\((.*?)\)/;
 
 function AdvancedParse(ingredientContent: string) {
     // ============================
@@ -199,7 +221,7 @@ function AdvancedParse(ingredientContent: string) {
     };
 
     // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
-    const regex = /\((.*?)\)/;
+
     if (regex.test(ingredientContent)) {
         // Regex match all '(...)'
         const match = regex.exec(ingredientContent);
