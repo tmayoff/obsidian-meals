@@ -16,7 +16,7 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            // UnoCSS(),
+            UnoCSS(),
             svelte({
                 preprocess: vitePreprocess(),
                 compilerOptions: {
