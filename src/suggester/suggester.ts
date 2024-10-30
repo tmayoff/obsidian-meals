@@ -43,7 +43,7 @@ class Suggester<T> {
         });
     }
     chooseSuggestion(evt: KeyboardEvent) {
-        if (!this.items?.length) {
+        if (this.items?.length === 0) {
             return;
         }
         const currentValue = this.items[this.selectedItem];
@@ -53,17 +53,18 @@ class Suggester<T> {
     }
     onSuggestionClick(event: MouseEvent, el: HTMLElement): void {
         event.preventDefault();
-        if (!this.suggestions?.length) {
+        if (this.suggestions?.length === 0) {
             return;
         }
 
         const item = this.suggestions.indexOf(el);
         this.setSelectedItem(item, false);
+        // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
         this.useSelectedItem(event);
     }
 
     onSuggestionMouseover(_event: MouseEvent, el: HTMLElement): void {
-        if (!this.suggestions?.length) {
+        if (this.suggestions?.length === 0) {
             return;
         }
         const item = this.suggestions.indexOf(el);
@@ -86,7 +87,7 @@ class Suggester<T> {
         this.setSelectedItem(0, false);
     }
     useSelectedItem(event: MouseEvent | KeyboardEvent) {
-        if (!this.items?.length) {
+        if (this.items?.length === 0) {
             return;
         }
         const currentValue = this.items[this.selectedItem];
@@ -131,7 +132,7 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
     shouldNotOpen: boolean;
     constructor(app: App, inputEl: HTMLInputElement, items: T[]) {
         super(app);
-        this.shouldNotOpen = !this.items.length;
+        this.shouldNotOpen = this.items.length === 0;
         this.inputEl = inputEl;
         this.items = items;
 

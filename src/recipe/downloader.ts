@@ -1,8 +1,8 @@
 import { type App, Modal, SuggestModal, requestUrl } from 'obsidian';
 import { type Recipe, format, scrape } from 'recipe-rs';
 import { get } from 'svelte/store';
-import type { Context } from '../context';
-import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem';
+import type { Context } from '../context.ts';
+import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
     query = '';

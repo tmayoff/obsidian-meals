@@ -1,11 +1,11 @@
 <script lang="ts">
 import { SuggestModal } from 'obsidian';
 import { createEventDispatcher, onMount } from 'svelte';
-import { DAYS_OF_WEEK } from '../constants';
-import type { Context } from '../context';
-import { AddRecipeToMealPlan } from '../meal_plan/plan';
-import { OpenNoteFile } from '../utils/filesystem';
-import type { Recipe } from './recipe';
+import { DAYS_OF_WEEK } from '../constants.ts';
+import type { Context } from '../context.ts';
+import { AddRecipeToMealPlan } from '../meal_plan/plan.ts';
+import { OpenNoteFile } from '../utils/filesystem.ts';
+import type { Recipe } from './recipe.ts';
 
 export let ctx: Context;
 export let recipe: Recipe;
