@@ -1,7 +1,7 @@
-import { parseIngredient, type Ingredient as TIngredient } from 'parse-ingredient';
-import type { AltIngredient, Ingredient, ParseErrors } from '../types.ts';
-import { Err, Ok, type Result } from 'ts-results-es';
+import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
+import { Err, Ok, type Result } from 'ts-results-es';
+import type { AltIngredient, Ingredient, ParseErrors } from '../types.ts';
 
 export function ParseIngredient(content: string, advancedParse: boolean): Result<Ingredient, ParseErrors> {
     // Parse the ingredient line
