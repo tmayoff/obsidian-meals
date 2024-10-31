@@ -9,6 +9,7 @@ import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
+import { DAYS_OF_WEEK } from './constants.ts';
 import { DownloadRecipeCommand } from './recipe/downloader.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
@@ -54,7 +55,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-meal-plan',
             name: 'Open meal plan note',
             callback: async () => {
-                await OpenMealPlanNote(this.app, get(this.ctx.settings).mealPlanNote);
+                await OpenMealPlanNote(this.ctx, get(this.ctx.settings).mealPlanNote);
             },
         });
 
@@ -218,6 +219,23 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }),
             );
+
+        new Setting(containerEl)
+            .setName('Start of week')
+            .setDesc('What day to consider as the start (mainly affects the Meal Planning)')
+            .addDropdown((dropdown) => {
+                DAYS_OF_WEEK.forEach((day, index) => {
+                    dropdown.addOption(index.toString(), day);
+                });
+
+                dropdown.setValue(get(this.ctx.settings).startOfWeek.toString()).onChange(async (value) => {
+                    this.ctx.settings.update((s) => {
+                        s.startOfWeek = +value;
+                        return s;
+                    });
+                    await this.plugin.saveSettings();
+                });
+            });
 
         new Setting(containerEl)
             .setName('Recipe Format')

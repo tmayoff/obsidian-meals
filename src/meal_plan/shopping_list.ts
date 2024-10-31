@@ -3,7 +3,7 @@ import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
-import { GetCurrentWeek, formatUnicorn } from './utils.ts';
+import { GetCurrentWeek, formatUnicorn } from '../utils/utils.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
     const filePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
@@ -93,7 +93,7 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
 }
 
 function getMealPlanIngredients(ctx: Context, file: TFile) {
-    const thisWeek = GetCurrentWeek();
+    const thisWeek = GetCurrentWeek(get(ctx.settings).startOfWeek);
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
 
     const topLevel = fileCache.headings!.filter((h) => {
