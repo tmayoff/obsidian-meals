@@ -30,9 +30,6 @@ export default defineConfig(({ mode }) => {
                 },
             }) as PluginOption,
         ],
-        test: {
-            watch: false
-        },
         build: {
             ssrEmitAssets: true,
             lib: {

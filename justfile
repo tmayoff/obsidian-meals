@@ -5,10 +5,10 @@ format:
 	biome format --write tests/
 
 dev: 
-	find src/ -name '*.*' | funzzy 'bun run dev'
+	find src/ -name '*.*' | funzzy 'yarn run dev'
 
 build: 
-	bun run build
+	yarn run build
 
 test:
-	bun test
+	yarn test

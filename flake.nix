@@ -46,12 +46,14 @@
           nativeBuildInputs = with pkgs; [
             nodePackages.svelte-language-server
             nodePackages.typescript-language-server
-            bun
             yarn
+
             biome
             act
             just
+
             wasm-pack
+
             funzzy
           ];
         };

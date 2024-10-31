@@ -1,28 +1,13 @@
 import type { CachedMetadata, Loc, TFile } from 'obsidian';
-import { Notice, getFrontMatterInfo } from 'obsidian';
-import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
-import { singular } from 'pluralize';
+import { getFrontMatterInfo } from 'obsidian';
 import { get } from 'svelte/store';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { RecipeFormat } from '../settings.js';
 import { ErrCtx } from '../utils/result.ts';
 import type { Recipe } from './recipe.ts';
-
-interface AltIngredient {
-    altQuantity: number | null;
-    altUnitOfMeasure: string | null;
-    altUnitOfMeasureID: string | null;
-}
-
-type Ingredient = TIngredient & AltIngredient;
-
-type ParseErrors =
-    | 'INGREDIENT_FAILED_TO_PARSE'
-    | 'INGREDIENT_EMPTY'
-    | 'NOT_RECIPE_MD_FORMAT'
-    | 'INGREDIENT_SECTION_DOESNT_END'
-    | 'MISSING_INGREDIENT_HEADING';
+import type { Ingredient, ParseErrors } from '../types.ts';
+import { ParseIngredient } from '../utils/parser.ts';
 
 export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
     const recipesFiles = recipes.map((r) => r.path);
@@ -49,6 +34,8 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
         return Err(new ErrCtx(recipeFile, 'File is undefined'));
     }
 
+    const settings = get(ctx.settings);
+
     const fileContent = await ctx.app.vault.read(recipeFile);
     const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
     if (fileMetadata == null) {
@@ -58,7 +45,7 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
 
     let res: Result<string[], ParseErrors>;
 
-    if (get(ctx.settings).recipeFormat === RecipeFormat.RecipeMD) {
+    if (settings.recipeFormat === RecipeFormat.RecipeMD) {
         res = GetRecipeMDFormatBoundedList(fileContent);
     } else {
         res = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
@@ -76,8 +63,17 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
 
     const ingredients: Ingredient[] = [];
     for (const rawIngredient of res) {
-        const ingredient = ParseIngredient(ctx, rawIngredient);
+        if (ctx.debugMode()) {
+            console.debug('Parsing ingredient, raw line: ', rawIngredient);
+        }
+
+        const advancedParsing = settings.advancedIngredientParsing;
+
+        const ingredient = ParseIngredient(rawIngredient, advancedParsing);
         if (ingredient.isOk()) {
+            if (ctx.debugMode()) {
+                console.debug('Final ingredient output', ingredient.value);
+            }
             ingredients.push(ingredient.value);
         } else {
             return Err(new ErrCtx(rawIngredient, ingredient.error));
@@ -144,115 +140,4 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
             return line.length > 0;
         }),
     );
-}
-
-function ParseIngredient(ctx: Context, content: string): Result<Ingredient, ParseErrors> {
-    // Parse the ingredient line
-    const linePrefix = '-';
-    const prefixIndex = content.indexOf(linePrefix);
-    let ingredientContent = content;
-    if (prefixIndex >= 0) {
-        ingredientContent = ingredientContent.substring(prefixIndex + 1).trim();
-    }
-
-    if (ingredientContent === '') {
-        return Err('INGREDIENT_EMPTY');
-    }
-
-    if (ctx.debugMode()) {
-        console.debug('Parsing; original line:', content);
-    }
-
-    const doAdvancedParse = get(ctx.settings).advancedIngredientParsing;
-
-    let altIngredients: AltIngredient = {
-        altQuantity: null,
-        altUnitOfMeasure: null,
-        altUnitOfMeasureID: null,
-    };
-    if (doAdvancedParse) {
-        const obj = AdvancedParse(ingredientContent);
-        ingredientContent = obj.ingredientContent;
-        altIngredients = obj.altIngredients;
-    }
-
-    let tingredient: TIngredient | null = null;
-    for (const candidate of parseIngredient(ingredientContent)) {
-        if (candidate.isGroupHeader) {
-            return Err('INGREDIENT_EMPTY');
-        }
-        tingredient = candidate;
-    }
-
-    if (tingredient == null) {
-        // console.error('Failed to parse ingredient', ingredientContent);
-        new Notice(`Failed to parse ingredient '${ingredientContent}'`); // TODO improve the message
-        return Err('INGREDIENT_FAILED_TO_PARSE');
-    }
-
-    if (doAdvancedParse) {
-        tingredient.description = singular(tingredient.description);
-    }
-
-    if (ctx.debugMode()) {
-        console.debug('Final ingredient output', tingredient, altIngredients);
-    }
-
-    return Ok({
-        ...tingredient,
-        ...altIngredients,
-    });
-}
-
-const regex = /\((.*?)\)/;
-
-function AdvancedParse(ingredientContent: string) {
-    // ============================
-    // Special ingredient parsing
-    // =============================
-
-    let altIngredients: AltIngredient = {
-        altQuantity: null,
-        altUnitOfMeasure: null,
-        altUnitOfMeasureID: null,
-    };
-
-    // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
-
-    if (regex.test(ingredientContent)) {
-        // Regex match all '(...)'
-        const match = regex.exec(ingredientContent);
-        if (match != null) {
-            // This hack is required due to the parseIngredient function expected a description, without it 200g is parsed into: {quantity: 200, description: 'g'}
-            const extraQuantity = `DUMMY_INGREDIENT ${match[0]}`;
-            const ingredients = parseIngredient(extraQuantity);
-            if (ingredients.length > 0) {
-                altIngredients = {
-                    altQuantity: ingredients[0].quantity,
-                    altUnitOfMeasure: ingredients[0].unitOfMeasure,
-                    altUnitOfMeasureID: ingredients[0].unitOfMeasureID,
-                };
-            }
-            ingredientContent = ingredientContent.replace(regex, '');
-        }
-    }
-
-    // Ingredient name ignores everything after the first comma
-    // 200g onions, chopped
-    // ~~~~~~~~~~~
-    // 200g onion
-
-    const firstComma = ingredientContent.indexOf(',');
-
-    if (firstComma >= 0) {
-        ingredientContent = ingredientContent.substring(0, firstComma);
-    }
-
-    return { ingredientContent, altIngredients };
-}
-
-if (process.env.NODE_ENV === 'development') {
-    module.exports.testingExports = {
-        AdvancedParse
-    };
 }
