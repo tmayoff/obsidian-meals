@@ -2,11 +2,16 @@
 import { TextComponent } from 'obsidian';
 import { onMount } from 'svelte';
 import { derived, writable } from 'svelte/store';
-import type { Context } from '../context';
-import { IngredientSuggestionModal } from '../suggester/IngredientSuggest';
+import type { Context } from '../context.ts';
+import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
 import RecipeButton from './RecipeButton.svelte';
 
-export let ctx: Context;
+type Props = {
+    ctx: Context;
+    onClose: () => void;
+};
+
+let { ctx, onClose }: Props = $props();
 
 const ingredients = ctx.ingredients;
 
@@ -76,7 +81,7 @@ onMount(() => {
         </select>
       </div>
       <div class="search-container ml-0">
-        <div bind:this={suggesterParent} />
+        <div bind:this={suggesterParent}></div>
         <div class="m-2">
           <div>
             {#each $searchIngredients as ingredient}
@@ -84,12 +89,13 @@ onMount(() => {
                 <div>{ingredient}</div>
                 <div>
                   <button
-                    on:click|preventDefault={() => {
+                    onclick={() => {
                       searchIngredients.update((items) => {
                         items.delete(ingredient);
                         return items;
                       });
                     }}
+                    aria-label={ingredient}
                     ><svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -117,8 +123,7 @@ onMount(() => {
       <h2>Recipes</h2>
       <div class="flex flex-col p-3">
         {#each $foundRecipes as recipe}
-          <!-- svelte-ignore missing-declaration -->
-          <RecipeButton on:close_modal {ctx} {recipe} />
+          <RecipeButton {onClose} {ctx} {recipe} />
         {/each}
       </div>
     </div>

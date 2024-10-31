@@ -1,3 +1,5 @@
+default: build
+
 format: 
 	biome format --write src/
 	biome format --write tests/

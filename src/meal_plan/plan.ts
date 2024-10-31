@@ -1,9 +1,10 @@
-import { type App, TFile } from 'obsidian';
+import type { App } from 'obsidian';
 import { get } from 'svelte/store';
-import { DAYS_OF_WEEK } from '../constants';
-import type { Context } from '../context';
-import type { Recipe } from '../recipe/recipe';
-import { GetCurrentWeek } from './utils';
+import { DAYS_OF_WEEK } from '../constants.ts';
+import type { Context } from '../context.ts';
+import type { Recipe } from '../recipe/recipe.ts';
+import { AppendMarkdownExt } from '../utils/filesystem.ts';
+import { GetCurrentWeek } from '../utils/utils.ts';
 
 export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
     let filePath = get(ctx.settings).mealPlanNote;
@@ -11,12 +12,12 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
         filePath += '.md';
     }
 
-    await fillMealPlanNote(ctx.app, filePath);
+    await fillMealPlanNote(ctx, filePath);
 
-    const file = ctx.app.vault.getAbstractFileByPath(filePath);
-    if (file instanceof TFile) {
+    const file = ctx.app.vault.getFileByPath(filePath);
+    if (file != null) {
         file.vault.process(file, (content) => {
-            const header = `Week of ${GetCurrentWeek()}`;
+            const header = `Week of ${GetCurrentWeek(get(ctx.settings).startOfWeek)}`;
             const headerIndex = content.indexOf(header) + header.length;
             const dayHeader = `## ${day}`;
             const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
@@ -30,51 +31,53 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
     }
 }
 
-export async function OpenMealPlanNote(app: App, filePath: string) {
-    if (!filePath.endsWith('.md')) {
-        filePath += '.md';
-    }
-    await createMealPlanNote(app, filePath);
+export async function OpenMealPlanNote(ctx: Context, filePath: string) {
+    AppendMarkdownExt(filePath);
+    await createMealPlanNote(ctx.app, filePath);
 
     let found = false;
-    app.workspace.iterateAllLeaves((leaf) => {
+    ctx.app.workspace.iterateAllLeaves((leaf) => {
         if (leaf.getDisplayText() === filePath.substring(0, filePath.length - 3)) {
-            // console.log(leaf.getDisplayText());
-            app.workspace.setActiveLeaf(leaf);
+            ctx.app.workspace.setActiveLeaf(leaf);
             found = true;
         }
     });
 
     if (!found) {
-        await app.workspace.openLinkText(filePath, '', true);
+        await ctx.app.workspace.openLinkText(filePath, '', true);
     }
 
-    fillMealPlanNote(app, filePath);
+    fillMealPlanNote(ctx, filePath);
 }
 
-async function fillMealPlanNote(app: App, filePath: string) {
-    const header = `Week of ${GetCurrentWeek()}`;
-    const dayHeaders = DAYS_OF_WEEK.map((day) => {
-        return `## ${day}`;
-    });
+async function fillMealPlanNote(ctx: Context, filePath: string) {
+    const dayOffset = get(ctx.settings).startOfWeek;
+    const header = `Week of ${GetCurrentWeek(dayOffset)}`;
 
-    const file = app.vault.getAbstractFileByPath(filePath);
-    if (file instanceof TFile) {
-        app.vault.process(file, (content) => {
+    const dayHeaders: string[] = [];
+
+    for (let i = 0; i < DAYS_OF_WEEK.length; ++i) {
+        const pos = (i + dayOffset) % DAYS_OF_WEEK.length;
+        dayHeaders.push(`## ${DAYS_OF_WEEK[pos]}`);
+    }
+
+    const file = ctx.app.vault.getFileByPath(filePath);
+    if (file != null) {
+        ctx.app.vault.process(file, (content) => {
             if (content.contains(header)) {
                 return content;
             }
 
-            return `# ${header}\n${dayHeaders.join('\n\n')}\n${content}`;
+            return `# ${header}\n${dayHeaders.join('\n')}\n${content}`;
         });
     }
 }
 
 async function createMealPlanNote(app: App, filePath: string) {
-    const file = app.vault.getAbstractFileByPath(filePath);
-    if (file === undefined) {
+    const file = app.vault.getFileByPath(filePath);
+    if (file == null) {
         await app.vault.create(filePath, '');
-    } else if (!(file instanceof TFile)) {
+    } else {
         console.error('Meal plan note is not a file');
     }
 }

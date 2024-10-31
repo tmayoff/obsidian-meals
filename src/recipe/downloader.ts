@@ -1,8 +1,8 @@
 import { type App, Modal, SuggestModal, requestUrl } from 'obsidian';
 import { type Recipe, format, scrape } from 'recipe-rs';
 import { get } from 'svelte/store';
-import type { Context } from '../context';
-import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem';
+import type { Context } from '../context.ts';
+import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
     query = '';
@@ -68,7 +68,9 @@ async function DownloadRecipe(ctx: Context, url: string) {
         return;
     }
 
-    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${recipe.name}`);
+    const sanitized = recipe.name.replace(/[:?\/<>"\|\*\\-]/gi, ' ').trim();
+
+    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${sanitized}`);
     if (NoteExists(ctx.app, newRecipeNotePath)) {
         new ErrorDialog(ctx.app, 'Recipe with that name already exists').open();
         await OpenNotePath(ctx.app, newRecipeNotePath);

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/tmayoff/obsidian-meals/compare/0.2.2...0.3.0) (2024-10-29)
+
+
+### Features
+
+* Bump recipe-rs to support more recipe sites to download ([#160](https://github.com/tmayoff/obsidian-meals/issues/160)) ([0c71713](https://github.com/tmayoff/obsidian-meals/commit/0c717131dc35bda4bf88a6d36307307eecc6cefa))
+
 ## [0.2.2](https://github.com/tmayoff/obsidian-meals/compare/0.2.1...0.2.2) (2024-08-20)
 
 

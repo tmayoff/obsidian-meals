@@ -7,9 +7,10 @@ export class MealSettings {
     recipeDirectory = 'Meals';
     mealPlanNote = 'Meal Plan';
     shoppingListNote = 'Shopping List';
-    recipeFormat: RecipeFormat = RecipeFormat.MealPlan;
+    recipeFormat: RecipeFormat = RecipeFormat.RecipeMD;
     shoppingListIgnore: string[] = ['salt', 'pepper', 'olive oil', 'garlic powder'];
     advancedIngredientParsing = false;
     shoppingListFormat = '{description} {quantity} {unitOfMeasure}';
     debugMode = false;
+    startOfWeek = 0;
 }

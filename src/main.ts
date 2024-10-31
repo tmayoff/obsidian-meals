@@ -1,37 +1,47 @@
 import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
-import { Context } from './context';
-import { OpenMealPlanNote } from './meal_plan/plan';
-import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list';
+import { Context } from './context.ts';
+import { OpenMealPlanNote } from './meal_plan/plan.ts';
+import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings, RecipeFormat } from './settings';
+import { MealSettings, RecipeFormat } from './settings.ts';
 import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
-import { DownloadRecipeCommand } from './recipe/downloader';
+import { mount, unmount } from 'svelte';
+import { DAYS_OF_WEEK } from './constants.ts';
+import { DownloadRecipeCommand } from './recipe/downloader.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
 
     async onload() {
-        await this.loadSettings();
-
-        await initWasm(wasmData);
-
-        this.registerEvent(
-            this.app.vault.on('create', (file) => {
-                this.ctx.loadRecipes(file);
-            }),
-        );
-
-        this.registerEvent(
-            this.app.vault.on('modify', (file) => {
-                this.ctx.loadRecipes(file);
-            }),
-        );
-
         this.addSettingTab(new MealPluginSettingsTab(this.app, this));
+
+        this.app.workspace.onLayoutReady(async () => {
+            await this.loadSettings();
+
+            await initWasm(wasmData);
+
+            await this.ctx.loadRecipes(undefined);
+
+            this.registerEvent(
+                this.app.vault.on('create', (file) => {
+                    if (file instanceof TFile) {
+                        this.ctx.loadRecipes(file);
+                    }
+                }),
+            );
+
+            this.registerEvent(
+                this.app.vault.on('modify', (file) => {
+                    if (file instanceof TFile) {
+                        this.ctx.loadRecipes(file as TFile);
+                    }
+                }),
+            );
+        });
 
         this.addCommand({
             id: 'open-recipe-search',
@@ -45,7 +55,7 @@ export default class MealPlugin extends Plugin {
             id: 'open-meal-plan',
             name: 'Open meal plan note',
             callback: async () => {
-                await OpenMealPlanNote(this.app, get(this.ctx.settings).mealPlanNote);
+                await OpenMealPlanNote(this.ctx, get(this.ctx.settings).mealPlanNote);
             },
         });
 
@@ -114,10 +124,6 @@ export default class MealPlugin extends Plugin {
             );
         }
 
-        this.app.workspace.onLayoutReady(async () => {
-            await this.ctx.loadRecipes(undefined);
-        });
-
         console.info('obisidan-meals plugin loaded');
     }
 
@@ -131,29 +137,28 @@ export default class MealPlugin extends Plugin {
 }
 
 class RecipeSearch extends Modal {
-    recipeView: SearchRecipe | undefined;
+    component: Record<string, any> | null = null;
     ctx: Context;
-
     constructor(ctx: Context) {
         super(ctx.app);
         this.ctx = ctx;
     }
-    async onOpen() {
-        this.recipeView = new SearchRecipe({
+
+    onOpen() {
+        this.component = mount(SearchRecipe, {
             target: this.containerEl.children[1].children[2],
             props: {
                 ctx: this.ctx,
+                onClose: () => {
+                    this.close();
+                },
             },
         });
-
-        this.recipeView.$on('close_modal', () => {
-            this.close();
-        });
     }
-
     onClose(): void {
-        this.contentEl.empty();
-        this.recipeView?.$destroy();
+        if (this.component != null) {
+            unmount(this.component);
+        }
     }
 }
 
@@ -169,9 +174,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
 
     display(): void {
         const { containerEl } = this;
-
         containerEl.empty();
-
         new Setting(containerEl)
             .setName('Recipe directory')
             .setDesc('Parent folder where recipes are stored')
@@ -184,6 +187,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                 });
             });
+
         new Setting(containerEl)
             .setName('Meal plan note')
             .setDesc('Note to store the the weekly meal plans')
@@ -212,10 +216,26 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListNote = value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     }),
             );
+
+        new Setting(containerEl)
+            .setName('Start of week')
+            .setDesc('What day to consider as the start (mainly affects the Meal Planning)')
+            .addDropdown((dropdown) => {
+                DAYS_OF_WEEK.forEach((day, index) => {
+                    dropdown.addOption(index.toString(), day);
+                });
+
+                dropdown.setValue(get(this.ctx.settings).startOfWeek.toString()).onChange(async (value) => {
+                    this.ctx.settings.update((s) => {
+                        s.startOfWeek = +value;
+                        return s;
+                    });
+                    await this.plugin.saveSettings();
+                });
+            });
 
         new Setting(containerEl)
             .setName('Recipe Format')
@@ -230,7 +250,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.recipeFormat = <RecipeFormat>value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
@@ -248,7 +267,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListFormat = value;
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
@@ -264,11 +282,9 @@ class MealPluginSettingsTab extends PluginSettingTab {
                             s.shoppingListIgnore = value.split(',');
                             return s;
                         });
-
                         await this.plugin.saveSettings();
                     });
             });
-
         new Setting(containerEl)
             .setName('EXPERIMENTAL: Advanced ingredient parsing')
             .setDesc(
@@ -280,7 +296,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         s.advancedIngredientParsing = val;
                         return s;
                     });
-
                     await this.plugin.saveSettings();
                     await this.ctx.loadRecipes(undefined);
                 });
@@ -295,7 +310,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                         s.debugMode = val;
                         return s;
                     });
-
                     await this.plugin.saveSettings();
                     await this.ctx.loadRecipes(undefined);
                 });

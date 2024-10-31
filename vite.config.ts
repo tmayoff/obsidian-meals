@@ -1,9 +1,12 @@
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import extractorSvelte from '@unocss/extractor-svelte';
 import builtins from 'builtin-modules';
+import { presetUno } from '@unocss/preset-uno';
 import UnoCSS from 'unocss/vite';
 import { type PluginOption, defineConfig } from 'vite';
 
 const setOutDir = (mode: string) => {
+    // biome-ignore lint/style/useDefaultSwitchClause: <explanation>
     switch (mode) {
         case 'development':
             return './test_vault/.obsidian/plugins/tmayoff-meals';
@@ -16,7 +19,10 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            UnoCSS(),
+            UnoCSS({
+                presets: [presetUno()],
+                extractors: [extractorSvelte()],
+            }),
             svelte({
                 preprocess: vitePreprocess(),
                 compilerOptions: {

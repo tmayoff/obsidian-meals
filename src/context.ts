@@ -1,8 +1,8 @@
-import { type App, type TAbstractFile, TFile, TFolder } from 'obsidian';
+import type { App, TFile } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
-import type MealPlugin from './main';
-import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe';
-import { MealSettings } from './settings';
+import type MealPlugin from './main.ts';
+import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe.ts';
+import { MealSettings } from './settings.ts';
 
 export class Context {
     app: App;
@@ -34,7 +34,8 @@ export class Context {
         this.app = plugin.app;
     }
 
-    async loadRecipes(file: TAbstractFile | undefined) {
+    async loadRecipes(file: TFile | undefined) {
+        // Get the recipe folder path by default 'Meals'
         const recipeFolderPath = get(this.settings).recipeDirectory;
         if (this.debugMode()) {
             console.debug('Recipe Folder:', recipeFolderPath);
@@ -45,24 +46,19 @@ export class Context {
             return;
         }
 
-        if (file !== undefined) {
-            if (file instanceof TFolder && file !== recipeFolder) {
-                return;
-            }
-            if (file instanceof TFile && file.parent !== recipeFolder) {
-                GetRecipe(this, file).then((r) => {
-                    this.recipes.update((arr) => {
-                        arr.push(r);
-                        return arr;
-                    });
+        // Load just the recipe file specified and only if it's actually in the recipeFolder
+        if (file !== undefined && file.parent === recipeFolder) {
+            GetRecipe(this, file).then((r) => {
+                this.recipes.update((arr) => {
+                    arr.push(r);
+                    return arr;
                 });
-                return;
-            }
+            });
+        } else {
+            GetRecipes(this, recipeFolder!).then((r) => {
+                this.recipes.set(r);
+            });
         }
-
-        GetRecipes(this, recipeFolder!).then((r) => {
-            this.recipes.set(r);
-        });
     }
 
     debugMode() {

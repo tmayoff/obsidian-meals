@@ -1,18 +1,21 @@
 <script lang="ts">
 import { SuggestModal } from 'obsidian';
 import { createEventDispatcher, onMount } from 'svelte';
-import { DAYS_OF_WEEK } from '../constants';
-import type { Context } from '../context';
-import { AddRecipeToMealPlan } from '../meal_plan/plan';
-import { OpenNoteFile } from '../utils/filesystem';
-import type { Recipe } from './recipe';
+import { DAYS_OF_WEEK } from '../constants.ts';
+import type { Context } from '../context.ts';
+import { AddRecipeToMealPlan } from '../meal_plan/plan.ts';
+import { OpenNoteFile } from '../utils/filesystem.ts';
+import type { Recipe } from './recipe.ts';
 
-export let ctx: Context;
-export let recipe: Recipe;
+type Props = {
+    ctx: Context;
+    recipe: Recipe;
+    onClose: () => void;
+};
+
+let { ctx, recipe, onClose }: Props = $props();
 
 const open = false;
-
-const dispatch = createEventDispatcher();
 
 type Callback = () => Promise<void>;
 
@@ -26,7 +29,7 @@ const buttonTargets: ButtonTarget[] = [
         name: 'Go to recipe',
         cb: async () => {
             await OpenNoteFile(ctx.app, recipe.path);
-            dispatch('close_modal');
+            onClose();
         },
     },
 ];
@@ -69,7 +72,7 @@ onMount(() => {
 <div class="realtive inline-block text-left">
   <div>
     <button
-      on:click={openRecipeDropdown}
+      onclick={openRecipeDropdown}
       type="button"
       class="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-300"
       id="menu-button"

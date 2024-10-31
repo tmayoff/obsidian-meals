@@ -2,9 +2,10 @@
 source: GoodFood
 servings: "2"
 meal: Dinner
---- 
+---
 
 # Ingredients
+---
 - Minced Garlic 15 ml 
 - Lacinato Kale 1 bunch
 - Roasted Pepper 1 
@@ -12,6 +13,7 @@ meal: Dinner
 - Vegetable Demi-Glace 30ml
 -  Heavy Cream 45 ml
 -  Zingy Garlic and Oregano Spices (salt, paprika, garlic, vinegar powder, onion, red bell pepper, black pepper, sunflower oil, oregano, parsley, chives, cayenne pepper) 10g
+---
 
 # Directions
 0. Mise en place

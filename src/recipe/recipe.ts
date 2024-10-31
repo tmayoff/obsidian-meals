@@ -1,7 +1,7 @@
-import { TFile, type TFolder } from 'obsidian';
+import { Notice, TFile, type TFolder } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
-import type { Context } from '../context';
-import { GetIngredients } from './ingredients';
+import type { Context } from '../context.ts';
+import { GetIngredients } from './ingredients.ts';
 
 export class Recipe {
     name: string;
@@ -16,7 +16,13 @@ export class Recipe {
     }
 
     public async fillIngredients(ctx: Context) {
-        this.ingredients = await GetIngredients(ctx, this.path);
+        const res = await GetIngredients(ctx, this.path);
+        if (res.isErr()) {
+            console.error(`Failed to parse ingredients: ${res.error}`);
+            new Notice(`Failed to parse ingredients: ${res.error}`);
+            return;
+        }
+        this.ingredients = res.unwrap();
     }
 }
 
