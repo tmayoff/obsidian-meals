@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0](https://github.com/tmayoff/obsidian-meals/compare/0.3.0...0.4.0) (2024-10-31)
+
+
+### Features
+
+* Added the ability to change the start of the week ([#173](https://github.com/tmayoff/obsidian-meals/issues/173)) ([1a3b4bd](https://github.com/tmayoff/obsidian-meals/commit/1a3b4bd7c1ea1e6c8390c75f1158ca4998558c1c))
+* Upgrade to Svelte5 ([#169](https://github.com/tmayoff/obsidian-meals/issues/169)) ([a10a894](https://github.com/tmayoff/obsidian-meals/commit/a10a8940972a02642da25a64999f3fda5885b1dd))
+
+
+### Bug Fixes
+
+* Add hot-reload properly as a submodule for better testing ([#165](https://github.com/tmayoff/obsidian-meals/issues/165)) ([a250dcf](https://github.com/tmayoff/obsidian-meals/commit/a250dcf37a6a0364492e9cde74d926f3d53d80f0))
+* Excessive errors on startup ([#168](https://github.com/tmayoff/obsidian-meals/issues/168)) ([30ea2f9](https://github.com/tmayoff/obsidian-meals/commit/30ea2f925c29306cc77ce5954a3b04c2a3eae778))
+* Improve error handling with ts-results-es ([#167](https://github.com/tmayoff/obsidian-meals/issues/167)) ([7f00c45](https://github.com/tmayoff/obsidian-meals/commit/7f00c45ece8046ac177af2ed5965fe632dab07d8))
+* Sanitize downloaded recipe names ([#172](https://github.com/tmayoff/obsidian-meals/issues/172)) ([268b4ed](https://github.com/tmayoff/obsidian-meals/commit/268b4ed149918a8d8f41a3062d885eb4ce9c5f13))
+* The end range for RecipeMD recipes removing 3 characters ([#171](https://github.com/tmayoff/obsidian-meals/issues/171)) ([2664771](https://github.com/tmayoff/obsidian-meals/commit/26647717ead38a70561131dc084f6c294b39bf96))
+
 ## [0.3.0](https://github.com/tmayoff/obsidian-meals/compare/0.2.2...0.3.0) (2024-10-29)
 
 
