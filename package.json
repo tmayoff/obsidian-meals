@@ -8,7 +8,8 @@
         "build": "vite build --mode production",
         "check": "svelte-check --tsconfig ./tsconfig.json",
         "wasm": "wasm-pack build ./recipe-rs --target web",
-        "test": "vitest"
+        "test": "vitest",
+        "coverage": "vitest --coverage --watch=false"
     },
     "keywords": [],
     "author": "",
@@ -21,6 +22,7 @@
         "@tsconfig/svelte": "^5.0.4",
         "@types/node": "^22.8.4",
         "@types/pluralize": "^0.0.33",
+        "@vitest/coverage-v8": "^2.1.4",
         "autoprefixer": "^10.4.20",
         "builtin-modules": "^4.0.0",
         "bun-types": "^1.1.33",

@@ -2,6 +2,7 @@
 .vscode 
 
 build
+coverage
 
 # Intellij
 *.iml

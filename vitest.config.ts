@@ -6,12 +6,7 @@ export default defineConfig({
     test: {
         include: ['src/tests/**.test.*'],
         deps: {
-            moduleDirectories: ["node_modules", "src"]
-        }
+            moduleDirectories: ['node_modules', 'src'],
+        },
     },
-    // resolve: {
-    //     alias: {
-    //         '@': path.resolve(__dirname, './src'),
-    //     },
-    // },
 });
