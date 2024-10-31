@@ -24,7 +24,7 @@ jobs:
     - name: build
       run: nix develop --command yarn run build
     - name: test
-      run: nix develop --command yarn run test
+      run: nix develop --command yarn run coverage
     - name: Upload results to Codecov
       uses: codecov/codecov-action@v4
       with:
