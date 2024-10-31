@@ -11,7 +11,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v14
       - uses: DeterminateSystems/magic-nix-cache-action@v8
       - name: lint
-        run: biome ci src/
+        run: nix develop --command biome ci src/
 
   build:
     runs-on: ubuntu-latest
