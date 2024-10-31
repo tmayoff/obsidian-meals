@@ -1,10 +1,7 @@
 import moment from 'moment';
 
-export function GetCurrentWeek() {
-    const currentDate = new Date();
-    const lastSundayDate = new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay()));
-
-    return moment(lastSundayDate).format('MMMM Do');
+export function GetCurrentWeek(startOfWeek: number) {
+    return moment().weekday(startOfWeek).format('MMMM Do');
 }
 
 // https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format#4673436
