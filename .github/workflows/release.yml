@@ -12,13 +12,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - name: Build plugin
-        run: |
-          bun install 
-          bun run build
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - name: install
+        run: nix develop --command yarn install
+      - name: build
+        run: nix develop --command yarn run build
 
       - name: Create release
         uses: softprops/action-gh-release@v2
