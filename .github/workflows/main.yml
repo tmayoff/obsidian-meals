@@ -4,15 +4,24 @@ on:
   pull_request:
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
+      - name: lint
+        run: biome ci src/
 
-      - uses: oven-sh/setup-bun@v2
-
-      - run: bun install
-      - run: bunx @biomejs/biome ci src/
-      - run: bun run build
-      - run: bun test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v14
+    - uses: DeterminateSystems/magic-nix-cache-action@v8
+    - name: install
+      run: nix develop --command yarn install
+    - name: build
+      run: nix develop --command yarn run build
+    - name: test
+      run: nix develop --command yarn run test
