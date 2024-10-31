@@ -9,8 +9,8 @@ import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
-import { DownloadRecipeCommand } from './recipe/downloader.ts';
 import { DAYS_OF_WEEK } from './constants.ts';
+import { DownloadRecipeCommand } from './recipe/downloader.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
