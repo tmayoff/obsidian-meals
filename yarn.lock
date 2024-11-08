@@ -1099,10 +1099,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/node@*", "@types/node@^22.8.4":
-  version "22.8.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.8.6.tgz#e8a0c0871623283d8b3ef7d7b9b1bfdfd3028e22"
-  integrity sha512-tosuJYKrIqjQIlVCM4PEGxOmyg3FCPa/fViuJChnGeEIhjA46oy8FMVoF9su1/v8PNs2a8Q0iFNyOx0uOF91nw==
+"@types/node@*", "@types/node@^22.9.0":
+  version "22.9.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.9.0.tgz#b7f16e5c3384788542c72dc3d561a7ceae2c0365"
+  integrity sha512-vuyHg81vvWA1Z1ELfvLko2c8f34gyA0zaic0+Rllc5lbCnbSyuvb2Oxpm6TAUAC/2xZN3QGqxBNggD1nNR2AfQ==
   dependencies:
     undici-types "~6.19.8"
 
@@ -1724,10 +1724,10 @@ builtin-modules@^4.0.0:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-4.0.0.tgz#348db54ec0e6b197494423d26845f1674025ee46"
   integrity sha512-p1n8zyCkt1BVrKNFymOHjcDSAl7oq/gUvfgULv2EblgpPVQlQr9yHnWjg9IJ2MhfwPqiYqMMrr01OY7yQoK2yA==
 
-bun-types@^1.1.33:
-  version "1.1.33"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.33.tgz#4b9be15619222f5354cf01d1e866ba9779e86590"
-  integrity sha512-SOMt3HeI34EyXoAsMxs5qY+e8cjQOn9v1BQl/ZUy1BsOYYuSPBSRVBYE5DjauqY1bOAWGFAjVu9G9pSmCe1bVw==
+bun-types@^1.1.34:
+  version "1.1.34"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.1.34.tgz#cf0e1dc5aa8875573a3acb09bead0f23bab5aca2"
+  integrity sha512-br5QygTEL/TwB4uQOb96Ky22j4Gq2WxWH/8Oqv20fk5HagwKXo/akB+LiYgSfzexCt6kkcUaVm+bKiPl71xPvw==
   dependencies:
     "@types/node" "~20.12.8"
     "@types/ws" "~8.5.10"
@@ -3734,10 +3734,10 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-svelte-check@^4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-4.0.5.tgz#5cd910c3b1d50f38159c17cc3bae127cbbb55c8d"
-  integrity sha512-icBTBZ3ibBaywbXUat3cK6hB5Du+Kq9Z8CRuyLmm64XIe2/r+lQcbuBx/IQgsbrC+kT2jQ0weVpZSSRIPwB6jQ==
+svelte-check@^4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-4.0.6.tgz#6f281406635178287d1a1d90cfc125348ab67eac"
+  integrity sha512-2XwmQNJaKbenJbvu5at+DuRpvF4v73Zu7f0/WkMl1O7WDm/IfF+E13t8D0nnRiRcMsNYm9ufHyLwfeMEnebpdg==
   dependencies:
     "@jridgewell/trace-mapping" "^0.3.25"
     chokidar "^4.0.1"
@@ -3745,10 +3745,10 @@ svelte-check@^4.0.5:
     picocolors "^1.0.0"
     sade "^1.7.4"
 
-svelte@^5.1.6:
-  version "5.1.8"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.1.8.tgz#67a14cd143787807a761e987b7a879b51a3c95df"
-  integrity sha512-MCZVSNNqlgwKUSEZEsq2nILhzI70qv1jJy9fG9nf3I8CyJhJ2vxtPybDuP5HdB7Q9Az0WliFmqUeLEQdnY1j+g==
+svelte@^5.1.13:
+  version "5.1.13"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.1.13.tgz#34b5e511d0e2eb36a0f0da77d8d21f3fc143ffe6"
+  integrity sha512-xVNk8yLsZNfkyqWzVg8+nfU9ewiSjVW0S4qyTxfKa6Y7P5ZBhA+LDsh2cHWIXJQMltikQAk6W3sqGdQZSH58PA==
   dependencies:
     "@ampproject/remapping" "^2.3.0"
     "@jridgewell/sourcemap-codec" "^1.5.0"
@@ -3884,10 +3884,10 @@ ts-results-es@^4.2.0:
   resolved "https://registry.yarnpkg.com/ts-results-es/-/ts-results-es-4.2.0.tgz#5cdb5746f50577465421278407d776c66a18cfd2"
   integrity sha512-GfpRk+qvHxa/6gADH8WMN/jXvs5oHYbKtMQc6X9L3VhToy5Lri3iQowyYSytaRcvPDiTT2z3vurzQZXFQFXKRA==
 
-tslib@^2.8.0:
-  version "2.8.0"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.0.tgz#d124c86c3c05a40a91e6fdea4021bd31d377971b"
-  integrity sha512-jWVzBLplnCmoaTr13V9dYbiQ99wvZRd0vNWaDRg+aVYRcjDF3nDksxFDE/+fkXnKhpnUUkmx5pK/v8mCtLVqZA==
+tslib@^2.8.1:
+  version "2.8.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.8.1.tgz#612efe4ed235d567e8aba5f2a5fab70280ade83f"
+  integrity sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==
 
 tsx@^4.19.0:
   version "4.19.2"
