@@ -18,7 +18,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         if: ${{ steps.release.outputs.release_created }}
 
-      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/nix-installer-action@v15
         if: ${{ steps.release.outputs.release_created }}
       - uses: DeterminateSystems/magic-nix-cache-action@v8
         if: ${{ steps.release.outputs.release_created }}
