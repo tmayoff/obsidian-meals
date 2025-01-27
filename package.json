@@ -39,12 +39,12 @@
         "vitest": "^3.0.4"
     },
     "dependencies": {
-        "@unocss/extractor-svelte": "^65.4.0",
-        "@unocss/preset-uno": "^65.4.0",
+        "@unocss/extractor-svelte": "^65.4.3",
+        "@unocss/preset-uno": "^65.4.3",
         "moment": "^2.30.1",
         "pluralize": "^8.0.0",
         "recipe-rs": "^0.1.6",
         "ts-results-es": "^4.2.0",
-        "unocss": "^65.4.0"
+        "unocss": "^65.4.3"
     }
 }
