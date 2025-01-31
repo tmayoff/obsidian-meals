@@ -1099,10 +1099,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/node@*", "@types/node@^22.10.10":
-  version "22.10.10"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.10.tgz#85fe89f8bf459dc57dfef1689bd5b52ad1af07e6"
-  integrity sha512-X47y/mPNzxviAGY5TcYPtYL8JsY3kAq2n8fMmKoRCxq/c4v4pyGNCzM2R6+M5/umG4ZfHuT+sgqDYqWc9rJ6ww==
+"@types/node@*", "@types/node@^22.13.0":
+  version "22.13.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.13.0.tgz#d376dd9a0ee2f9382d86c2d5d7beb4d198b4ea8c"
+  integrity sha512-ClIbNe36lawluuvq3+YYhnIN2CELi+6q8NpnM7PYp4hBn/TatfboPgVSm2rwKRfnV2M+Ty9GWDFI64KEe+kysA==
   dependencies:
     undici-types "~6.20.0"
 
@@ -1628,10 +1628,10 @@ builtin-modules@^4.0.0:
   resolved "https://registry.yarnpkg.com/builtin-modules/-/builtin-modules-4.0.0.tgz#348db54ec0e6b197494423d26845f1674025ee46"
   integrity sha512-p1n8zyCkt1BVrKNFymOHjcDSAl7oq/gUvfgULv2EblgpPVQlQr9yHnWjg9IJ2MhfwPqiYqMMrr01OY7yQoK2yA==
 
-bun-types@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.2.0.tgz#9eea34d993fec33f1e67737228e7d5620480a19d"
-  integrity sha512-KEaJxyZfbV/c4eyG0vyehDpYmBGreNiQbZIqvVHJwZ4BmeuWlNZ7EAzMN2Zcd7ailmS/tGVW0BgYbGf+lGEpWw==
+bun-types@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/bun-types/-/bun-types-1.2.1.tgz#b858acc4083ff2287021d4eb2a71b63fc6132d9f"
+  integrity sha512-p7bmXUWmrPWxhcbFVk7oUXM5jAGt94URaoa3qf4mz43MEhNAo/ot1urzBqctgvuq7y9YxkuN51u+/qm4BiIsHw==
   dependencies:
     "@types/node" "*"
     "@types/ws" "~8.5.10"
@@ -3485,10 +3485,10 @@ svelte-check@^4.1.4:
     picocolors "^1.0.0"
     sade "^1.7.4"
 
-svelte@^5.19.2:
-  version "5.19.2"
-  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.19.2.tgz#6236433b93a4be0684965184754c2e8146c0110a"
-  integrity sha512-Ww1uLgdX5MdQrAO5zfU1dWUh6zqiPR6uIbwqm8a+4eQ+tNEYHRPgypvKKfHh9lmTkmJ30PWZ2O5qX8aS+PblRQ==
+svelte@^5.19.6:
+  version "5.19.6"
+  resolved "https://registry.yarnpkg.com/svelte/-/svelte-5.19.6.tgz#ce02a28e0cad899aa120ae17dc16e8db3c93278f"
+  integrity sha512-6ydekB3qyqUal+UhfMjmVOjRGtxysR8vuiMhi2nwuBtPJWnctVlsGspjVFB05qmR+TXI1emuqtZt81c0XiFleA==
   dependencies:
     "@ampproject/remapping" "^2.3.0"
     "@jridgewell/sourcemap-codec" "^1.5.0"
@@ -3505,10 +3505,10 @@ svelte@^5.19.2:
     magic-string "^0.30.11"
     zimmerframe "^1.1.2"
 
-tailwindcss@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.0.0.tgz#1f275ed16eb4127cb70bf5e9f53fb8eb7b72be3c"
-  integrity sha512-ULRPI3A+e39T7pSaf1xoi58AqqJxVCLg8F/uM5A3FadUbnyDTgltVnXJvdkTjwCOGA6NazqHVcwPJC5h2vRYVQ==
+tailwindcss@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-4.0.2.tgz#c31db4675b97487b8f23b96aa081d4802d4bcb69"
+  integrity sha512-cjWQjZEbzQNqH4IiSjRcYg96zjlu+rjzTFkqTc/fN3FNnIU4CoNlQvwCsIomwG/2EPWYT9ysFL1QF6Av3fZeNg==
 
 test-exclude@^6.0.0:
   version "6.0.0"
