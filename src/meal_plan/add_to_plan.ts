@@ -1,9 +1,9 @@
 import { SuggestModal } from 'obsidian';
 import { DAYS_OF_WEEK } from '../constants.ts';
+import type { Context } from '../context.ts';
 import type { Recipe } from '../recipe/recipe.ts';
 import { OpenNoteFile } from '../utils/filesystem.ts';
 import { AddRecipeToMealPlan } from './plan.ts';
-import type { Context } from '../context.ts';
 
 type Callback = () => Promise<void>;
 
@@ -15,13 +15,10 @@ class AddToPlanTarget {
 export class AddToPlanModal extends SuggestModal<AddToPlanTarget> {
     showGoto: boolean;
     buttons: AddToPlanTarget[];
-    customOnClose: Callback | null;
 
-    constructor(ctx: Context, recipe: Recipe, showGoto: boolean, onClose: Callback | null = null) {
+    constructor(ctx: Context, recipe: Recipe, showGoto: boolean) {
         super(ctx.app);
         this.showGoto = showGoto;
-        this.customOnClose = onClose;
-
         this.buttons = [];
 
         if (this.showGoto) {

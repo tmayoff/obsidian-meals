@@ -15,9 +15,7 @@ const open = false;
 
 const openRecipeDropdown = () => {
   
-  const m = new AddToPlanModal(ctx, recipe, true, async () => {
-    close();
-  });
+  const m = new AddToPlanModal(ctx, recipe, true);
 
   m.onClose = () => {
     onClose();
