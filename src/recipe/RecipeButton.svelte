@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Context } from '../context.ts';
-import type { Recipe } from './recipe.ts';
 import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
+import type { Recipe } from './recipe.ts';
 
 type Props = {
     ctx: Context;
