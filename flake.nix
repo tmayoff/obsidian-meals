@@ -26,7 +26,6 @@
             nodePackages.typescript-language-server
             yarn
 
-            pre-commit
             biome
             act
             just

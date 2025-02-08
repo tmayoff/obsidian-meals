@@ -1,6 +1,10 @@
 <script lang="ts">
+import { SuggestModal } from 'obsidian';
+import { createEventDispatcher, onMount } from 'svelte';
+import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
-import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
+import { AddRecipeToMealPlan } from '../meal_plan/plan.ts';
+import { OpenNoteFile } from '../utils/filesystem.ts';
 import type { Recipe } from './recipe.ts';
 
 type Props = {
@@ -13,15 +17,56 @@ let { ctx, recipe, onClose }: Props = $props();
 
 const open = false;
 
+type Callback = () => Promise<void>;
+
+class ButtonTarget {
+    name = '';
+    cb: Callback | undefined;
+}
+
+const buttonTargets: ButtonTarget[] = [
+    {
+        name: 'Go to recipe',
+        cb: async () => {
+            await OpenNoteFile(ctx.app, recipe.path);
+            onClose();
+        },
+    },
+];
+
+for (const d of DAYS_OF_WEEK) {
+    buttonTargets.push({
+        name: d,
+        cb: async () => {
+            await AddRecipeToMealPlan(ctx, recipe, d);
+        },
+    });
+}
+
+class ButtonModal extends SuggestModal<ButtonTarget> {
+    getSuggestions(_query: string): ButtonTarget[] | Promise<ButtonTarget[]> {
+        // TODO search actions
+        return buttonTargets;
+    }
+    onChooseSuggestion(item: ButtonTarget, _evt: KeyboardEvent | MouseEvent) {
+        if (item.cb) {
+            item.cb();
+        }
+        this.close();
+    }
+    renderSuggestion(item: ButtonTarget, el: HTMLElement): void {
+        el.createEl('div', { text: item.name });
+    }
+}
+
+let modal: ButtonModal;
 const openRecipeDropdown = () => {
-    const m = new AddToPlanModal(ctx, recipe, true);
-
-    m.onClose = () => {
-        onClose();
-    };
-
-    m.open();
+    modal.open();
 };
+
+onMount(() => {
+    modal = new ButtonModal(ctx.app);
+});
 </script>
 
 <div class="realtive inline-block text-left">
