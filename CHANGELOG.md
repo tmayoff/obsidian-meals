@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.5.0](https://github.com/tmayoff/obsidian-meals/compare/0.4.0...0.5.0) (2025-02-08)
+
+
+### Features
+
+* Add to plan button in Recipe notes ([#213](https://github.com/tmayoff/obsidian-meals/issues/213)) ([c75c4ae](https://github.com/tmayoff/obsidian-meals/commit/c75c4aee46efdb1a5aba515e757adf6fb961c55a))
+
+
+### Bug Fixes
+
+* Unit tests ([#127](https://github.com/tmayoff/obsidian-meals/issues/127)) ([9cf6fa6](https://github.com/tmayoff/obsidian-meals/commit/9cf6fa601aa8d8e96d8a352036e22cd5eb4615c3))
+* Updated CI to work on main ([#175](https://github.com/tmayoff/obsidian-meals/issues/175)) ([32257da](https://github.com/tmayoff/obsidian-meals/commit/32257daa3669501710fffc2f0d60558e48339026))
+
 ## [0.4.0](https://github.com/tmayoff/obsidian-meals/compare/0.3.0...0.4.0) (2024-10-31)
 
 
