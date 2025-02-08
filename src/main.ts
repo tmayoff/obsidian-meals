@@ -2,6 +2,7 @@ import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsid
 import { get } from 'svelte/store';
 import { Context } from './context.ts';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
+import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings.ts';
@@ -11,6 +12,7 @@ import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
 import { DAYS_OF_WEEK } from './constants.ts';
 import { DownloadRecipeCommand } from './recipe/downloader.ts';
+import { Recipe } from './recipe/recipe.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -92,6 +94,14 @@ export default class MealPlugin extends Plugin {
                             .setIcon('shopping-basket')
                             .onClick(() => {
                                 AddFileToShoppingList(this.ctx, t);
+                            });
+                    });
+                    e.addItem((e) => {
+                        return e
+                            .setTitle('Add to meal plan')
+                            .setIcon('utensils')
+                            .onClick(() => {
+                                new AddToPlanModal(this.ctx, new Recipe(t), false).open();
                             });
                     });
                 }
