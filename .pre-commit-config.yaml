@@ -1,0 +1,5 @@
+repos:
+  - repo: https://github.com/biomejs/pre-commit
+    rev: v1.9.4 # Use the sha / tag you want to point at
+    hooks:
+      - id: biome-check
