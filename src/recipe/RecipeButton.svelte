@@ -1,12 +1,12 @@
 <script lang="ts">
-import type { Context } from "../context.ts";
-import type { Recipe } from "./recipe.ts";
-import { AddToPlanModal } from "../meal_plan/add_to_plan.ts";
+import type { Context } from '../context.ts';
+import type { Recipe } from './recipe.ts';
+import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
 
 type Props = {
-  ctx: Context;
-  recipe: Recipe;
-  onClose: () => void;
+    ctx: Context;
+    recipe: Recipe;
+    onClose: () => void;
 };
 
 let { ctx, recipe, onClose }: Props = $props();
@@ -14,14 +14,13 @@ let { ctx, recipe, onClose }: Props = $props();
 const open = false;
 
 const openRecipeDropdown = () => {
-  
-  const m = new AddToPlanModal(ctx, recipe, true);
+    const m = new AddToPlanModal(ctx, recipe, true);
 
-  m.onClose = () => {
-    onClose();
-  };
+    m.onClose = () => {
+        onClose();
+    };
 
-  m.open();
+    m.open();
 };
 </script>
 

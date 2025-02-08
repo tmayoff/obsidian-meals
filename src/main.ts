@@ -1,8 +1,8 @@
 import { type App, Modal, Plugin, PluginSettingTab, Setting, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context.ts';
-import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
+import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings.ts';
