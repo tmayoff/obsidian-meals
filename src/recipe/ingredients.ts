@@ -7,27 +7,6 @@ import { RecipeFormat } from '../settings.js';
 import type { Ingredient, ParseErrors } from '../types.ts';
 import { GetIngredientsFromList, GetRecipeMDFormatBoundedList } from '../utils/parser.ts';
 import { ErrCtx } from '../utils/result.ts';
-import type { Recipe } from './recipe.ts';
-
-export async function GetIngredientSet(ctx: Context, recipes: Recipe[]) {
-    const recipesFiles = recipes.map((r) => r.path);
-
-    return Promise.all(
-        recipesFiles.map(async (dir) => {
-            return await GetIngredients(ctx, dir);
-        }),
-    ).then((ingredients) => {
-        const allIngredients: Set<string> = new Set();
-        for (const ingredient of ingredients) {
-            if (ingredient !== undefined) {
-                for (const i of ingredient) {
-                    allIngredients.add(i.description.toLocaleLowerCase());
-                }
-            }
-        }
-        return allIngredients;
-    });
-}
 
 export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<Result<Ingredient[], ErrCtx>> {
     if (recipeFile === undefined) {
@@ -46,7 +25,7 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
     let res: Result<string[], ParseErrors>;
 
     if (settings.recipeFormat === RecipeFormat.RecipeMD) {
-        res = GetRecipeMDFormatBoundedList(GetContent(fileContent));
+        res = GetRecipeMDFormatBoundedList(GetContentSkipFrontmatter(fileContent));
     } else {
         res = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
     }
@@ -62,13 +41,13 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
     return GetIngredientsFromList(list, settings.advancedIngredientParsing, ctx.debugMode());
 }
 
-function GetContent(fileContent: string): string {
+function GetContentSkipFrontmatter(fileContent: string): string {
     const frontmatter = getFrontMatterInfo(fileContent);
     const contentStart = frontmatter.contentStart;
     return fileContent.substring(contentStart);
 }
 
-export function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedMetadata): Result<string[], ParseErrors> {
+function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedMetadata): Result<string[], ParseErrors> {
     // Ingredient content is between Ingredients heading and the next heading
     let start: Loc | null = null;
     let end: Loc | null = null;
