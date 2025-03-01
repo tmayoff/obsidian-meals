@@ -24,9 +24,9 @@
           nativeBuildInputs = with pkgs; [
             nodePackages.svelte-language-server
             nodePackages.typescript-language-server
-            yarn
+ 
+            yarn-berry
 
-            pre-commit
             biome
             act
             just
