@@ -1348,12 +1348,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^22.13.1":
+"@types/node@npm:*":
   version: 22.13.7
   resolution: "@types/node@npm:22.13.7"
   dependencies:
     undici-types: "npm:~6.20.0"
   checksum: 10c0/cd44f2a77369def4d21a917c1a4b518777f9488495fe1fd26284c4f19cc2c01e2f7e4030bf92ec14b613fa3d314e52b484b711f4c5a14fa6a01a30adf2c878db
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^22.13.7":
+  version: 22.13.8
+  resolution: "@types/node@npm:22.13.8"
+  dependencies:
+    undici-types: "npm:~6.20.0"
+  checksum: 10c0/bfc92b734a9dce6ac5daee0a52feccdf5dcb3804d895e4bc5384e2f4644612b8801725cd03c8c3c0888fb5eeb16b875877ac44b77641e0196dc1a837b1c2a366
   languageName: node
   linkType: hard
 
@@ -1664,7 +1673,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitest/coverage-v8@npm:^3.0.5":
+"@vitest/coverage-v8@npm:^3.0.7":
   version: 3.0.7
   resolution: "@vitest/coverage-v8@npm:3.0.7"
   dependencies:
@@ -2058,14 +2067,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"builtin-modules@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "builtin-modules@npm:4.0.0"
-  checksum: 10c0/c10c71c35a1a9b2c5fbb58c1b7eed3f38f16ec0903de55dfa54604ff19895dd7f35b79e5bb0756fc09642714d637ca905653b35ba76c00ae29310ca5c9668bf5
+"builtin-modules@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "builtin-modules@npm:5.0.0"
+  checksum: 10c0/bee8e74d1b949133c66a30b2e7982b3bdfe70d09f72bc4425ac9811d01d6f2f11abbe66c47aa9c977800a255155cac5a8068e0714cd2dc31867762fb309fd065
   languageName: node
   linkType: hard
 
-"bun-types@npm:^1.2.2":
+"bun-types@npm:^1.2.4":
   version: 1.2.4
   resolution: "bun-types@npm:1.2.4"
   dependencies:
@@ -4103,34 +4112,34 @@ __metadata:
     "@sveltejs/vite-plugin-svelte": "npm:5.0.3"
     "@tmayoff/recipe-rs": "npm:0.1.10"
     "@tsconfig/svelte": "npm:^5.0.4"
-    "@types/node": "npm:^22.13.1"
+    "@types/node": "npm:^22.13.7"
     "@types/pluralize": "npm:^0.0.33"
     "@unocss/extractor-svelte": "npm:^65.4.3"
     "@unocss/preset-uno": "npm:^65.4.3"
-    "@vitest/coverage-v8": "npm:^3.0.5"
+    "@vitest/coverage-v8": "npm:^3.0.7"
     autoprefixer: "npm:^10.4.20"
-    builtin-modules: "npm:^4.0.0"
-    bun-types: "npm:^1.2.2"
+    builtin-modules: "npm:^5.0.0"
+    bun-types: "npm:^1.2.4"
     jest: "npm:^29.7.0"
     moment: "npm:^2.30.1"
-    obsidian: "npm:^1.7.2"
+    obsidian: "npm:^1.8.7"
     parse-ingredient: "npm:^1.2.1"
     pluralize: "npm:^8.0.0"
-    postcss: "npm:^8.5.1"
+    postcss: "npm:^8.5.3"
     recipe-rs: "npm:^0.1.6"
-    svelte: "npm:^5.19.9"
+    svelte: "npm:^5.20.5"
     svelte-check: "npm:^4.1.4"
-    tailwindcss: "npm:^4.0.4"
+    tailwindcss: "npm:^4.0.9"
     ts-results-es: "npm:^5.0.0"
     tslib: "npm:^2.8.1"
-    typescript: "npm:^5.7.3"
+    typescript: "npm:^5.8.2"
     unocss: "npm:^65.4.3"
-    vite: "npm:^6.1.0"
-    vitest: "npm:^3.0.5"
+    vite: "npm:^6.2.0"
+    vitest: "npm:^3.0.7"
   languageName: unknown
   linkType: soft
 
-"obsidian@npm:^1.7.2":
+"obsidian@npm:^1.8.7":
   version: 1.8.7
   resolution: "obsidian@npm:1.8.7"
   dependencies:
@@ -4371,7 +4380,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.5.1, postcss@npm:^8.5.2, postcss@npm:^8.5.3":
+"postcss@npm:^8.5.2, postcss@npm:^8.5.3":
   version: 8.5.3
   resolution: "postcss@npm:8.5.3"
   dependencies:
@@ -4918,7 +4927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.19.9":
+"svelte@npm:^5.20.5":
   version: 5.20.5
   resolution: "svelte@npm:5.20.5"
   dependencies:
@@ -4940,7 +4949,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^4.0.4":
+"tailwindcss@npm:^4.0.9":
   version: 4.0.9
   resolution: "tailwindcss@npm:4.0.9"
   checksum: 10c0/92e5f0ff9d98b4b7c79419e21b02d703aafa86f1d9b92b039cc0ac3e2963e763c5c9bcfc2afdf9f46fc709812c1aab12565b02bebe70dcaaccb2773884cc0654
@@ -5079,7 +5088,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.7.3":
+"typescript@npm:^5.8.2":
   version: 5.8.2
   resolution: "typescript@npm:5.8.2"
   bin:
@@ -5089,7 +5098,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.7.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.8.2#optional!builtin<compat/typescript>":
   version: 5.8.2
   resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=5786d5"
   bin:
@@ -5225,7 +5234,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.0.0 || ^6.0.0, vite@npm:^6.1.0":
+"vite@npm:^5.0.0 || ^6.0.0, vite@npm:^6.2.0":
   version: 6.2.0
   resolution: "vite@npm:6.2.0"
   dependencies:
@@ -5289,7 +5298,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^3.0.5":
+"vitest@npm:^3.0.7":
   version: 3.0.7
   resolution: "vitest@npm:3.0.7"
   dependencies:
