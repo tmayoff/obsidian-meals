@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.5.1](https://github.com/tmayoff/obsidian-meals/compare/0.5.0...0.5.1) (2025-03-01)
+
+
+### Bug Fixes
+
+* Bump dependencies, recipe-rs now supports more recipes ([#223](https://github.com/tmayoff/obsidian-meals/issues/223)) ([a2355bd](https://github.com/tmayoff/obsidian-meals/commit/a2355bd3fcb9423267dae7db10e7a3705bf32105))
+* skip ingredients lines that aren't part of a list ([#226](https://github.com/tmayoff/obsidian-meals/issues/226)) ([98f5a1e](https://github.com/tmayoff/obsidian-meals/commit/98f5a1ec7b5c409cf99591d7eaeb2b48d5314f44))
+* TS language server ([#228](https://github.com/tmayoff/obsidian-meals/issues/228)) ([2d7c356](https://github.com/tmayoff/obsidian-meals/commit/2d7c356babb4ec2dbb7eab51a20743e8c6d60a22))
+
 ## [0.5.0](https://github.com/tmayoff/obsidian-meals/compare/0.4.0...0.5.0) (2025-02-08)
 
 
