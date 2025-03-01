@@ -7,8 +7,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings, RecipeFormat } from './settings.ts';
 import 'virtual:uno.css';
-import initWasm from 'recipe-rs';
-import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
+import initWasm from '@tmayoff/recipe-rs';
+import wasmData from '@tmayoff/recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
 import { DAYS_OF_WEEK } from './constants.ts';
 import { DownloadRecipeCommand } from './recipe/downloader.ts';

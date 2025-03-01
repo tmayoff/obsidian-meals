@@ -23,7 +23,6 @@
         devShell = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
             nodePackages.svelte-language-server
-            nodePackages.typescript-language-server
  
             yarn-berry
 
