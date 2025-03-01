@@ -62,7 +62,7 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
     }
 
     const ingredients: Ingredient[] = [];
-    for (const rawIngredient of res) {
+    for (const rawIngredient of res.unwrap()) {
         if (ctx.debugMode()) {
             console.debug('Parsing ingredient, raw line: ', rawIngredient);
         }
@@ -75,7 +75,7 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
                 console.debug('Final ingredient output', ingredient.value);
             }
             ingredients.push(ingredient.value);
-        } else {
+        } else if (ingredient.error !== 'NO_INGREDIENT') {
             return Err(new ErrCtx(rawIngredient, ingredient.error));
         }
     }
