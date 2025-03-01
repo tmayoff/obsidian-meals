@@ -2,6 +2,61 @@ import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredien
 import { singular } from 'pluralize';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { AltIngredient, Ingredient, ParseErrors } from '../types.ts';
+import { ErrCtx } from './result.ts';
+
+export function GetRecipeMDFormatBoundedList(content: string): Result<string[], ParseErrors> {
+    // Ingredient content is between --- & ---
+    const start = content.indexOf('---') + '---'.length;
+    if (start < 0) {
+        return Err('NOT_RECIPE_MD_FORMAT');
+    }
+
+    const end = content.indexOf('---', start);
+    if (end < 0) {
+        return Err('INGREDIENT_SECTION_DOESNT_END');
+    }
+    content = content.substring(start, end).trim();
+
+    return Ok(
+        content
+            .split('\n')
+            .filter((line) => {
+                return line.length > 0;
+            })
+            .map((l) => {
+                return l.trim();
+            }),
+    );
+}
+
+export function GetIngredientsFromList(list: string[], advancedParsing: boolean, debug: boolean): Result<Ingredient[], ErrCtx> {
+    const rawIngredient = list.filter((i) => {
+        return i.startsWith('-');
+    });
+
+    if (debug) {
+        console.debug(rawIngredient);
+    }
+
+    const ingredients: Ingredient[] = [];
+    for (const rawIngredient of list) {
+        if (debug) {
+            console.debug('Parsing ingredient, raw line: ', rawIngredient);
+        }
+
+        const ingredient = ParseIngredient(rawIngredient, advancedParsing);
+        if (ingredient.isOk()) {
+            if (debug) {
+                console.debug('Final ingredient output', ingredient.value);
+            }
+            ingredients.push(ingredient.value);
+        } else if (ingredient.error !== 'NO_INGREDIENT') {
+            return Err(new ErrCtx(rawIngredient, ingredient.error));
+        }
+    }
+
+    return Ok(ingredients);
+}
 
 export function ParseIngredient(content: string, advancedParse: boolean): Result<Ingredient, ParseErrors> {
     // Parse the ingredient line
