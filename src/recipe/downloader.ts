@@ -1,8 +1,11 @@
-import { type App, Modal, SuggestModal, requestUrl } from 'obsidian';
+import { type App, Modal, SuggestModal, getFrontMatterInfo, parseYaml, requestUrl } from 'obsidian';
 import { type Recipe, format, scrape } from 'recipe-rs';
 import { get } from 'svelte/store';
+import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
+import { ErrCtx } from '../utils/result.ts';
+import type { Recipe as MealsRecipe } from './recipe.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
     query = '';
@@ -55,7 +58,12 @@ export function DownloadRecipeCommand(ctx: Context) {
     new DownloadRecipeModal(ctx).open();
 }
 
-async function DownloadRecipe(ctx: Context, url: string) {
+interface DownloadedContent {
+    recipeName: string;
+    recipeContent: string;
+}
+
+async function Download(url: string): Promise<Result<DownloadedContent, ErrCtx>> {
     const dom = await requestUrl(url).text;
 
     let recipe: Recipe | null = null;
@@ -65,13 +73,24 @@ async function DownloadRecipe(ctx: Context, url: string) {
         formatted = format(recipe);
     } catch (exception) {
         console.error(exception);
-        new ErrorDialog(ctx.app, `${exception}`).open();
-        return;
+        return Err(new ErrCtx(`${exception}`, ''));
     }
 
     const sanitized = recipe.name.replace(/[:?\/<>"\|\*\\-]/gi, ' ').trim();
 
-    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${sanitized}`);
+    return Ok({ recipeName: sanitized, recipeContent: formatted });
+}
+
+async function DownloadRecipe(ctx: Context, url: string) {
+    const result = await Download(url);
+    if (result.isErr()) {
+        new ErrorDialog(ctx.app, `${result.error}`).open();
+        return;
+    }
+
+    const { recipeName, recipeContent } = result.unwrap();
+
+    const newRecipeNotePath = AppendMarkdownExt(`${get(ctx.settings).recipeDirectory}/${recipeName}`);
     if (NoteExists(ctx.app, newRecipeNotePath)) {
         new ErrorDialog(ctx.app, 'Recipe with that name already exists').open();
         await OpenNotePath(ctx.app, newRecipeNotePath);
@@ -83,9 +102,29 @@ async function DownloadRecipe(ctx: Context, url: string) {
     content += '---\n';
 
     content += '\n';
-    content += formatted;
+    content += recipeContent;
 
     await ctx.app.vault.create(newRecipeNotePath, content);
 
     await OpenNotePath(ctx.app, newRecipeNotePath);
+}
+
+export async function RedownloadRecipe(ctx: Context, recipe: MealsRecipe) {
+    const frontmatter = parseYaml(getFrontMatterInfo(await ctx.app.vault.cachedRead(recipe.path)).frontmatter);
+
+    const sourceUrl = frontmatter.source;
+
+    try {
+        const url = new URL(sourceUrl);
+
+        const result = await Download(url.toString());
+        if (result.isErr()) {
+            new ErrorDialog(ctx.app, `${result.error}`).open();
+            return;
+        }
+
+        // const { recipeName, recipeContent } = result.unwrap();
+    } catch {
+        new ErrorDialog(ctx.app, `Source URL: ${sourceUrl} is not a valid URL`).open();
+    }
 }
