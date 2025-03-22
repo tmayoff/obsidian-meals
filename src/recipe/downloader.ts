@@ -64,6 +64,7 @@ async function DownloadRecipe(ctx: Context, url: string) {
         recipe = scrape(url, dom);
         formatted = format(recipe);
     } catch (exception) {
+        console.error(exception);
         new ErrorDialog(ctx.app, `${exception}`).open();
         return;
     }

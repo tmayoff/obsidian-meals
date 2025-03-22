@@ -1252,13 +1252,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tmayoff/recipe-rs@npm:0.1.10":
-  version: 0.1.10
-  resolution: "@tmayoff/recipe-rs@npm:0.1.10::__archiveUrl=https%3A%2F%2Fnpm.pkg.github.com%2Fdownload%2F%40tmayoff%2Frecipe-rs%2F0.1.10%2F0b95555c4b5c9d509c2e3b0596aea3adb83ff047"
-  checksum: 10c0/b0585cc373cb750deb9bd7da88543e529492d7b8301e07194db1c07e2215bae1ced77b26d8e153b799c269809a89f45e9912fb0611da5e265d710ebb265e67c1
-  languageName: node
-  linkType: hard
-
 "@tsconfig/svelte@npm:^5.0.4":
   version: 5.0.4
   resolution: "@tsconfig/svelte@npm:5.0.4"
@@ -4118,7 +4111,6 @@ __metadata:
     "@biomejs/biome": "npm:1.9.4"
     "@popperjs/core": "npm:^2.11.8"
     "@sveltejs/vite-plugin-svelte": "npm:5.0.3"
-    "@tmayoff/recipe-rs": "npm:0.1.10"
     "@tsconfig/svelte": "npm:^5.0.4"
     "@types/node": "npm:^22.13.9"
     "@types/pluralize": "npm:^0.0.33"
@@ -4134,7 +4126,7 @@ __metadata:
     parse-ingredient: "npm:^1.2.1"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.3"
-    recipe-rs: "npm:^0.1.6"
+    recipe-rs: "npm:0.1.10"
     svelte: "npm:^5.22.6"
     svelte-check: "npm:^4.1.5"
     tailwindcss: "npm:^4.0.12"
@@ -4143,7 +4135,7 @@ __metadata:
     typescript: "npm:^5.8.2"
     typescript-language-server: "npm:^4.3.4"
     unocss: "npm:^66.0.0"
-    vite: "npm:^6.2.1"
+    vite: "npm:^6.1.0"
     vitest: "npm:^3.0.8"
   languageName: unknown
   linkType: soft
@@ -4475,10 +4467,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recipe-rs@npm:^0.1.6":
-  version: 0.1.6
-  resolution: "recipe-rs@npm:0.1.6"
-  checksum: 10c0/5b0618a8c0f231f6b3042c966dbd489af7bd78dbec96e1b68642e62001e46664c816c8d36bf4d2987106332b8cc30fbe8c63644a32da728c6aecc4e6105b61ea
+"recipe-rs@npm:0.1.10":
+  version: 0.1.10
+  resolution: "recipe-rs@npm:0.1.10"
+  checksum: 10c0/a8c010c09521bbf7e4e410923ee4a5c95cddb054fc5ae15a4ee0eb2b25873428d44eadd63ee5818151498d9b60449f8df75c257626c8c53ddf6db2cafbda8e2e
   languageName: node
   linkType: hard
 
@@ -5305,9 +5297,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.1":
-  version: 6.2.1
-  resolution: "vite@npm:6.2.1"
+"vite@npm:^6.1.0":
+  version: 6.2.2
+  resolution: "vite@npm:6.2.2"
   dependencies:
     esbuild: "npm:^0.25.0"
     fsevents: "npm:~2.3.3"
@@ -5353,7 +5345,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/2c024376a840eae2ce9cfba98d62e9f1eae93caa8304875854dbc0740414aedcfbe157c2244567bd456cdb60a300312af02ae9b5c63c147d35cf4da3a0591312
+  checksum: 10c0/52f5b1c10cfe5e3b6382c6de1811ebbf76df9b5a8bab3d65169446c6b54a5f1528f775b1548009a6d8aad11def20fba046bb3e9abb10c0c2c9ccd78118623bb8
   languageName: node
   linkType: hard
 
