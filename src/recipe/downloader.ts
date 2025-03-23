@@ -64,15 +64,16 @@ interface DownloadedContent {
 }
 
 async function Download(url: string): Promise<Result<DownloadedContent, ErrCtx>> {
+    console.debug(`Downloading ${url}`);
     const dom = await requestUrl(url).text;
 
-    let recipe: Recipe | null = null;
+    let recipe: Recipe;
     let formatted = '';
     try {
         recipe = scrape(url, dom);
         formatted = format(recipe);
     } catch (exception) {
-        console.error(exception);
+        console.error('Failed to download recipe', exception);
         return Err(new ErrCtx(`${exception}`, ''));
     }
 
@@ -110,22 +111,36 @@ async function DownloadRecipe(ctx: Context, url: string) {
 }
 
 export async function RedownloadRecipe(ctx: Context, recipe: MealsRecipe) {
-    const frontmatter = parseYaml(getFrontMatterInfo(await ctx.app.vault.cachedRead(recipe.path)).frontmatter);
+    if (get(ctx.settings).debugMode) {
+        console.debug('Redownloading recipe', recipe.name);
+    }
 
-    const sourceUrl = frontmatter.source;
+    const frontmatter = getFrontMatterInfo(await ctx.app.vault.cachedRead(recipe.path)).frontmatter;
+    const frontmatterYaml = parseYaml(getFrontMatterInfo(await ctx.app.vault.cachedRead(recipe.path)).frontmatter);
 
-    try {
-        const url = new URL(sourceUrl);
+    const sourceUrl = frontmatterYaml.source;
 
-        const result = await Download(url.toString());
-        if (result.isErr()) {
-            new ErrorDialog(ctx.app, `${result.error}`).open();
-            return;
+    const result = await Download(sourceUrl);
+    if (result.isErr()) {
+        new ErrorDialog(ctx.app, `${result.error}`).open();
+        return;
+    }
+
+    const { recipeContent } = result.unwrap();
+
+    console.debug(`Updating file ${recipe.path.path}`);
+    await ctx.app.vault.process(recipe.path, (originalContent) => {
+        if (originalContent !== recipeContent) {
+            let content = '---\n';
+            content += frontmatter;
+            content += '---\n';
+
+            content += '\n';
+            content += recipeContent;
+
+            return content;
         }
 
-        const { recipeName, recipeContent } = result.unwrap();
-        console.log('Redownload the recipe', recipeName, recipeContent);
-    } catch {
-        new ErrorDialog(ctx.app, `Source URL: ${sourceUrl} is not a valid URL`).open();
-    }
+        return originalContent;
+    });
 }
