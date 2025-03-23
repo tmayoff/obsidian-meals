@@ -11,7 +11,7 @@ import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
 import { DAYS_OF_WEEK } from './constants.ts';
-import { DownloadRecipeCommand } from './recipe/downloader.ts';
+import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
 import { Recipe } from './recipe/recipe.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
@@ -102,6 +102,15 @@ export default class MealPlugin extends Plugin {
                             .setIcon('utensils')
                             .onClick(() => {
                                 new AddToPlanModal(this.ctx, new Recipe(t), false).open();
+                            });
+                    });
+
+                    e.addItem((e) => {
+                        return e
+                            .setTitle('Redownload recipe')
+                            .setIcon('download')
+                            .onClick(async () => {
+                                await RedownloadRecipe(this.ctx, new Recipe(t, t.basename));
                             });
                     });
                 }
