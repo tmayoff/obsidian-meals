@@ -123,7 +123,8 @@ export async function RedownloadRecipe(ctx: Context, recipe: MealsRecipe) {
             return;
         }
 
-        // const { recipeName, recipeContent } = result.unwrap();
+        const { recipeName, recipeContent } = result.unwrap();
+        console.log('Redownload the recipe', recipeName, recipeContent);
     } catch {
         new ErrorDialog(ctx.app, `Source URL: ${sourceUrl} is not a valid URL`).open();
     }
