@@ -18,3 +18,10 @@ export function formatUnicorn(fmtString: string, obj: object) {
 
     return str;
 }
+
+export function wildcardToRegex(pattern: string): RegExp {
+    const escaped = pattern
+        .replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&') // Escape regex special chars
+        .replace(/\*/g, '.*'); // Convert wildcard '*' to '.*'
+    return new RegExp(`^${escaped}$`);
+}
