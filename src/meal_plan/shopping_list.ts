@@ -142,7 +142,7 @@ function mergeIngredientLists(left: Ingredient[], right: Ingredient[]) {
             return existing.description === i.description && i.unitOfMeasure === existing.unitOfMeasure;
         });
         if (existing === -1) {
-            left.push(i);
+            left.push(structuredClone(i));
         } else {
             let raw = left[existing].quantity ?? 0;
             raw += i.quantity ?? 0;
