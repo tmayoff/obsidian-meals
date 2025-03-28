@@ -113,35 +113,20 @@ export default class MealPlugin extends Plugin {
                                 await RedownloadRecipe(this.ctx, new Recipe(t, t.basename));
                             });
                     });
-                }
-            }),
-        );
 
-        if (get(this.ctx.settings).debugMode) {
-            console.debug('Debug mode enabled');
-            this.addCommand({
-                id: 'reload-recipes',
-                name: 'Reload all recipes',
-                callback: async () => {
-                    await this.ctx.loadRecipes(undefined);
-                },
-            });
-
-            this.registerEvent(
-                this.app.workspace.on('file-menu', (e, file) => {
-                    if (file instanceof TFile && file.path.contains(get(this.ctx.settings).recipeDirectory)) {
+                    if (get(this.ctx.settings).debugMode && t instanceof TFile) {
                         e.addItem((e) => {
                             return e
                                 .setTitle('Reload recipe')
                                 .setIcon('carrot')
                                 .onClick(async () => {
-                                    await this.ctx.loadRecipes(file);
+                                    await this.ctx.loadRecipes(t);
                                 });
                         });
                     }
-                }),
-            );
-        }
+                }
+            }),
+        );
 
         console.info('obisidan-meals plugin loaded');
     }
@@ -327,6 +312,18 @@ class MealPluginSettingsTab extends PluginSettingTab {
                 toggle.setValue(get(this.ctx.settings).debugMode).onChange(async (val) => {
                     this.ctx.settings.update((s) => {
                         s.debugMode = val;
+                        if (s.debugMode) {
+                            this.plugin.addCommand({
+                                id: 'reload-recipes',
+                                name: 'Reload all recipes',
+                                callback: async () => {
+                                    await this.ctx.loadRecipes(undefined);
+                                },
+                            });
+                        } else {
+                            this.plugin.removeCommand('reload-recipes');
+                        }
+
                         return s;
                     });
                     await this.plugin.saveSettings();
