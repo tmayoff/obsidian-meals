@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.1](https://github.com/tmayoff/obsidian-meals/compare/0.6.0...0.6.1) (2025-03-29)
+
+
+### Bug Fixes
+
+* fix invalid calculation in shopping list ([#242](https://github.com/tmayoff/obsidian-meals/issues/242)) ([d89787a](https://github.com/tmayoff/obsidian-meals/commit/d89787a53ec929a469ec177ea15d4d3d275779df))
+
 ## [0.6.0](https://github.com/tmayoff/obsidian-meals/compare/0.5.0...0.6.0) (2025-03-28)
 
 
