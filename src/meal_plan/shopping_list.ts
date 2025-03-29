@@ -2,8 +2,9 @@ import { TFile } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
+import { ShoppingListIgnoreBehaviour } from '../settings.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
-import { GetCurrentWeek, formatUnicorn } from '../utils/utils.ts';
+import { GetCurrentWeek, formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
     const filePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
@@ -154,20 +155,35 @@ function mergeIngredientLists(left: Ingredient[], right: Ingredient[]) {
 }
 
 function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
-    const r = get(ctx.recipes).find((r) => {
-        return r.path.path === recipeNote.path;
-    });
+    const r = get(ctx.recipes).find((r) => r.path.path === recipeNote.path);
     if (r === undefined) {
         return [];
     }
 
     const ignoreList = get(ctx.settings).shoppingListIgnore;
+    const ignoreBehaviour = get(ctx.settings).shoppingListIgnoreBehaviour;
 
     return r.ingredients.filter((i) => {
-        const found =
-            ignoreList.find((ignored) => {
-                return i.description.toLowerCase() !== ignored.toLowerCase();
-            }) === undefined;
-        return !found;
+        const desc = i.description.toLowerCase();
+
+        return !ignoreList.some((ignoredRaw) => {
+            const ignored = ignoredRaw.toLowerCase();
+
+            switch (ignoreBehaviour) {
+                case ShoppingListIgnoreBehaviour.Exact:
+                    return desc === ignored;
+
+                case ShoppingListIgnoreBehaviour.Partial:
+                    return desc.includes(ignored);
+
+                case ShoppingListIgnoreBehaviour.Wildcard:
+                    return wildcardToRegex(ignored).test(desc);
+
+                case ShoppingListIgnoreBehaviour.Regex:
+                    return new RegExp(ignored).test(desc);
+                default:
+                    return false;
+            }
+        });
     });
 }
