@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0](https://github.com/tmayoff/obsidian-meals/compare/0.6.0...0.7.0) (2025-04-04)
+
+
+### Features
+
+* add shopping list ignore behaviour for partial, wildcard, and regex matching ([#241](https://github.com/tmayoff/obsidian-meals/issues/241)) ([ac75f4e](https://github.com/tmayoff/obsidian-meals/commit/ac75f4eff6725606eab437d5da6c097331763cc8))
+
+
+### Bug Fixes
+
+* fix invalid calculation in shopping list ([#242](https://github.com/tmayoff/obsidian-meals/issues/242)) ([d89787a](https://github.com/tmayoff/obsidian-meals/commit/d89787a53ec929a469ec177ea15d4d3d275779df))
+
 ## [0.6.0](https://github.com/tmayoff/obsidian-meals/compare/0.5.0...0.6.0) (2025-03-28)
 
 
