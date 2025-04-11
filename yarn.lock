@@ -4131,7 +4131,7 @@ __metadata:
     parse-ingredient: "npm:^1.2.1"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.3"
-    recipe-rs: "npm:0.1.11"
+    recipe-rs: "npm:0.2.0"
     svelte: "npm:^5.22.6"
     svelte-check: "npm:^4.1.5"
     tailwindcss: "npm:^4.0.12"
@@ -4483,10 +4483,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recipe-rs@npm:0.1.11":
-  version: 0.1.11
-  resolution: "recipe-rs@npm:0.1.11"
-  checksum: 10c0/df39491c7c278fd16f2e388789355d45e518f8884a7d3622a4ff68f0156e84fce79885da065a47f67307e347b967e5e1f935fb1d02b318335c2c27993a1ebaa5
+"recipe-rs@npm:0.2.0":
+  version: 0.2.0
+  resolution: "recipe-rs@npm:0.2.0"
+  checksum: 10c0/bd11cd817626a41bcbdb688aa072287ce4e83c6c023c21155de5d4dd298aa35c9373806cbaaa5a06bbfce5276bd42e2c63a7df0daa4f9b257f35ad36386c2692
   languageName: node
   linkType: hard
 
