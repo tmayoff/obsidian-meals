@@ -44,7 +44,7 @@
         "@unocss/preset-uno": "^66.0.0",
         "moment": "^2.30.1",
         "pluralize": "^8.0.0",
-        "recipe-rs": "0.1.11",
+        "recipe-rs": "0.2.1",
         "ts-results-es": "^5.0.0",
         "unocss": "^66.0.0"
     }
