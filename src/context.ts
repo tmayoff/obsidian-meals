@@ -1,4 +1,4 @@
-import type { App, TFile } from 'obsidian';
+import type { App, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
 import type MealPlugin from './main.ts';
 import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe.ts';
@@ -34,6 +34,22 @@ export class Context {
         this.app = plugin.app;
     }
 
+    isInRecipeFolder(file: TFile, recipeFolder: TFolder): boolean {
+        let cur = file.parent;
+
+        while (true) {
+            if (cur === null) {
+                return false;
+            }
+
+            if (cur.parent === recipeFolder) {
+                return true;
+            }
+
+            cur = cur.parent;
+        }
+    }
+
     async loadRecipes(file: TFile | undefined) {
         // Get the recipe folder path by default 'Meals'
         const recipeFolderPath = get(this.settings).recipeDirectory;
@@ -47,7 +63,7 @@ export class Context {
         }
 
         // Load just the recipe file specified and only if it's actually in the recipeFolder
-        if (file !== undefined && file.parent === recipeFolder) {
+        if (file !== undefined && this.isInRecipeFolder(file, recipeFolder)) {
             GetRecipe(this, file).then((r) => {
                 this.recipes.update((arr) => {
                     arr.push(r);
