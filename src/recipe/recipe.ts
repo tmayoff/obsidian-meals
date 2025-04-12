@@ -1,4 +1,4 @@
-import { Notice, TFile, type TFolder } from 'obsidian';
+import { Notice, TFile, TFolder } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import type { Context } from '../context.ts';
 import { GetIngredients } from './ingredients.ts';
@@ -36,6 +36,8 @@ export async function GetRecipes(ctx: Context, recipeDir: TFolder) {
             }
 
             recipes.push(await GetRecipe(ctx, file));
+        } else if (file instanceof TFolder) {
+            recipes.push.apply(recipes, await GetRecipes(ctx, file));
         }
     }
 
