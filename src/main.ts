@@ -114,22 +114,13 @@ export default class MealPlugin extends Plugin {
                                 await RedownloadRecipe(this.ctx, new Recipe(t, t.basename));
                             });
                     });
-
-                    if (get(this.ctx.settings).debugMode && t instanceof TFile) {
-                        if (this.ctx.isInRecipeFolder(t)) {
-                            e.addItem((e) => {
-                                return e
-                                    .setTitle('Reload recipe')
-                                    .setIcon('carrot')
-                                    .onClick(async () => {
-                                        await this.ctx.loadRecipes(t);
-                                    });
-                            });
-                        }
-                    }
                 }
             }),
         );
+
+        this.ctx.settings.subscribe(() => {
+            this.updateDebugMode(this.ctx.debugMode());
+        });
 
         console.info('obisidan-meals plugin loaded');
     }
@@ -140,6 +131,39 @@ export default class MealPlugin extends Plugin {
 
     async saveSettings() {
         await this.saveData(get(this.ctx.settings));
+    }
+
+    async updateDebugMode(enabled: boolean) {
+        this.registerEvent(
+            this.app.workspace.on('file-menu', (e, t) => {
+                if (enabled === false) {
+                    return;
+                }
+
+                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipeDirectory)) {
+                    e.addItem((e) => {
+                        return e
+                            .setTitle('Reload recipe')
+                            .setIcon('carrot')
+                            .onClick(async () => {
+                                await this.ctx.loadRecipes(t);
+                            });
+                    });
+                }
+            }),
+        );
+
+        if (enabled) {
+            this.addCommand({
+                id: 'reload-recipes',
+                name: 'Reload all recipes',
+                callback: async () => {
+                    await this.ctx.loadRecipes(undefined);
+                },
+            });
+        } else {
+            this.removeCommand('reload-recipes');
+        }
     }
 }
 
@@ -404,18 +428,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
                 toggle.setValue(get(this.ctx.settings).debugMode).onChange(async (val) => {
                     this.ctx.settings.update((s) => {
                         s.debugMode = val;
-                        if (s.debugMode) {
-                            this.plugin.addCommand({
-                                id: 'reload-recipes',
-                                name: 'Reload all recipes',
-                                callback: async () => {
-                                    await this.ctx.loadRecipes(undefined);
-                                },
-                            });
-                        } else {
-                            this.plugin.removeCommand('reload-recipes');
-                        }
-
                         return s;
                     });
                     await this.plugin.saveSettings();
