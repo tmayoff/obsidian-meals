@@ -1,4 +1,4 @@
-import type { App, TFile } from 'obsidian';
+import type { App, TAbstractFile, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
 import type MealPlugin from './main.ts';
 import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe.ts';
@@ -34,8 +34,7 @@ export class Context {
         this.app = plugin.app;
     }
 
-    async loadRecipes(file: TFile | undefined) {
-        // Get the recipe folder path by default 'Meals'
+    getRecipeFolder(): TFolder | null {
         const recipeFolderPath = get(this.settings).recipeDirectory;
         if (this.debugMode()) {
             console.debug('Recipe Folder:', recipeFolderPath);
@@ -43,17 +42,54 @@ export class Context {
         const recipeFolder = this.app.vault.getFolderByPath(recipeFolderPath);
         if (recipeFolder == null) {
             console.error(`Failed to load recipes, can't access directory: ${recipeFolderPath}`);
+            return null;
+        }
+
+        return recipeFolder;
+    }
+
+    isInRecipeFolder(file: TAbstractFile | null, recipeFolder: TFolder | null = null): boolean {
+        if (recipeFolder == null) {
+            recipeFolder = this.getRecipeFolder();
+            if (recipeFolder == null) {
+                console.error("Can't find recipe folder");
+                return false;
+            }
+        }
+
+        if (file === null) {
+            return false;
+        }
+
+        if (file.parent === recipeFolder) {
+            return true;
+        }
+
+        return this.isInRecipeFolder(file.parent, recipeFolder);
+    }
+
+    async loadRecipes(file: TFile | null) {
+        // Get the recipe folder path by default 'Meals'
+        const recipeFolder = this.getRecipeFolder();
+        if (recipeFolder === null) {
+            console.error('Failed to get the recipe folder');
             return;
         }
 
         // Load just the recipe file specified and only if it's actually in the recipeFolder
-        if (file !== undefined && file.parent === recipeFolder) {
-            GetRecipe(this, file).then((r) => {
-                this.recipes.update((arr) => {
-                    arr.push(r);
-                    return arr;
+        if (file !== null) {
+            if (this.isInRecipeFolder(file, recipeFolder)) {
+                if (this.debugMode()) {
+                    console.debug('Loading recipe:', file.name);
+                }
+
+                GetRecipe(this, file).then((r) => {
+                    this.recipes.update((arr) => {
+                        arr.push(r);
+                        return arr;
+                    });
                 });
-            });
+            }
         } else {
             GetRecipes(this, recipeFolder!).then((r) => {
                 this.recipes.set(r);

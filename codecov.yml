@@ -4,4 +4,6 @@ coverage:
 
 ignore:
   - src/main.ts
+  - src/context.ts
+  - src/recipe/recipe.ts
   - src/**/*.Svelte
