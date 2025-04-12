@@ -27,7 +27,7 @@ export default class MealPlugin extends Plugin {
 
             await initWasm(wasmData);
 
-            await this.ctx.loadRecipes(undefined);
+            await this.ctx.loadRecipes(null);
 
             this.registerEvent(
                 this.app.vault.on('create', (file) => {
@@ -114,20 +114,13 @@ export default class MealPlugin extends Plugin {
                                 await RedownloadRecipe(this.ctx, new Recipe(t, t.basename));
                             });
                     });
-
-                    if (get(this.ctx.settings).debugMode && t instanceof TFile) {
-                        e.addItem((e) => {
-                            return e
-                                .setTitle('Reload recipe')
-                                .setIcon('carrot')
-                                .onClick(async () => {
-                                    await this.ctx.loadRecipes(t);
-                                });
-                        });
-                    }
                 }
             }),
         );
+
+        this.ctx.settings.subscribe(() => {
+            this.updateDebugMode(this.ctx.debugMode());
+        });
 
         console.info('obisidan-meals plugin loaded');
     }
@@ -137,9 +130,40 @@ export default class MealPlugin extends Plugin {
     }
 
     async saveSettings() {
-        const settings = get(this.ctx.settings);
-        console.debug(settings);
-        await this.saveData(settings);
+        await this.saveData(get(this.ctx.settings));
+    }
+
+    async updateDebugMode(enabled: boolean) {
+        this.registerEvent(
+            this.app.workspace.on('file-menu', (e, t) => {
+                if (enabled === false) {
+                    return;
+                }
+
+                if (t instanceof TFile && this.ctx.isInRecipeFolder(t)) {
+                    e.addItem((e) => {
+                        return e
+                            .setTitle('Reload recipe')
+                            .setIcon('carrot')
+                            .onClick(async () => {
+                                await this.ctx.loadRecipes(t);
+                            });
+                    });
+                }
+            }),
+        );
+
+        if (enabled) {
+            this.addCommand({
+                id: 'reload-recipes',
+                name: 'Reload all recipes',
+                callback: async () => {
+                    await this.ctx.loadRecipes(null);
+                },
+            });
+        } else {
+            this.removeCommand('reload-recipes');
+        }
     }
 }
 
