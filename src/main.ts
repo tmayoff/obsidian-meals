@@ -27,7 +27,7 @@ export default class MealPlugin extends Plugin {
 
             await initWasm(wasmData);
 
-            await this.ctx.loadRecipes(undefined);
+            await this.ctx.loadRecipes(null);
 
             this.registerEvent(
                 this.app.vault.on('create', (file) => {
@@ -140,7 +140,7 @@ export default class MealPlugin extends Plugin {
                     return;
                 }
 
-                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipeDirectory)) {
+                if (t instanceof TFile && this.ctx.isInRecipeFolder(t)) {
                     e.addItem((e) => {
                         return e
                             .setTitle('Reload recipe')
@@ -158,7 +158,7 @@ export default class MealPlugin extends Plugin {
                 id: 'reload-recipes',
                 name: 'Reload all recipes',
                 callback: async () => {
-                    await this.ctx.loadRecipes(undefined);
+                    await this.ctx.loadRecipes(null);
                 },
             });
         } else {

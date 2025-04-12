@@ -45,15 +45,14 @@ export class Context {
             return null;
         }
 
-        return null;
+        return recipeFolder;
     }
 
     isInRecipeFolder(file: TAbstractFile | null, recipeFolder: TFolder | null = null): boolean {
-        console.log('Checking for file:', file);
-
         if (recipeFolder == null) {
             recipeFolder = this.getRecipeFolder();
             if (recipeFolder == null) {
+                console.error("Can't find recipe folder");
                 return false;
             }
         }
@@ -62,17 +61,11 @@ export class Context {
             return false;
         }
 
-        const cur = file.parent;
-
-        if (cur === null) {
-            return false;
-        }
-
-        if (cur === recipeFolder) {
+        if (file.parent === recipeFolder) {
             return true;
         }
 
-        return this.isInRecipeFolder(cur.parent, recipeFolder);
+        return this.isInRecipeFolder(file.parent, recipeFolder);
     }
 
     async loadRecipes(file: TFile | null) {
