@@ -25,6 +25,37 @@ let updateDebugMode = async () => {
     await plugin.saveSettings();
     await plugin.ctx.loadRecipes(undefined);
 };
+
+let validateIgnoreBehaviour = (ignoreList: string[], behaviour: ShoppingListIgnoreBehaviour) => {
+    if ([ShoppingListIgnoreBehaviour.Exact, ShoppingListIgnoreBehaviour.Partial].contains(behaviour)) {
+        return true;
+    }
+
+    for (const item of ignoreList) {
+        try {
+            if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
+                new RegExp(wildcardToRegex(item));
+            } else {
+                new RegExp(item);
+            }
+        } catch (e) {
+            new Notice(`Shopping list's ignore items are invalid: ${(<Error>e).message}.`);
+            return false;
+        }
+    }
+    return true;
+};
+
+let onIgnoreBehaviourChanged = async (e: Event) => {
+    const target = e.target as HTMLSelectElement;
+    const behaviour = <ShoppingListIgnoreBehaviour>target.value;
+    if (!validateIgnoreBehaviour(behaviour)) {
+        target.value = $settings.shoppingListIgnoreBehaviour;
+        return;
+    }
+
+    await plugin.saveSettings();
+};
 </script>
 
 <Setting>
@@ -167,10 +198,10 @@ let updateDebugMode = async () => {
   <div slot="control">
     <select
       class="dropdown"
-      bind:value={$settings.shoppingListIgnoreBehaviour}
-      onchange={() => {
-        plugin.saveSettings();
+      oninput={async (e) => {
+        await onIgnoreBehaviourChanged(e);
       }}
+      bind:value={$settings.shoppingListIgnoreBehaviour}
     >
       <option value={ShoppingListIgnoreBehaviour.Exact}>Exact</option>
       <option value={ShoppingListIgnoreBehaviour.Partial}>Partial</option>
