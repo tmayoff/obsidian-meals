@@ -70,13 +70,9 @@ export class Context {
 
     async loadRecipes(file: TFile | null) {
         // Get the recipe folder path by default 'Meals'
-        const recipeFolderPath = get(this.settings).recipeDirectory;
-        if (this.debugMode()) {
-            console.debug('Recipe Folder:', recipeFolderPath);
-        }
-        const recipeFolder = this.app.vault.getFolderByPath(recipeFolderPath);
-        if (recipeFolder == null) {
-            console.error(`Failed to load recipes, can't access directory: ${recipeFolderPath}`);
+        const recipeFolder = this.getRecipeFolder();
+        if (recipeFolder === null) {
+            console.error('Failed to get the recipe folder');
             return;
         }
 
