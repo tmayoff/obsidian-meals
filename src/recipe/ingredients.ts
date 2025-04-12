@@ -3,7 +3,7 @@ import { getFrontMatterInfo } from 'obsidian';
 import { get } from 'svelte/store';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
-import { RecipeFormat } from '../settings.js';
+import { RecipeFormat } from '../settings/settings.js';
 import type { Ingredient, ParseErrors } from '../types.ts';
 import { GetIngredientsFromList, GetRecipeMDFormatBoundedList } from '../utils/parser.ts';
 import { ErrCtx } from '../utils/result.ts';
