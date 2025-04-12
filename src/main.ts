@@ -116,14 +116,16 @@ export default class MealPlugin extends Plugin {
                     });
 
                     if (get(this.ctx.settings).debugMode && t instanceof TFile) {
-                        e.addItem((e) => {
-                            return e
-                                .setTitle('Reload recipe')
-                                .setIcon('carrot')
-                                .onClick(async () => {
-                                    await this.ctx.loadRecipes(t);
-                                });
-                        });
+                        if (this.ctx.isInRecipeFolder(t)) {
+                            e.addItem((e) => {
+                                return e
+                                    .setTitle('Reload recipe')
+                                    .setIcon('carrot')
+                                    .onClick(async () => {
+                                        await this.ctx.loadRecipes(t);
+                                    });
+                            });
+                        }
                     }
                 }
             }),
