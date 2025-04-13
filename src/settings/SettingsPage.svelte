@@ -23,7 +23,11 @@ let onIgnoreBehaviourChanged = (e: Event) => {
     }
 };
 
+let tempIgnoreList: string = $settings.shoppingListIgnore.join('\n');
+
 let onIgnoreListChanged = (e: Event) => {
+    $settings.shoppingListIgnore = tempIgnoreList.split('\n');
+
     const target = e.target as HTMLSelectElement;
     const list = target.value.split('\n');
     const res = validateIgnoreBehaviour(list, $settings.shoppingListIgnoreBehaviour);
@@ -146,7 +150,7 @@ let onIgnoreListChanged = (e: Event) => {
       placeholder="salt&#13;pepper"
       rows="6"
       onblur={onIgnoreListChanged}
-      bind:value={$settings.shoppingListIgnore}
+      bind:value={tempIgnoreList}
     ></textarea>
   </div>
 </Setting>
