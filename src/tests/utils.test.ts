@@ -50,7 +50,7 @@ test('validateIgnoreBehaviour_Regex', () => {
     ];
 
     for (const test of tests) {
-        const actual = validateIgnoreBehaviour(test.input, ShoppingListIgnoreBehaviour.Exact);
+        const actual = validateIgnoreBehaviour(test.input, ShoppingListIgnoreBehaviour.Regex);
         expect(actual).toStrictEqual(test.expected);
     }
 });
