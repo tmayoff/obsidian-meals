@@ -4,6 +4,8 @@ import Toggle from '../components/Toggle.svelte';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import { validateIgnoreBehaviour } from '../utils/utils.ts';
 import Setting from './Setting.svelte';
+
+// @biome-ignore
 import { RecipeFormat, type ShoppingListIgnoreBehaviour } from './settings.ts';
 
 let { plugin } = $$props;
