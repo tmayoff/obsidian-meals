@@ -1,4 +1,6 @@
 import moment from 'moment';
+import { Err, Ok, type Result } from 'ts-results-es';
+import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
 
 export function GetCurrentWeek(startOfWeek: number) {
     return moment().weekday(startOfWeek).format('MMMM Do');
@@ -24,4 +26,36 @@ export function wildcardToRegex(pattern: string): RegExp {
         .replace(/[-\/\\^$+?.()|[\]{}]/g, '\\$&') // Escape regex special chars
         .replace(/\*/g, '.*'); // Convert wildcard '*' to '.*'
     return new RegExp(`^${escaped}$`);
+}
+
+export class BehaviourValidationError {
+    message = '';
+
+    constructor(message: string) {
+        this.message = message;
+    }
+}
+
+export function validateIgnoreBehaviour(
+    ignoreList: string[],
+    behaviour: ShoppingListIgnoreBehaviour,
+): Result<boolean, BehaviourValidationError> {
+    // Nothing to validate here
+    if (behaviour === ShoppingListIgnoreBehaviour.Exact || behaviour === ShoppingListIgnoreBehaviour.Partial) {
+        return Ok(true);
+    }
+
+    for (const item of ignoreList) {
+        try {
+            if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
+                new RegExp(wildcardToRegex(item));
+            } else {
+                new RegExp(item);
+            }
+        } catch (e) {
+            return Err(new BehaviourValidationError(`Shopping list's ignore items are invalid: ${(<Error>e).message}.`));
+        }
+    }
+
+    return Ok(true);
 }

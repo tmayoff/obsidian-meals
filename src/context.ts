@@ -2,7 +2,7 @@ import type { App, TAbstractFile, TFile, TFolder } from 'obsidian';
 import { derived, get, writable } from 'svelte/store';
 import type MealPlugin from './main.ts';
 import { GetRecipe, GetRecipes, type Recipe } from './recipe/recipe.ts';
-import { MealSettings } from './settings.ts';
+import { MealSettings } from './settings/settings.ts';
 
 export class Context {
     app: App;

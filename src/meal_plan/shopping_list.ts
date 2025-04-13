@@ -2,7 +2,7 @@ import { TFile } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
-import { ShoppingListIgnoreBehaviour } from '../settings.ts';
+import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import { GetCurrentWeek, formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
 
