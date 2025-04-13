@@ -125,7 +125,6 @@ export function AdvancedParse(ingredientContent: string) {
     // Ingredients with (...) will be parsed as follows: if it contains another alternate quantity: 17 oz (200g), it will be added as an alternate quantity otherwise it'll be ignored
 
     if (regex.test(ingredientContent)) {
-        console.debug(ingredientContent);
         // Regex match all '(...)'
         const match = regex.exec(ingredientContent);
         if (match != null) {
