@@ -1,55 +1,42 @@
 <script lang="ts">
 import { DAYS_OF_WEEK } from '../constants.ts';
 import Setting from './Setting.svelte';
-import { RecipeFormat, ShoppingListIgnoreBehaviour } from './settings';
+import { RecipeFormat, type ShoppingListIgnoreBehaviour } from './settings';
 
-let { plugin } = $props();
+let { plugin } = $$props;
 let settings = plugin.ctx.settings;
 
-let updateDebugMode = async () => {
-    const enabled: boolean = !$settings.debugMode;
-    $settings.debugMode = enabled;
-
-    if (enabled) {
-        plugin.addCommand({
-            id: 'reload-recipes',
-            name: 'Reload all recipes',
-            callback: async () => {
-                await plugin.ctx.loadRecipes(undefined);
-            },
-        });
-    } else {
-        plugin.removeCommand('reload-recipes');
-    }
-
-    await plugin.saveSettings();
-    await plugin.ctx.loadRecipes(undefined);
-};
-
 let validateIgnoreBehaviour = (ignoreList: string[], behaviour: ShoppingListIgnoreBehaviour) => {
-    if ([ShoppingListIgnoreBehaviour.Exact, ShoppingListIgnoreBehaviour.Partial].contains(behaviour)) {
-        return true;
-    }
+    //if (
+    //  [
+    //    ShoppingListIgnoreBehaviour.Exact,
+    //    ShoppingListIgnoreBehaviour.Partial,
+    //  ].contains(behaviour)
+    //) {
+    //  return true;
+    //}
 
-    for (const item of ignoreList) {
-        try {
-            if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
-                new RegExp(wildcardToRegex(item));
-            } else {
-                new RegExp(item);
-            }
-        } catch (e) {
-            new Notice(`Shopping list's ignore items are invalid: ${(<Error>e).message}.`);
-            return false;
-        }
-    }
+    //for (const item of ignoreList) {
+    //  try {
+    //    if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
+    //      new RegExp(wildcardToRegex(item));
+    //    } else {
+    //      new RegExp(item);
+    //    }
+    //  } catch (e) {
+    //    new Notice(
+    //      `Shopping list's ignore items are invalid: ${(<Error>e).message}.`,
+    //    );
+    //    return false;
+    //  }
+    //}
     return true;
 };
 
 let onIgnoreBehaviourChanged = async (e: Event) => {
     const target = e.target as HTMLSelectElement;
     const behaviour = <ShoppingListIgnoreBehaviour>target.value;
-    if (!validateIgnoreBehaviour(behaviour)) {
+    if (!validateIgnoreBehaviour([], behaviour)) {
         target.value = $settings.shoppingListIgnoreBehaviour;
         return;
     }
@@ -63,11 +50,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
   <div slot="description">Parent folder where recipes are stored</div>
 
   <div slot="control">
-    <input
-      type="text"
-      bind:value={$settings.recipeDirectory}
-      onchange={() => plugin.saveSettings()}
-    />
+    <input type="text" bind:value={$settings.recipeDirectory} />
   </div>
 </Setting>
 
@@ -80,7 +63,6 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
       type="text"
       placeholder="Meal Plan"
       bind:value={$settings.mealPlanNote}
-      onchange={() => plugin.saveSettings()}
     />
   </div>
 </Setting>
@@ -94,7 +76,6 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
       type="text"
       placeholder="Shopping List"
       bind:value={$settings.shoppingListNote}
-      onchange={() => plugin.saveSettings()}
     />
   </div>
 </Setting>
@@ -107,13 +88,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
   </div>
 
   <div slot="control">
-    <select
-      class="dropdown"
-      bind:value={$settings.startOfWeek}
-      onchange={() => {
-        plugin.saveSettings();
-      }}
-    >
+    <select class="dropdown" bind:value={$settings.startOfWeek}>
       {#each DAYS_OF_WEEK as day, index}
         <option value={index}>{day}</option>
       {/each}
@@ -139,13 +114,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
   </div>
 
   <div slot="control">
-    <select
-      class="dropdown"
-      bind:value={$settings.recipeFormat}
-      onchange={() => {
-        plugin.saveSettings();
-      }}
-    >
+    <select class="dropdown" bind:value={$settings.recipeFormat}>
       <option value={RecipeFormat.RecipeMD}>RecipeMD</option>
       <option value={RecipeFormat.MealPlan}>MealPlan</option>
     </select>
@@ -169,7 +138,6 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
       type="text"
       placeholder="&lbrace;description&rbrace; &lbrace;quantity&rbrace; &lbrace;unitOfMeasure&rbrace;"
       bind:value={$settings.shoppingListFormat}
-      onchange={() => plugin.saveSettings()}
     />
   </div>
 </Setting>
@@ -187,7 +155,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
     <textarea
       placeholder="salt&#13;pepper"
       bind:value={$settings.shoppingListIgnore}
-    />
+    ></textarea>
   </div>
 </Setting>
 
@@ -225,11 +193,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
       $settings.advancedIngredientParsing ? "is-enabled" : "",
     ]}
   >
-    <input
-      type="checkbox"
-      bind:checked={$settings.advancedIngredientParsing}
-      onchange={() => plugin.saveSettings()}
-    />
+    <input type="checkbox" bind:checked={$settings.advancedIngredientParsing} />
   </div>
 </Setting>
 
@@ -242,6 +206,6 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
     slot="control"
     class={["checkbox-container", $settings.debugMode ? "is-enabled" : ""]}
   >
-    <input type="checkbox" onchange={() => updateDebugMode()} />
+    <input type="checkbox" bind:checked={$settings.debugMode} />
   </div>
 </Setting>
