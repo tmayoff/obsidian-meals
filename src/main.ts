@@ -1,11 +1,11 @@
-import { type App, Modal, Notice, Plugin, PluginSettingTab, TFile } from 'obsidian';
+import { type App, Modal, Plugin, PluginSettingTab, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context.ts';
 import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings, ShoppingListIgnoreBehaviour } from './settings/settings.ts';
+import { MealSettings } from './settings/settings.ts';
 import 'virtual:uno.css';
 import initWasm from 'recipe-rs';
 import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
@@ -13,7 +13,6 @@ import { mount, unmount } from 'svelte';
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
 import { Recipe } from './recipe/recipe.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
-import { wildcardToRegex } from './utils/utils.ts';
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
@@ -203,42 +202,6 @@ class MealPluginSettingsTab extends PluginSettingTab {
         super(app, plugin);
         this.plugin = plugin;
         this.ctx = plugin.ctx;
-    }
-
-    htmlToDocumentFragment(html: string): DocumentFragment {
-        const fragment: DocumentFragment = document.createDocumentFragment();
-        const div = document.createElement('div');
-        div.innerHTML = html;
-        fragment.appendChild(div);
-        return fragment;
-    }
-
-    validateBehaviour(behaviour: ShoppingListIgnoreBehaviour): boolean {
-        return this.validateShoppingListSettings(get(this.ctx.settings).shoppingListIgnore, behaviour);
-    }
-
-    validateIgnoreList(ignoreList: string[]): boolean {
-        return this.validateShoppingListSettings(ignoreList, get(this.ctx.settings).shoppingListIgnoreBehaviour);
-    }
-
-    validateShoppingListSettings(ignoreList: string[], behaviour: ShoppingListIgnoreBehaviour): boolean {
-        if ([ShoppingListIgnoreBehaviour.Exact, ShoppingListIgnoreBehaviour.Partial].contains(behaviour)) {
-            return true;
-        }
-
-        for (const item of ignoreList) {
-            try {
-                if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
-                    new RegExp(wildcardToRegex(item));
-                } else {
-                    new RegExp(item);
-                }
-            } catch (e) {
-                new Notice(`Shopping list's ignore items are invalid: ${(<Error>e).message}.`);
-                return false;
-            }
-        }
-        return true;
     }
 
     display(): void {
