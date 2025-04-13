@@ -118,7 +118,6 @@ export default class MealPlugin extends Plugin {
         );
 
         this.ctx.settings.subscribe(() => {
-            console.debug('Settings updated');
             this.updateDebugMode(this.ctx.debugMode());
             this.saveSettings();
         });
