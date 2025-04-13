@@ -1,55 +1,35 @@
 <script lang="ts">
-import { writable } from 'svelte/store';
+import { Notice } from 'obsidian';
 import Toggle from '../components/Toggle.svelte';
 import { DAYS_OF_WEEK } from '../constants.ts';
+import { validateIgnoreBehaviour } from '../utils/utils.ts';
 import Setting from './Setting.svelte';
-import { RecipeFormat, type ShoppingListIgnoreBehaviour } from './settings';
+import { RecipeFormat, type ShoppingListIgnoreBehaviour } from './settings.ts';
 
 let { plugin } = $$props;
 let settings = plugin.ctx.settings;
 
-let debugMode = writable(false);
-debugMode.subscribe((b: boolean) => {
-    $settings.debugMode = b;
-    console.log('Updated: ', b);
-});
-
-let validateIgnoreBehaviour = (ignoreList: string[], behaviour: ShoppingListIgnoreBehaviour) => {
-    //if (
-    //  [
-    //    ShoppingListIgnoreBehaviour.Exact,
-    //    ShoppingListIgnoreBehaviour.Partial,
-    //  ].contains(behaviour)
-    //) {
-    //  return true;
-    //}
-
-    //for (const item of ignoreList) {
-    //  try {
-    //    if (behaviour === ShoppingListIgnoreBehaviour.Wildcard) {
-    //      new RegExp(wildcardToRegex(item));
-    //    } else {
-    //      new RegExp(item);
-    //    }
-    //  } catch (e) {
-    //    new Notice(
-    //      `Shopping list's ignore items are invalid: ${(<Error>e).message}.`,
-    //    );
-    //    return false;
-    //  }
-    //}
-    return true;
-};
-
-let onIgnoreBehaviourChanged = async (e: Event) => {
+let onIgnoreBehaviourChanged = (e: Event) => {
     const target = e.target as HTMLSelectElement;
     const behaviour = <ShoppingListIgnoreBehaviour>target.value;
-    if (!validateIgnoreBehaviour([], behaviour)) {
-        target.value = $settings.shoppingListIgnoreBehaviour;
+
+    const res = validateIgnoreBehaviour($settings.shoppingListIgnore, behaviour);
+
+    if (res.isErr()) {
+        new Notice(res.error.message);
         return;
     }
+};
 
-    await plugin.saveSettings();
+let onIgnoreListChanged = (e: Event) => {
+    const target = e.target as HTMLSelectElement;
+    const list = target.value.split('\n');
+    const res = validateIgnoreBehaviour(list, $settings.shoppingListIgnoreBehaviour);
+
+    if (res.isErr()) {
+        new Notice(res.error.message);
+        return;
+    }
 };
 </script>
 
@@ -162,6 +142,8 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
   <div slot="control">
     <textarea
       placeholder="salt&#13;pepper"
+      rows="6"
+      onblur={onIgnoreListChanged}
       bind:value={$settings.shoppingListIgnore}
     ></textarea>
   </div>
@@ -169,14 +151,36 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
 
 <Setting>
   <div slot="title">Shopping list ignore behaviour</div>
-  <div slot="description"></div>
+  <div slot="description">
+    <p>
+      <strong>Exact:</strong> Ignore if ingredient name exactly matches any element
+      in ignore list.
+    </p>
+
+    <p>
+      <strong>Partial:</strong> Ignore if the ingredient name contains any element
+      in ignore list (Example: "olive oil" will be ignored if "oil" exists in ignore
+      list).
+    </p>
+
+    <p>
+      <strong>Wildcard:</strong> Ignore if the ingredient name matches by wildcard
+      (Example: both "sea salt" and "salt" will be ignored by "*salt", but "salted
+      nuts" won’t be ignored).
+    </p>
+
+    <p>
+      <strong>Regex:</strong> Ignore if any regex match is found in the
+      ingredient name (Example: "red pepper" will be ignored if this regex
+      exists in ignore list: ".{"{"}(0, 3){"}"} pepper", but "black pepper" won’t
+      be ignored).
+    </p>
+  </div>
 
   <div slot="control">
     <select
       class="dropdown"
-      oninput={async (e) => {
-        await onIgnoreBehaviourChanged(e);
-      }}
+      oninput={onIgnoreBehaviourChanged}
       bind:value={$settings.shoppingListIgnoreBehaviour}
     >
       <option value={ShoppingListIgnoreBehaviour.Exact}>Exact</option>

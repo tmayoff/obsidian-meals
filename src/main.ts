@@ -286,15 +286,7 @@ class MealPluginSettingsTab extends PluginSettingTab {
         //     });
 
         // new Setting(containerEl)
-        //     .setName('Shopping list ignore behaviour')
-        //     .setDesc(
-        //         this.htmlToDocumentFragment(`
-        //             <p><strong>Exact:</strong> Ignore if ingredient name exactly matches any element in ignore list.</p>
-        //             <p><strong>Partial:</strong> Ignore if the ingredient name contains any element in ignore list (Example: "olive oil" will be ignored if "oil" exists in ignore list).</p>
-        //             <p><strong>Wildcard:</strong> Ignore if the ingredient name matches by wildcard (Example: both "sea salt" and "salt" will be ignored by "*salt", but "salted nuts" won’t be ignored).</p>
-        //             <p><strong>Regex:</strong> Ignore if any regex match is found in the ingredient name (Example: "red pepper" will be ignored if this regex exists in ignore list: ".{0,3} pepper", but "black pepper" won’t be ignored).</p>
-        //         `),
-        //     )
+
         //     .addDropdown((dropdown) => {
         //         dropdown
         //             .addOption('Exact', ShoppingListIgnoreBehaviour.Exact)
