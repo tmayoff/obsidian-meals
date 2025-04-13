@@ -1,10 +1,18 @@
 <script lang="ts">
+import { writable } from 'svelte/store';
+import Toggle from '../components/Toggle.svelte';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import Setting from './Setting.svelte';
 import { RecipeFormat, type ShoppingListIgnoreBehaviour } from './settings';
 
 let { plugin } = $$props;
 let settings = plugin.ctx.settings;
+
+let debugMode = writable(false);
+debugMode.subscribe((b: boolean) => {
+    $settings.debugMode = b;
+    console.log('Updated: ', b);
+});
 
 let validateIgnoreBehaviour = (ignoreList: string[], behaviour: ShoppingListIgnoreBehaviour) => {
     //if (
@@ -186,15 +194,7 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
     text after the first comma and turning the name singular
   </div>
 
-  <div
-    slot="control"
-    class={[
-      "checkbox-container",
-      $settings.advancedIngredientParsing ? "is-enabled" : "",
-    ]}
-  >
-    <input type="checkbox" bind:checked={$settings.advancedIngredientParsing} />
-  </div>
+  <Toggle slot="control" bind:enabled={$settings.advancedIngredientParsing} />
 </Setting>
 
 <Setting>
@@ -202,10 +202,5 @@ let onIgnoreBehaviourChanged = async (e: Event) => {
   <div slot="desciption">
     This enables extra debugging tools: logging, menu options, etc...
   </div>
-  <div
-    slot="control"
-    class={["checkbox-container", $settings.debugMode ? "is-enabled" : ""]}
-  >
-    <input type="checkbox" bind:checked={$settings.debugMode} />
-  </div>
+  <Toggle slot="control" bind:enabled={$settings.debugMode} />
 </Setting>
