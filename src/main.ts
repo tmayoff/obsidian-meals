@@ -117,8 +117,9 @@ export default class MealPlugin extends Plugin {
             }),
         );
 
-        this.ctx.settings.subscribe(() => {
+        this.ctx.settings.subscribe(async () => {
             this.updateDebugMode(this.ctx.debugMode());
+            await this.ctx.loadRecipes(null);
             this.saveSettings();
         });
 
