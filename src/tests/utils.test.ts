@@ -1,7 +1,7 @@
-import { Ok, type Result } from 'ts-results-es';
+import { Err, Ok, type Result } from 'ts-results-es';
 import { expect, test } from 'vitest';
 import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
-import { type BehaviourValidationError, validateIgnoreBehaviour, wildcardToRegex } from '../utils/utils.ts';
+import { BehaviourValidationError, validateIgnoreBehaviour, wildcardToRegex } from '../utils/utils.ts';
 
 test('wildcardToRegex', () => {
     interface Test {
@@ -43,14 +43,54 @@ test('validateIgnoreBehaviour_Regex', () => {
             expected: Ok(true),
         },
         {
-            // TODO(tyler) Failing test here
-            input: ['salt'],
-            expected: Ok(true),
+            input: ['salt['],
+            expected: Err(
+                new BehaviourValidationError(
+                    "Shopping list's ignore items are invalid: Invalid regular expression: /salt[/: Unterminated character class.",
+                ),
+            ),
         },
     ];
 
     for (const test of tests) {
         const actual = validateIgnoreBehaviour(test.input, ShoppingListIgnoreBehaviour.Regex);
-        expect(actual).toStrictEqual(test.expected);
+
+        if (test.expected.isOk()) {
+            expect(actual).toStrictEqual(test.expected);
+        } else {
+            expect(actual.error.message).toStrictEqual(test.expected.error.message);
+        }
+    }
+});
+
+test('validateIgnoreBehaviour_Wildcard', () => {
+    interface Test {
+        input: string[];
+        expected: Result<boolean, BehaviourValidationError>;
+    }
+
+    const tests: Test[] = [
+        {
+            input: ['salt*', 'pepper'],
+            expected: Ok(true),
+        },
+        {
+            input: ['salt['],
+            expected: Err(
+                new BehaviourValidationError(
+                    "Shopping list's ignore items are invalid: Invalid regular expression: /salt[/: Unterminated character class.",
+                ),
+            ),
+        },
+    ];
+
+    for (const test of tests) {
+        const actual = validateIgnoreBehaviour(test.input, ShoppingListIgnoreBehaviour.Regex);
+
+        if (test.expected.isOk()) {
+            expect(actual).toStrictEqual(test.expected);
+        } else {
+            expect(actual.error.message).toStrictEqual(test.expected.error.message);
+        }
     }
 });
