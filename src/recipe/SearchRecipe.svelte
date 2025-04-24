@@ -1,10 +1,9 @@
 <script lang="ts">
-import { TextComponent } from 'obsidian';
-import { onMount } from 'svelte';
-import { derived, writable } from 'svelte/store';
+import { Trash2 } from 'lucide-svelte';
+import { derived, type readable, writable } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
-import RecipeButton from './RecipeButton.svelte';
+import type { Recipe } from './recipe.ts';
 
 type Props = {
     ctx: Context;
@@ -13,21 +12,15 @@ type Props = {
 
 let { ctx, onClose }: Props = $props();
 
-const ingredients = ctx.ingredients;
+const ingredients: readable<Set<string>> = ctx.ingredients;
 
-const searchOperation = writable('any of');
+let filterCombinator: string = $state('any of');
 
-const searchIngredients = writable(new Set<string>());
+const searchIngredients: writable<Set<string>> = writable(new Set<string>());
 
-function addIngredient(ingredient: string) {
-    searchIngredients.update((items) => {
-        items.add(ingredient);
-        return items;
-    });
-}
-
-const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
-    return $recipes.filter((recipe) => {
+const filteredRecipes = derived([searchIngredients, filterCombinator, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
+    console.log('Updating recipes');
+    return $recipes.filter((recipe: Recipe) => {
         const descs = recipe.ingredients.map((i) => {
             if (i === undefined || i.description === undefined) {
                 return '';
@@ -49,27 +42,86 @@ const foundRecipes = derived([searchIngredients, searchOperation, ctx.recipes], 
     });
 });
 
-let suggesterParent: HTMLElement;
-onMount(() => {
-    const suggesterText = new TextComponent(suggesterParent);
-    suggesterText.inputEl.addClass('w-full');
+let suggesterText: writable<HTMLElement> = writable(null);
+let suggester: IngredientSuggestionModal;
+suggesterText.subscribe((textInput: HTMLInputElement) => {
+    if (textInput === null) {
+        return;
+    }
 
-    const suggester = new IngredientSuggestionModal(ctx.app, suggesterText, [...$ingredients]);
-
-    suggesterText.onChange(() => {
-        suggester.shouldNotOpen = false;
-        suggester.open();
-    });
+    suggester = new IngredientSuggestionModal(ctx.app, textInput, [...$ingredients]);
 
     suggester.onClose = () => {
-        addIngredient(suggester.text.getValue());
-        suggester.text.setValue('');
+        const ingredient = suggester.text.value;
+        suggester.text.value = '';
+        if (ingredient === '') {
+            return;
+        }
+
+        $searchIngredients.add(ingredient);
+
+        // Hack to get svelte to react to the change
+        // biome-ignore lint/correctness/noSelfAssign: Hack for svelte stores
+        $searchIngredients = $searchIngredients;
     };
 });
 </script>
 
-<div>
+<div class="w-full">
   <h1>Search recipes</h1>
+  <input
+    type="text"
+    bind:this={$suggesterText}
+    class="w-full mb-3"
+    placeholder="Search ingredients..."
+    oninput={() => {
+      suggester.shouldNotOpen = false;
+      suggester.open();
+    }}
+  />
+
+  <div>
+    {#each $searchIngredients as ingredient}
+      <div class="flex flex-row items-center m-2">
+        <a class="text-red-600 hover:text-red-800 shadow-transparent mr-3">
+          <Trash2 />
+        </a>
+        <p>{ingredient}</p>
+      </div>
+    {/each}
+
+    <div class="flex flex-col">
+      <label>
+        <input
+          type="radio"
+          name="filterCombinator"
+          value="any of"
+          bind:group={filterCombinator}
+        />
+        Containing any ingredients
+      </label>
+
+      <label>
+        <input
+          type="radio"
+          name="filterCombinator"
+          value="all of"
+          bind:group={filterCombinator}
+        />
+        Containing all ingredients
+      </label>
+    </div>
+  </div>
+
+  <div class="w-full mb-2 mt-2 border-t-2 border-t-solid border-gray-200"></div>
+
+  <div>
+    {#each filteredRecipes as recipe}
+      {recipe.name}
+    {/each}
+  </div>
+
+  <!--
   <div class="flex flex-col md:flex-row">
     <div class="basis-1/2 flex flex-col space-x-4">
       <h2>Ingredients</h2>
@@ -127,7 +179,7 @@ onMount(() => {
         {/each}
       </div>
     </div>
-  </div>
+  </div>-->
 </div>
 
 <style>
