@@ -22,8 +22,6 @@
       in {
         devShell = pkgs.mkShell {
           nativeBuildInputs = with pkgs; [
-            # nodePackages.svelte-language-server
-
             yarn-berry
             pre-commit
 
