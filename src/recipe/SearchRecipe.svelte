@@ -14,33 +14,44 @@ let { ctx, onClose }: Props = $props();
 
 const ingredients: readable<Set<string>> = ctx.ingredients;
 
-let filterCombinator: string = $state('any of');
+let filterCombinator: writable<string> = writable('any of');
 
 const searchIngredients: writable<Set<string>> = writable(new Set<string>());
-
-const filteredRecipes = derived([searchIngredients, filterCombinator, ctx.recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
-    console.log('Updating recipes');
-    return $recipes.filter((recipe: Recipe) => {
-        const descs = recipe.ingredients.map((i) => {
-            if (i === undefined || i.description === undefined) {
-                return '';
-            }
-
-            return i.description.toLocaleLowerCase();
-        });
-
-        if ($searchOperation === 'all of') {
-            return [...$searchIngredients].every((i) => {
-                return descs.contains(i);
-            });
-        }
-        if ($searchOperation === 'any of') {
-            return [...$searchIngredients].some((i) => {
-                return descs.contains(i);
-            });
-        }
-    });
+searchIngredients.subscribe((s) => {
+    console.log(s);
 });
+const recipes: writable<Recipe[]> = ctx.recipes;
+
+const filteredRecipes = derived(searchIngredients, ($searchIngredients) => {
+    console.log('SAJDHAKJFHLAF');
+});
+
+//const filteredRecipes = derived(
+//  [searchIngredients, filterCombinator, recipes],
+//  ([$searchIngredients, $searchOperation, $recipes]) => {
+//    console.log("Updating recipes");
+//    return $recipes.filter((recipe: Recipe) => {
+//      const descs = recipe.ingredients.map((i) => {
+//        if (i === undefined || i.description === undefined) {
+//          return "";
+//        }
+
+//        return i.description.toLocaleLowerCase();
+//      });
+
+//      if ($searchOperation === "all of") {
+//        return [...$searchIngredients].every((i) => {
+//          return descs.contains(i);
+//        });
+//      }
+//      if ($searchOperation === "any of") {
+//        return [...$searchIngredients].some((i) => {
+//          return descs.contains(i);
+//        });
+//      }
+//    });
+//  },
+//);
 
 let suggesterText: writable<HTMLElement> = writable(null);
 let suggester: IngredientSuggestionModal;
@@ -96,7 +107,7 @@ suggesterText.subscribe((textInput: HTMLInputElement) => {
           type="radio"
           name="filterCombinator"
           value="any of"
-          bind:group={filterCombinator}
+          bind:group={$filterCombinator}
         />
         Containing any ingredients
       </label>
@@ -106,7 +117,7 @@ suggesterText.subscribe((textInput: HTMLInputElement) => {
           type="radio"
           name="filterCombinator"
           value="all of"
-          bind:group={filterCombinator}
+          bind:group={$filterCombinator}
         />
         Containing all ingredients
       </label>
