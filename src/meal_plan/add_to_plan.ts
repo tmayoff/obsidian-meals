@@ -2,7 +2,6 @@ import { SuggestModal } from 'obsidian';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
 import type { Recipe } from '../recipe/recipe.ts';
-import { OpenNoteFile } from '../utils/filesystem.ts';
 import { AddRecipeToMealPlan } from './plan.ts';
 
 type Callback = () => Promise<void>;
@@ -13,22 +12,11 @@ class AddToPlanTarget {
 }
 
 export class AddToPlanModal extends SuggestModal<AddToPlanTarget> {
-    showGoto: boolean;
     buttons: AddToPlanTarget[];
 
-    constructor(ctx: Context, recipe: Recipe, showGoto: boolean) {
+    constructor(ctx: Context, recipe: Recipe) {
         super(ctx.app);
-        this.showGoto = showGoto;
         this.buttons = [];
-
-        if (this.showGoto) {
-            this.buttons.push({
-                name: 'Go to recipe',
-                cb: async () => {
-                    await OpenNoteFile(ctx.app, recipe.path);
-                },
-            });
-        }
 
         for (const d of DAYS_OF_WEEK) {
             this.buttons.push({

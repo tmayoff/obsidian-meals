@@ -1,8 +1,10 @@
 <script lang="ts">
-import { Trash2 } from 'lucide-svelte';
-import { derived, type readable, writable } from 'svelte/store';
+import { Eye, Menu, Trash2 } from 'lucide-svelte';
+import { type Writable, derived, readonly, writable } from 'svelte/store';
 import type { Context } from '../context.ts';
+import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
 import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
+import { OpenNoteFile } from '../utils/filesystem.ts';
 import type { Recipe } from './recipe.ts';
 
 type Props = {
@@ -12,50 +14,39 @@ type Props = {
 
 let { ctx, onClose }: Props = $props();
 
-const ingredients: readable<Set<string>> = ctx.ingredients;
+const ingredients = readonly(ctx.ingredients);
 
-let filterCombinator: writable<string> = writable('any of');
+let filterCombinator = writable('any of');
 
-const searchIngredients: writable<Set<string>> = writable(new Set<string>());
-searchIngredients.subscribe((s) => {
-    console.log(s);
+const searchIngredients = writable(new Set<string>());
+const recipes = ctx.recipes;
+
+const filteredRecipes = derived([searchIngredients, filterCombinator, recipes], ([$searchIngredients, $searchOperation, $recipes]) => {
+    return $recipes.filter((recipe: Recipe) => {
+        const descs = recipe.ingredients.map((i) => {
+            if (i === undefined || i.description === undefined) {
+                return '';
+            }
+
+            return i.description.toLocaleLowerCase();
+        });
+
+        if ($searchOperation === 'all of') {
+            return [...$searchIngredients].every((i) => {
+                return descs.contains(i);
+            });
+        }
+        if ($searchOperation === 'any of') {
+            return [...$searchIngredients].some((i) => {
+                return descs.contains(i);
+            });
+        }
+    });
 });
-const recipes: writable<Recipe[]> = ctx.recipes;
 
-const filteredRecipes = derived(searchIngredients, ($searchIngredients) => {
-    console.log('SAJDHAKJFHLAF');
-});
-
-//const filteredRecipes = derived(
-//  [searchIngredients, filterCombinator, recipes],
-//  ([$searchIngredients, $searchOperation, $recipes]) => {
-//    console.log("Updating recipes");
-//    return $recipes.filter((recipe: Recipe) => {
-//      const descs = recipe.ingredients.map((i) => {
-//        if (i === undefined || i.description === undefined) {
-//          return "";
-//        }
-
-//        return i.description.toLocaleLowerCase();
-//      });
-
-//      if ($searchOperation === "all of") {
-//        return [...$searchIngredients].every((i) => {
-//          return descs.contains(i);
-//        });
-//      }
-//      if ($searchOperation === "any of") {
-//        return [...$searchIngredients].some((i) => {
-//          return descs.contains(i);
-//        });
-//      }
-//    });
-//  },
-//);
-
-let suggesterText: writable<HTMLElement> = writable(null);
+let suggesterText: Writable<HTMLInputElement | null> = writable(null);
 let suggester: IngredientSuggestionModal;
-suggesterText.subscribe((textInput: HTMLInputElement) => {
+suggesterText.subscribe((textInput: HTMLInputElement | null) => {
     if (textInput === null) {
         return;
     }
@@ -92,14 +83,22 @@ suggesterText.subscribe((textInput: HTMLInputElement) => {
   />
 
   <div>
-    {#each $searchIngredients as ingredient}
-      <div class="flex flex-row items-center m-2">
-        <a class="text-red-600 hover:text-red-800 shadow-transparent mr-3">
-          <Trash2 />
-        </a>
-        <p>{ingredient}</p>
-      </div>
-    {/each}
+    <div class="p-3">
+      {#each $searchIngredients as ingredient}
+        <div class="align-middle m-0">
+          <a
+            class="inline-block text-red-600 hover:text-red-800 shadow-transparent mr-3"
+            onclick={() => {
+              $searchIngredients.delete(ingredient);
+              $searchIngredients = $searchIngredients;
+            }}
+          >
+            <Trash2 />
+          </a>
+          <p class="inline-block">{ingredient}</p>
+        </div>
+      {/each}
+    </div>
 
     <div class="flex flex-col">
       <label>
@@ -126,11 +125,46 @@ suggesterText.subscribe((textInput: HTMLInputElement) => {
 
   <div class="w-full mb-2 mt-2 border-t-2 border-t-solid border-gray-200"></div>
 
-  <div>
-    {#each filteredRecipes as recipe}
-      {recipe.name}
-    {/each}
-  </div>
+  {#if $filteredRecipes.length > 0}
+    <div class="bg-slate-300 p-3 rounded-md">
+      {#each $filteredRecipes as recipe, i}
+        <div>
+          <h5>
+            {recipe.name}
+          </h5>
+          <div class="align-middle">
+            <a
+              class="mr-3"
+              onclick={async () => {
+                await OpenNoteFile(ctx.app, recipe.path);
+                onClose();
+              }}
+            >
+              <Eye class="inline-block mr-1" />View recipe</a
+            >
+            <a
+              class="mr-3"
+              onclick={() => {
+                const m = new AddToPlanModal(ctx, recipe);
+                m.onClose = () => {
+                  onClose();
+                };
+                m.open();
+              }}
+            >
+              <Menu class="inline-block mr-1" />Add to meal plan</a
+            >
+          </div>
+        </div>
+
+        {#if i < $filteredRecipes.length - 1}
+          <div
+            class="w-full mb-2 mt-2 border-t-2 border-t-solid border-gray-200"
+          ></div>
+        {/if}
+      {/each}
+    </div>
+  {/if}
 
   <!--
   <div class="flex flex-col md:flex-row">
