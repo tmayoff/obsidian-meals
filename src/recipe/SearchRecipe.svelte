@@ -3,6 +3,7 @@ import { Eye, Menu, Trash2 } from 'lucide-svelte';
 import { type Writable, derived, readonly, writable } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
+import { OpenMealPlanNote } from '../meal_plan/plan.ts';
 import { IngredientSuggestionModal } from '../suggester/IngredientSuggest.ts';
 import { OpenNoteFile } from '../utils/filesystem.ts';
 import type { Recipe } from './recipe.ts';
@@ -13,6 +14,8 @@ type Props = {
 };
 
 let { ctx, onClose }: Props = $props();
+
+const settings = ctx.settings;
 
 const ingredients = readonly(ctx.ingredients);
 
@@ -83,9 +86,12 @@ suggesterText.subscribe((textInput: HTMLInputElement | null) => {
   />
 
   <div>
-    <div class="p-3">
+    <div class="pt-3 pb-3">
       {#each $searchIngredients as ingredient}
         <div class="align-middle m-0">
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_static_element_interactions -->
+          <!-- svelte-ignore a11y_missing_attribute -->
           <a
             class="inline-block text-red-600 hover:text-red-800 shadow-transparent mr-3"
             onclick={() => {
@@ -95,7 +101,7 @@ suggesterText.subscribe((textInput: HTMLInputElement | null) => {
           >
             <Trash2 />
           </a>
-          <p class="inline-block">{ingredient}</p>
+          <span class="inline-block">{ingredient}</span>
         </div>
       {/each}
     </div>
@@ -126,13 +132,16 @@ suggesterText.subscribe((textInput: HTMLInputElement | null) => {
   <div class="w-full mb-2 mt-2 border-t-2 border-t-solid border-gray-200"></div>
 
   {#if $filteredRecipes.length > 0}
-    <div class="bg-slate-300 p-3 rounded-md">
+    <div class="p-3 rounded-md" style="background:var(--color-base-30)">
       {#each $filteredRecipes as recipe, i}
         <div>
           <h5>
             {recipe.name}
           </h5>
           <div class="align-middle">
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_missing_attribute -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
             <a
               class="mr-3"
               onclick={async () => {
@@ -142,12 +151,15 @@ suggesterText.subscribe((textInput: HTMLInputElement | null) => {
             >
               <Eye class="inline-block mr-1" />View recipe</a
             >
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <!-- svelte-ignore a11y_missing_attribute -->
             <a
               class="mr-3"
               onclick={() => {
                 const m = new AddToPlanModal(ctx, recipe);
-                m.onClose = () => {
-                  onClose();
+                m.onClose = async () => {
+                  await OpenMealPlanNote(ctx, $settings.mealPlanNote);
                 };
                 m.open();
               }}
