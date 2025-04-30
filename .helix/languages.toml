@@ -1,6 +1,7 @@
 [language-server]
 biome = { command = "biome", args = ["lsp-proxy"] }
 typescript-language-server = { command = "yarn", args = ["run", "typescript-language-server", "--stdio"] }
+svelteserver = { command = "yarn", args = ["run", "svelteserver", "--stdio"]}
 
 [[language]]
 name = "javascript"

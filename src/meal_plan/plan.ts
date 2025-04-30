@@ -32,7 +32,7 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
 }
 
 export async function OpenMealPlanNote(ctx: Context, filePath: string) {
-    AppendMarkdownExt(filePath);
+    filePath = AppendMarkdownExt(filePath);
     await createMealPlanNote(ctx.app, filePath);
 
     let found = false;

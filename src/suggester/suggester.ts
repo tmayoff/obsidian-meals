@@ -130,13 +130,15 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
     emptyStateText = 'No match found';
     limit = 100;
     shouldNotOpen: boolean;
+    inputEl: HTMLInputElement;
+    onClose: any;
+
     constructor(app: App, inputEl: HTMLInputElement, items: T[]) {
         super(app);
         this.shouldNotOpen = this.items.length === 0;
         this.inputEl = inputEl;
         this.items = items;
 
-        // biome-ignore lint/correctness/noUndeclaredVariables: External code
         this.suggestEl = createDiv('suggestion-container');
 
         this.contentEl = this.suggestEl.createDiv('suggestion');
@@ -211,6 +213,8 @@ export abstract class SuggestionModal<T> extends FuzzySuggestModal<T> {
         this.shouldNotOpen = true;
     }
     close(): void {
+        this.onClose();
+
         // TODO: Figure out a better way to do this. Idea from Periodic Notes plugin
         this.app.keymap.popScope(this.scope);
 
