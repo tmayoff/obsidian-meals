@@ -1,7 +1,7 @@
 ---
 source: https://amateurprochef.com/2025/01/30/butter-chicken-20-minutes-2
+serving_size: 1
 ---
-
 # Ingredients
 ---
 - 6 whole chicken thighs

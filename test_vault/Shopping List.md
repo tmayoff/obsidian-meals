@@ -6,3 +6,15 @@
 - [ ] Mozzarella Cheese 0.75 cup
 - [ ] Garlic clove 1 
 - [ ] Mayonnaise 4 tbsp
+- [ ] whole chicken thigh 6 
+- [ ] yogurt 3 tbsp
+- [ ] oil 2 tbsp
+- [ ] onion 2 medium
+- [ ] whole garlic clove 4 
+- [ ] whole -inch ginger 1 
+- [ ] whole green chilly 2 
+- [ ] tomato paste 3 tbsp
+- [ ] heavy cream 0.5 cup
+- [ ] water 0.75 cup
+- [ ] butter 2 tbsp
+- [ ] kasoori methi 2 tbsp
