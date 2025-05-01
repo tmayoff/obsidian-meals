@@ -208,6 +208,16 @@ let onIgnoreListChanged = (e: Event) => {
 </Setting>
 
 <Setting>
+  <div slot="title">Include nutritional information in download</div>
+  <div slot="description">
+    This will add all available nutritional information to the frontmatter of
+    the recipe
+  </div>
+
+  <Toggle slot="control" bind:enabled={$settings.includeNutritionalInformation } />
+</Setting>
+
+<Setting>
   <div slot="title">Debug mode</div>
   <div slot="desciption">
     This enables extra debugging tools: logging, menu options, etc...

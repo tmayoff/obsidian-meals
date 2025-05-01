@@ -21,4 +21,5 @@ export class MealSettings {
     shoppingListFormat = '{description} {quantity} {unitOfMeasure}';
     debugMode = false;
     startOfWeek = 0;
+    includeNutritionalInformation = true;
 }
