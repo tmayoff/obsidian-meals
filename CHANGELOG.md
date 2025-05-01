@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.7.0](https://github.com/tmayoff/obsidian-meals/compare/0.6.0...0.7.0) (2025-04-13)
+
+
+### Features
+
+* add shopping list ignore behaviour for partial, wildcard, and regex matching ([#241](https://github.com/tmayoff/obsidian-meals/issues/241)) ([ac75f4e](https://github.com/tmayoff/obsidian-meals/commit/ac75f4eff6725606eab437d5da6c097331763cc8))
+* **dev:** Move the settings page from the builder API to a Svelte page ([#258](https://github.com/tmayoff/obsidian-meals/issues/258)) ([8e62e47](https://github.com/tmayoff/obsidian-meals/commit/8e62e470d377f5d29fdd5f92e7586cda6169c54c))
+
+
+### Bug Fixes
+
+* Enable debug menus on plugin load ([#261](https://github.com/tmayoff/obsidian-meals/issues/261)) ([4451094](https://github.com/tmayoff/obsidian-meals/commit/4451094a4b35e1883ff8e6a2028c27570b97b9f4))
+* fix invalid calculation in shopping list ([#242](https://github.com/tmayoff/obsidian-meals/issues/242)) ([d89787a](https://github.com/tmayoff/obsidian-meals/commit/d89787a53ec929a469ec177ea15d4d3d275779df))
+* Nested folders support ([#260](https://github.com/tmayoff/obsidian-meals/issues/260)) ([62d4637](https://github.com/tmayoff/obsidian-meals/commit/62d46374b6a17c06c4a90b2f7d5c2b3d39ce95d0))
+
 ## [0.6.0](https://github.com/tmayoff/obsidian-meals/compare/0.5.0...0.6.0) (2025-03-28)
 
 

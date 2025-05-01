@@ -1,11 +1,11 @@
-import type { App, CachedMetadata, FuzzyMatch, TextComponent } from 'obsidian';
+import type { App, CachedMetadata, FuzzyMatch } from 'obsidian';
 import { SuggestionModal } from './suggester.ts';
 
 export class IngredientSuggestionModal extends SuggestionModal<string> {
-    text: TextComponent;
+    text: HTMLInputElement;
     cache!: CachedMetadata;
-    constructor(app: App, input: TextComponent, items: string[]) {
-        super(app, input.inputEl, items);
+    constructor(app: App, input: HTMLInputElement, items: string[]) {
+        super(app, input, items);
         this.text = input;
     }
 
@@ -14,12 +14,12 @@ export class IngredientSuggestionModal extends SuggestionModal<string> {
     }
     onChooseItem(item: string) {
         this.item = item;
-        this.text.setValue(item);
+        this.text.value = item;
     }
     selectSuggestion({ item }: FuzzyMatch<string>) {
         const link = item;
         this.item = item;
-        this.text.setValue(link);
+        this.text.value = link;
         this.onClose();
 
         this.close();
