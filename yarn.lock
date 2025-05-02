@@ -845,12 +845,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.15.2":
-  version: 22.15.2
-  resolution: "@types/node@npm:22.15.2"
+"@types/node@npm:^22.15.3":
+  version: 22.15.3
+  resolution: "@types/node@npm:22.15.3"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/39da31d5fc63b14fabd217bb8a921c4a7fc3d99f233440209f9fc2d5d736e8773f7efc65223e2fd0e8db8390b0baab9c0cd2e951c2ece8b237f07313ab3cf295
+  checksum: 10c0/2879f012d1aeba0bfdb5fed80d165f4f2cb3d1f2e1f98a24b18d4a211b4ace7d64bf2622784c78355982ffc1081ba79d0934efc2fb8353913e5871a63609661f
   languageName: node
   linkType: hard
 
@@ -2583,7 +2583,7 @@ __metadata:
     "@popperjs/core": "npm:^2.11.8"
     "@sveltejs/vite-plugin-svelte": "npm:5.0.3"
     "@tsconfig/svelte": "npm:^5.0.4"
-    "@types/node": "npm:^22.15.2"
+    "@types/node": "npm:^22.15.3"
     "@types/pluralize": "npm:^0.0.33"
     "@unocss/extractor-svelte": "npm:^66.0.0"
     "@unocss/preset-uno": "npm:^66.0.0"
@@ -2598,15 +2598,15 @@ __metadata:
     postcss: "npm:^8.5.3"
     recipe-rs: "npm:0.2.1"
     svelte: "npm:^5.28.2"
-    svelte-check: "npm:^4.1.6"
+    svelte-check: "npm:^4.1.7"
     svelte-language-server: "npm:^0.17.12"
-    tailwindcss: "npm:^4.1.4"
+    tailwindcss: "npm:^4.1.5"
     ts-results-es: "npm:^5.0.0"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.8.3"
     typescript-language-server: "npm:^4.3.4"
     unocss: "npm:^66.0.0"
-    vite: "npm:^6.3.3"
+    vite: "npm:^6.3.4"
     vitest: "npm:^3.1.2"
   languageName: unknown
   linkType: soft
@@ -3197,9 +3197,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-check@npm:^4.1.6":
-  version: 4.1.6
-  resolution: "svelte-check@npm:4.1.6"
+"svelte-check@npm:^4.1.7":
+  version: 4.1.7
+  resolution: "svelte-check@npm:4.1.7"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     chokidar: "npm:^4.0.1"
@@ -3211,7 +3211,7 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/f9b2f814cf2cc3c7fc0fa8a9e590914bba0cddb4566b82f33b9998a7ce0243a943915c7a90e9003624e678c48464466495909ecc77a495f716ee130b5abada65
+  checksum: 10c0/7a3294603585b9967f6e2660d0d911c8d31106caaf32f2a893bd0dc9a04f9709f36c03d19ff63624afe79bbd4fa95524b9d656bfd426f9650adf6e641110d3a7
   languageName: node
   linkType: hard
 
@@ -3301,10 +3301,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^4.1.4":
-  version: 4.1.4
-  resolution: "tailwindcss@npm:4.1.4"
-  checksum: 10c0/4927653b740861f0279b6b465c87e188652d3c0e311c633b4efe5d72bbb4dce12b9dddc674a386a3d0454ef4dd4951aac6fd7346dcd9b2b2b06952e431c1835d
+"tailwindcss@npm:^4.1.5":
+  version: 4.1.5
+  resolution: "tailwindcss@npm:4.1.5"
+  checksum: 10c0/19fd0709f8c8d706d28a936f6ae7ad371d8586ea38e17a68ab5ba1c1c5d97ffcc8eba144f1b5c91c1534aa8df053a26c298863272a3357161a1dd9849b89339c
   languageName: node
   linkType: hard
 
@@ -3624,9 +3624,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.3.3":
-  version: 6.3.3
-  resolution: "vite@npm:6.3.3"
+"vite@npm:^6.3.4":
+  version: 6.3.4
+  resolution: "vite@npm:6.3.4"
   dependencies:
     esbuild: "npm:^0.25.0"
     fdir: "npm:^6.4.4"
@@ -3675,7 +3675,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/7ea27d2c80a9e0b7ccf6cbd6c251455501286568160e8b632984e5332440f21a6d05f9236408212ba7653f7d2d4790f848956d8a620bbf4dd2ecb792a2fe1ab1
+  checksum: 10c0/f1534a3f42d14b30e11c58e5e451903d965d5f5ba18d8c81f9df208589e3d2c65535abaa3268d3963573174b8e056ea7bc445f567622c65fcdf98eb4acc1bf4e
   languageName: node
   linkType: hard
 
