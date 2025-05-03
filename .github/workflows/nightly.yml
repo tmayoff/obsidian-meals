@@ -19,7 +19,7 @@ jobs:
       - name: Build
         run: |
           nix develop --command yarn install
-          nix develop --command yarn version prerelease -i
+          nix develop --command yarn version patch
           nix develop --command yarn run build
 
       - name: Upload Release Artifact
