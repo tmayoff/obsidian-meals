@@ -29,6 +29,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)-prerelease"
-          gh release delete $VERSION --cleanup-tag -y
+          gh release delete $VERSION --cleanup-tag -y || true
           gh release create $VERSION -p --latest=false
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
