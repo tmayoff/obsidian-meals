@@ -25,6 +25,8 @@
             yarn-berry
             pre-commit
 
+            jq
+
             biome
             act
             just

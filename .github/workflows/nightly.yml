@@ -18,6 +18,7 @@ jobs:
 
       - name: Build
         run: |
+          nix develop --command yarn version prerelease -i
           nix develop --command yarn install
           nix develop --command yarn run build
 
@@ -25,7 +26,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete nightly --cleanup-tag -y
-          gh release create nightly -p --latest=false
-          gh release upload nightly --clobber build/main.js build/styles.css manifest.json
+          VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)-prerelease"
+          gh release delete $VERSION --cleanup-tag -y
+          gh release create $VERSION -p --latest=false
+          gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
 
