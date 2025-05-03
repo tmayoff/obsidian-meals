@@ -17,6 +17,10 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
+
+      - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
+
       # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
         if: ${{ steps.release.outputs.release_created }}
