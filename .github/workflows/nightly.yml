@@ -30,4 +30,3 @@ jobs:
           gh release delete $VERSION --cleanup-tag -y
           gh release create $VERSION -p --latest=false
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
-
