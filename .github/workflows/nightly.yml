@@ -27,6 +27,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create nightly -p --latest=false
-          gh release upload nightly build/main.js build/styles.css manifest.json
+          gh release create nightly -p --latest=false || true
+          gh release upload nightly --clobber build/main.js build/styles.css manifest.json
 
