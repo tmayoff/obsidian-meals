@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-      - uses: oven-sh/setup-bun@v2
-        if: ${{ steps.release.outputs.release_created }}
 
+      # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
         if: ${{ steps.release.outputs.release_created }}
       - uses: DeterminateSystems/magic-nix-cache-action@v9
@@ -28,6 +28,7 @@ jobs:
         run: |
           nix develop --command yarn install
           nix develop --command yarn run build
+
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
         env:
