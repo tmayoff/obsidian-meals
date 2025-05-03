@@ -2,7 +2,7 @@ name: release nightly
 on:
   push:
     branches:
-      - main
+      # - main
 
 permissions:
   contents: write
@@ -25,6 +25,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create nightly -p --latest=false || true
+          gh release delete nightly --cleanup-tag -y
+          gh release create nightly -p --latest=false
           gh release upload nightly --clobber build/main.js build/styles.css manifest.json
 
