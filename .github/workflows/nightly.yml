@@ -9,23 +9,19 @@ permissions:
   pull-requests: write
 
 jobs:
-  release-please:
+  release-nightly:
     runs-on: ubuntu-latest
     steps:
       # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
-        if: ${{ steps.release.outputs.release_created }}
       - uses: DeterminateSystems/magic-nix-cache-action@v9
-        if: ${{ steps.release.outputs.release_created }}
 
       - name: Build
-        if: ${{ steps.release.outputs.release_created }}
         run: |
           nix develop --command yarn install
           nix develop --command yarn run build
 
       - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
