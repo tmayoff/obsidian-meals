@@ -12,6 +12,8 @@ jobs:
   release-nightly:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
       - uses: DeterminateSystems/magic-nix-cache-action@v9
