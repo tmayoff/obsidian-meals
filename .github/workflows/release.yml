@@ -1,28 +1,37 @@
-name: Release Obsidian plugin
-
+name: release
 on:
   push:
-    tags:
-      - "*"
-  workflow_dispatch:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  build:
+  release-please:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v17
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
-      - name: install
-        run: nix develop --command yarn install
-      - name: build
-        run: nix develop --command yarn run build
-
-      - name: Create release
-        uses: softprops/action-gh-release@v2
+      - uses: googleapis/release-please-action@v4
+        id: release
         with:
-          files: |
-            build/main.js 
-            build/styles.css 
-            manifest.json
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+      # Setup nix
+      - uses: DeterminateSystems/nix-installer-action@v17
+        if: ${{ steps.release.outputs.release_created }}
+      - uses: DeterminateSystems/magic-nix-cache-action@v9
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Build
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          nix develop --command yarn install
+          nix develop --command yarn run build
+
+      - name: Upload Release Artifact
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload ${{ steps.release.outputs.tag_name }} build/main.js build/styles.css manifest.json
+

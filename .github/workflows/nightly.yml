@@ -1,4 +1,4 @@
-name: release
+name: release nightly
 on:
   push:
     branches:
@@ -12,11 +12,6 @@ jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-
       # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
         if: ${{ steps.release.outputs.release_created }}
@@ -33,5 +28,7 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release upload ${{ steps.release.outputs.tag_name }} build/main.js build/styles.css manifest.json
+        run: |
+          gh release create nightly -p --latest=false
+          gh release upload nightly build/main.js build/styles.css manifest.json
 
