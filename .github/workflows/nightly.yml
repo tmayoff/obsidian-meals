@@ -2,7 +2,7 @@ name: release nightly
 on:
   push:
     branches:
-      # - main
+      - main
 
 permissions:
   contents: write
@@ -14,9 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Setup nix
       - uses: DeterminateSystems/nix-installer-action@v17
-      - uses: DeterminateSystems/magic-nix-cache-action@v9
 
       - name: Build
         run: |
