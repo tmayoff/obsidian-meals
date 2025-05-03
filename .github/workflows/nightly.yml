@@ -1,7 +1,7 @@
 name: release nightly
-on:
-  push:
-    branches:
+# on:
+#   push:
+#     branches:
       # - main
 
 permissions:
