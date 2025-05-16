@@ -1,8 +1,9 @@
 name: release nightly
-# on:
-#   push:
-#     branches:
-      # - main
+
+on:
+  pull_request:
+    paths:
+      - 'CHANGELOG.md'
 
 permissions:
   contents: write
@@ -10,6 +11,7 @@ permissions:
 
 jobs:
   release-nightly:
+    if: ${{ github.event.label.name == '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,5 +32,5 @@ jobs:
         run: |
           VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)-prerelease"
           gh release delete $VERSION --cleanup-tag -y || true
-          gh release create $VERSION -p --latest=false
+          gh release create $VERSION -p --latest=false -n ${{  }}
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json

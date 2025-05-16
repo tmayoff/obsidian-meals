@@ -2,7 +2,7 @@ name: release
 on:
   push:
     branches:
-      # - main
+      - main
 
 permissions:
   contents: write
@@ -18,22 +18,16 @@ jobs:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
 
       - uses: actions/checkout@v4
+        if: ${{ steps.release.outputs.release_created }}
 
       - uses: DeterminateSystems/nix-installer-action@v17
+        if: ${{ steps.release.outputs.release_created }}
 
       - name: Build
+        if: ${{ steps.release.outputs.release_created }}
         run: |
           nix develop --command yarn install
           nix develop --command yarn run build
-
-      - name: Upload nightly
-        if: ${{ steps.release.outputs.prs_created }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)"
-          gh release create $VERSION -p --latest=false || true
-          gh release upload $VERSION --clober build/main.js build/styles.css manifest.json
 
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
