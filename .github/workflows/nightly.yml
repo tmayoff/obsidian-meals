@@ -11,7 +11,6 @@ permissions:
 
 jobs:
   release-nightly:
-    if: ${{ github.event.label.name == '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
