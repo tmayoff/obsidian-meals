@@ -1,0 +1,21 @@
+name: pr lint
+
+on: 
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v17
+      - name: lint
+        run: nix develop --command biome ci src/
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: opensource-nepal/commitlint@v1.2.0
