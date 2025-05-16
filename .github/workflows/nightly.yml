@@ -15,17 +15,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v17
+      - uses: JRMurr/direnv-nix-action@v4.2.0
 
       - name: Build
         run: |
-          nix develop --command yarn install
-          nix develop --command yarn run build
+          yarn install
+          yarn run build
 
       - name: Upload Release Artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
         run: |
-          VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)-prerelease"
+          VERSION="$(cat package.json | jq -r .version)-prerelease"
+          echo Version: $VERSION
+          CHANGELOG="$(gh pr view $PR_NUMBER --json body --jq .body | tail -n+4)"
+          echo "$CHANGELOG"
           gh release delete $VERSION --cleanup-tag -y || true
-          gh release create $VERSION -p --latest=false -n ${{  }}
+          gh release create $VERSION -p --latest=false -t "$VERSION" -n "$CHANGELOG"
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
