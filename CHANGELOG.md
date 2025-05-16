@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/tmayoff/obsidian-meals/compare/1.0.0...1.0.1) (2025-05-16)
+
+
+### Bug Fixes
+
+* **ci:** pr_lint.yml ([#284](https://github.com/tmayoff/obsidian-meals/issues/284)) ([d4ee24d](https://github.com/tmayoff/obsidian-meals/commit/d4ee24d17841c64ffe4bf609c661dceeb2fcc9c7))
+* Nightly release with version tags ([#279](https://github.com/tmayoff/obsidian-meals/issues/279)) ([073dfd0](https://github.com/tmayoff/obsidian-meals/commit/073dfd0314e4a504794b4897f6158aaaf1c8b205))
+* Update dependabot.yml ([#286](https://github.com/tmayoff/obsidian-meals/issues/286)) ([9b07d5c](https://github.com/tmayoff/obsidian-meals/commit/9b07d5ca3da34ac3d44f5bf26b78dad65f94accd))
+
 ## [1.0.0](https://github.com/tmayoff/obsidian-meals/compare/0.7.0...1.0.0) (2025-05-07)
 
 
