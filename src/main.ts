@@ -17,6 +17,7 @@ import SettingsPage from './settings/SettingsPage.svelte';
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
+    loadedSettings = false;
 
     async onload() {
         this.addSettingTab(new MealPluginSettingsTab(this.app, this));
@@ -127,10 +128,16 @@ export default class MealPlugin extends Plugin {
     }
 
     async loadSettings() {
+        this.loadedSettings = true;
+
         this.ctx.settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
     }
 
     async saveSettings() {
+        if (!this.loadedSettings) {
+            return;
+        }
+
         await this.saveData(get(this.ctx.settings));
     }
 

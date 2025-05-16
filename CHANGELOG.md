@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.0.0](https://github.com/tmayoff/obsidian-meals/compare/0.7.0...1.0.0) (2025-05-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* Improve the Search Recipe modal ([#267](https://github.com/tmayoff/obsidian-meals/issues/267))
+
+### Features
+
+* Add macro support ([#252](https://github.com/tmayoff/obsidian-meals/issues/252)) ([41a9be7](https://github.com/tmayoff/obsidian-meals/commit/41a9be74952a882f2b1399d628f6f5b3c70d4a45))
+* Improve the Search Recipe modal ([#267](https://github.com/tmayoff/obsidian-meals/issues/267)) ([0dda847](https://github.com/tmayoff/obsidian-meals/commit/0dda847d3b56249d8a97d10bb080f351298573b4))
+
+
+### Bug Fixes
+
+* **ci:** Fixed the release script to actually release the artifacts ([#278](https://github.com/tmayoff/obsidian-meals/issues/278)) ([f3d9d33](https://github.com/tmayoff/obsidian-meals/commit/f3d9d33e6b9e7c117e9b1088f068a24ba8ca8662))
+* Settings being overwritten ([#281](https://github.com/tmayoff/obsidian-meals/issues/281)) ([b10c15a](https://github.com/tmayoff/obsidian-meals/commit/b10c15a61d086241ec7b6b0cd591d991c7703663))
+
 ## [0.7.0](https://github.com/tmayoff/obsidian-meals/compare/0.6.0...0.7.0) (2025-04-13)
 
 
