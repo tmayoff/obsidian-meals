@@ -12,6 +12,12 @@ updates:
       day: "friday"
     commit-message:
       prefix: "chore(deps)"
+    groups:
+      minor:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     commit-message:
