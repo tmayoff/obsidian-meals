@@ -27,5 +27,5 @@ jobs:
         run: |
           VERSION="$(cat package.json | nix run  nixpkgs#jq -- -r .version)-prerelease"
           gh release delete $VERSION --cleanup-tag -y || true
-          gh release create $VERSION -p --latest=false -n ${{  }}
+          gh release create $VERSION -p --latest=false
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
