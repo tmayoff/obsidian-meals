@@ -32,5 +32,5 @@ jobs:
           CHANGELOG="$(gh pr view $PR_NUMBER --json body --jq .body | tail -n+4)"
           echo "$CHANGELOG"
           gh release delete $VERSION --cleanup-tag -y || true
-          gh release create $VERSION -p --latest=false -t "prelease of version: $VERSION" -n $CHANGELOG
+          gh release create $VERSION -p --latest=false -t "prelease of version: $VERSION" -n "$CHANGELOG"
           gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
