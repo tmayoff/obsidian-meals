@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/tmayoff/obsidian-meals/compare/1.0.1...1.0.2) (2025-06-24)
+
+
+### Bug Fixes
+
+* Fixed failures parsing some websites ([#300](https://github.com/tmayoff/obsidian-meals/issues/300)) ([6031333](https://github.com/tmayoff/obsidian-meals/commit/6031333820dbb32b2b528e68a00ca6718458fd76))
+
 ## [1.0.1](https://github.com/tmayoff/obsidian-meals/compare/1.0.0...1.0.1) (2025-05-16)
 
 
