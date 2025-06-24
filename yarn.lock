@@ -2692,7 +2692,7 @@ __metadata:
     parse-ingredient: "npm:^1.3.0"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.6"
-    recipe-rs: "npm:0.2.1"
+    recipe-rs: "npm:0.2.2"
     svelte: "npm:^5.34.7"
     svelte-check: "npm:^4.2.2"
     svelte-language-server: "npm:^0.17.16"
@@ -2960,10 +2960,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recipe-rs@npm:0.2.1":
-  version: 0.2.1
-  resolution: "recipe-rs@npm:0.2.1"
-  checksum: 10c0/0ccd5d81b7d3ee5edfe6df6b82013ffc6929591d2bae0df09ead94cb85abeb81102cc4d2d0256f538a1c4ffa681d4974fe4096803fcd95d80bd55db3b893a691
+"recipe-rs@npm:0.2.2":
+  version: 0.2.2
+  resolution: "recipe-rs@npm:0.2.2"
+  checksum: 10c0/43ed2740bf44e262867a829fce4c644d8a6d23be21f77a3153f7d32ab7e6ba6ab3d38f714bf1c5c19db2077fba15407f78033e8aeddcbc332c3fe7f008097142
   languageName: node
   linkType: hard
 
