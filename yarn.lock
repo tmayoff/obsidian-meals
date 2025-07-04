@@ -737,12 +737,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^24.0.8":
-  version: 24.0.8
-  resolution: "@types/node@npm:24.0.8"
+"@types/node@npm:^24.0.10":
+  version: 24.0.10
+  resolution: "@types/node@npm:24.0.10"
   dependencies:
     undici-types: ~7.8.0
-  checksum: 78a7af615a543599af1280f087c204c987a265121d656060352db0f80bc1e55c90abae1d007732db5dda19f77dfb196ed29bdc4a9966042c2d44023503fd52aa
+  checksum: 04e4d11a711a683d6ed71f8db86b35035771ee9c1f110cb904ca67454d3478f19c71f1f0ccd0ba5350e5ce63bea70d08c569f798f6f5a5d2a1d05c038f1f729f
   languageName: node
   linkType: hard
 
@@ -1756,12 +1756,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esrap@npm:^1.4.8":
-  version: 1.4.9
-  resolution: "esrap@npm:1.4.9"
+"esrap@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "esrap@npm:2.1.0"
   dependencies:
-    "@jridgewell/sourcemap-codec": "npm:^1.4.15"
-  checksum: 10c0/21b4c58f358360ada596ea46b8dbf47771c6d7734277add55e7cd1d5655126dea25591788712452ed8575a99acd388eae756bf941bab31d7b9fb424620c10c40
+    "@jridgewell/sourcemap-codec": ^1.4.15
+  checksum: 19361da3d8b6794a26571a7ec1777c7a5e4f6d681cc5f36ec5d737e12aeb82917e2279b108d03e05d2926d6f6dadd54e441a4250c7430df6d858488aecf04606
   languageName: node
   linkType: hard
 
@@ -2539,7 +2539,7 @@ __metadata:
     "@popperjs/core": ^2.11.8
     "@sveltejs/vite-plugin-svelte": 5.1.0
     "@tsconfig/svelte": ^5.0.4
-    "@types/node": ^24.0.8
+    "@types/node": ^24.0.10
     "@types/pluralize": ^0.0.33
     "@unocss/extractor-svelte": ^66.3.2
     "@unocss/preset-uno": ^66.3.2
@@ -2553,7 +2553,7 @@ __metadata:
     pluralize: ^8.0.0
     postcss: ^8.5.6
     recipe-rs: 0.2.2
-    svelte: ^5.34.9
+    svelte: ^5.35.2
     svelte-check: ^4.2.2
     svelte-language-server: ^0.17.16
     tailwindcss: ^4.1.11
@@ -2562,7 +2562,7 @@ __metadata:
     typescript: ^5.8.3
     typescript-language-server: ^4.3.4
     unocss: ^66.3.2
-    vite: ^7.0.0
+    vite: ^7.0.2
     vitest: ^3.2.4
   languageName: unknown
   linkType: soft
@@ -3169,9 +3169,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.34.9":
-  version: 5.34.9
-  resolution: "svelte@npm:5.34.9"
+"svelte@npm:^5.35.2":
+  version: 5.35.2
+  resolution: "svelte@npm:5.35.2"
   dependencies:
     "@ampproject/remapping": ^2.3.0
     "@jridgewell/sourcemap-codec": ^1.5.0
@@ -3182,12 +3182,12 @@ __metadata:
     axobject-query: ^4.1.0
     clsx: ^2.1.1
     esm-env: ^1.2.1
-    esrap: ^1.4.8
+    esrap: ^2.1.0
     is-reference: ^3.0.3
     locate-character: ^3.0.0
     magic-string: ^0.30.11
     zimmerframe: ^1.1.2
-  checksum: 897bbc7d0557b877c4d4a87bdbb99d4801250cd3a7ce17fa071ac9ae33f49c12f60b83d21f44504346af901518c21dfd75952813e584071a54f4b2a1cda40ed7
+  checksum: e3838c1a7ce754cbb1be5eed707c876e24fcc92d99306174344c8e9dacff725bbe82128cf4624196f30cf7c2412907973fd6495cf50ddf81d5b6fab238505696
   languageName: node
   linkType: hard
 
@@ -3519,9 +3519,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "vite@npm:7.0.0"
+"vite@npm:^7.0.2":
+  version: 7.0.2
+  resolution: "vite@npm:7.0.2"
   dependencies:
     esbuild: ^0.25.0
     fdir: ^6.4.6
@@ -3570,7 +3570,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 31d79c9f99b505ff15052379e854401ad740b6bbbb39b9902c69a9ee600f01fefff9ab656daf3abec18c41e50e9f0c7a342549033f67ffa2833203e600d27e34
+  checksum: bd1db7b88d830359f4072254f3fd2d258c60a1136fc6bbf0125b5d661ea401b8ef61a115aee4cc64b37e33d27c0a89a6107899d03aa86e1c0a8ebdcf1f90f7c8
   languageName: node
   linkType: hard
 
