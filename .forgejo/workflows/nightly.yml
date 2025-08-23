@@ -15,12 +15,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: https://github.com/DeterminateSystems/nix-installer-action@v17
-      - uses: https://github.com/JRMurr/direnv-nix-action@v4.2.0
+      # - uses: https://github.com/JRMurr/direnv-nix-action@v4.2.0
 
       - name: Build
         run: |
-          yarn install
-          yarn run build
+          nix run nixpkgs#yarn -- install
+          nix run nixpkgs#yarn -- run build
 
       - name: Upload Release Artifact
         env:
