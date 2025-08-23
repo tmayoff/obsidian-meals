@@ -31,16 +31,19 @@ jobs:
         node-version: '20.x'
         registry-url: 'https://npm.pkg.github.com'
 
+    - uses: https://github.com/DeterminateSystems/nix-installer-action@v17
+    - uses: https://github.com/JRMurr/direnv-nix-action@v4.2.0
+
     - name: install
-      run: nix run nixpkgs#yarn -- install
+      run: yarn install
       env:
         NODE_AUTH_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
 
     - name: build
-      run: nix run nixpkgs#yarn -- yarn run build
+      run: yarn run build
 
     - name: test
-      run: nix run nixpkgs#yarn -- yarn run coverage
+      run: yarn run coverage
 
     - name: Upload results to Codecov
       uses: https://github.com/codecov/codecov-action@v5
