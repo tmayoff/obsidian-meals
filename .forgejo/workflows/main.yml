@@ -1,6 +1,6 @@
 name: build & test
 
-on: 
+on:
   push:
     branches:
       - main
@@ -25,7 +25,7 @@ jobs:
     runs-on: codeberg-tiny
     steps:
     - uses: actions/checkout@v4
-    
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20.x'
@@ -34,8 +34,8 @@ jobs:
     - name: install
       run: nix run nixpkgs#yarn -- install
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
+        NODE_AUTH_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
+
     - name: build
       run: nix run nixpkgs#yarn -- yarn run build
 

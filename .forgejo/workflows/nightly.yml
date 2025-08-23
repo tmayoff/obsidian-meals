@@ -24,7 +24,7 @@ jobs:
 
       - name: Upload Release Artifact
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORGEJO_TOKEN: ${{ secrets.FORGEJO_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
         run: |
           VERSION="$(cat package.json | jq -r .version)-prerelease"
