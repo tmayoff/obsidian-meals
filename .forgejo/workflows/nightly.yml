@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   release-nightly:
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v17
