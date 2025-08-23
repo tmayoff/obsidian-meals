@@ -14,8 +14,8 @@ jobs:
     runs-on: codeberg-tiny
     steps:
       - uses: actions/checkout@v4
-      - uses: DeterminateSystems/nix-installer-action@v17
-      - uses: JRMurr/direnv-nix-action@v4.2.0
+      - uses: https://github.com/DeterminateSystems/nix-installer-action@v17
+      - uses: https://github.com/JRMurr/direnv-nix-action@v4.2.0
 
       - name: Build
         run: |
