@@ -32,15 +32,15 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: install
-      run: yarn install
+      run: nix run nixpkgs#yarn -- install
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: build
-      run: yarn run build
+      run: nix run nixpkgs#yarn -- yarn run build
 
     - name: test
-      run: yarn run coverage
+      run: nix run nixpkgs#yarn -- yarn run coverage
 
     - name: Upload results to Codecov
       uses: https://github.com/codecov/codecov-action@v5
