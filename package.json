@@ -44,7 +44,7 @@
         "moment": "^2.30.1",
         "pluralize": "^8.0.0",
         "recipe-rs": "0.2.2",
-        "ts-results-es": "^5.0.0",
+        "ts-results-es": "^6.0.0",
         "unocss": "^66.3.2"
     }
 }

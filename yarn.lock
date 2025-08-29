@@ -2557,7 +2557,7 @@ __metadata:
     svelte-check: ^4.2.2
     svelte-language-server: ^0.17.16
     tailwindcss: ^4.1.11
-    ts-results-es: ^5.0.0
+    ts-results-es: ^6.0.0
     tslib: ^2.8.1
     typescript: ^5.8.3
     typescript-language-server: ^4.3.4
@@ -3294,10 +3294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-results-es@npm:^5.0.0":
-  version: 5.0.1
-  resolution: "ts-results-es@npm:5.0.1"
-  checksum: 10c0/2dcf84da103b27887e24fda98919c00392c46b34b976a8150ca787be089a72023e4f2aa62a33f97fb6738d0f9adbf3d14a2d77a24dcc2e5f79176da2569a6dc4
+"ts-results-es@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "ts-results-es@npm:6.0.0"
+  checksum: 9c690163693641718f02e270535e3be919b791a2726a2328b036c4cdd3ca81a0bf9e8263bfb4bc33e3b1193579ca01a06b5e4ff07762099c51c45741ea2da5ab
   languageName: node
   linkType: hard
 
