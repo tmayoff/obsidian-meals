@@ -661,33 +661,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/vite-plugin-svelte-inspector@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "@sveltejs/vite-plugin-svelte-inspector@npm:4.0.1"
+"@sveltejs/vite-plugin-svelte-inspector@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "@sveltejs/vite-plugin-svelte-inspector@npm:5.0.1"
   dependencies:
-    debug: "npm:^4.3.7"
+    debug: ^4.4.1
   peerDependencies:
-    "@sveltejs/vite-plugin-svelte": ^5.0.0
+    "@sveltejs/vite-plugin-svelte": ^6.0.0-next.0
     svelte: ^5.0.0
-    vite: ^6.0.0
-  checksum: 10c0/03cc334346fcf291d3d0cba435bf752d15df91c0ac55dccdb5bf1372ae5a85fcb25f0f63ca3d1f7a25ebaa9e711fd1178d8a1fd6f495d57ac2eb327b855c0aea
+    vite: ^6.3.0 || ^7.0.0
+  checksum: a4debffcea655eabb6af7fc76ec5659a796868bc3913e4a2e06ef5e997a0341f56ba8fb422d1f5e896651b06cba9f4d058db9441dbc11a7cac850a2a191da0fd
   languageName: node
   linkType: hard
 
-"@sveltejs/vite-plugin-svelte@npm:5.1.0":
-  version: 5.1.0
-  resolution: "@sveltejs/vite-plugin-svelte@npm:5.1.0"
+"@sveltejs/vite-plugin-svelte@npm:6.1.4":
+  version: 6.1.4
+  resolution: "@sveltejs/vite-plugin-svelte@npm:6.1.4"
   dependencies:
-    "@sveltejs/vite-plugin-svelte-inspector": "npm:^4.0.1"
-    debug: "npm:^4.4.1"
-    deepmerge: "npm:^4.3.1"
-    kleur: "npm:^4.1.5"
-    magic-string: "npm:^0.30.17"
-    vitefu: "npm:^1.0.6"
+    "@sveltejs/vite-plugin-svelte-inspector": ^5.0.0
+    debug: ^4.4.1
+    deepmerge: ^4.3.1
+    magic-string: ^0.30.17
+    vitefu: ^1.1.1
   peerDependencies:
     svelte: ^5.0.0
-    vite: ^6.0.0
-  checksum: 10c0/7402d90e3f81cffc80dd31bb8d7d277548121c03ba29ead9409800f6849a0b068a42b0ef294ab5eb1eaa033e9f4d53864e4e163b36e6bccb2d9e130ba8e47f10
+    vite: ^6.3.0 || ^7.0.0
+  checksum: 84f4a33ea7d1636b6c5ff06337eecd4bf51fa4df51a47adc671e3cb23e17d0e4c4dcd4d7b042018b146898a1381ff106014b659ac5cbdffbac734549453dcb7b
   languageName: node
   linkType: hard
 
@@ -1522,7 +1521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:4, debug@npm:^4.1.1, debug@npm:^4.3.4, debug@npm:^4.3.7, debug@npm:^4.4.0":
+"debug@npm:4, debug@npm:^4.1.1, debug@npm:^4.3.4, debug@npm:^4.4.0":
   version: 4.4.0
   resolution: "debug@npm:4.4.0"
   dependencies:
@@ -2158,13 +2157,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kleur@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "kleur@npm:4.1.5"
-  checksum: 10c0/e9de6cb49657b6fa70ba2d1448fd3d691a5c4370d8f7bbf1c2f64c24d461270f2117e1b0afe8cb3114f13bbd8e51de158c2a224953960331904e636a5e4c0f2a
-  languageName: node
-  linkType: hard
-
 "kolorist@npm:^1.8.0":
   version: 1.8.0
   resolution: "kolorist@npm:1.8.0"
@@ -2537,7 +2529,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": 2.0.6
     "@popperjs/core": ^2.11.8
-    "@sveltejs/vite-plugin-svelte": 5.1.0
+    "@sveltejs/vite-plugin-svelte": 6.1.4
     "@tsconfig/svelte": ^5.0.4
     "@types/node": ^24.0.8
     "@types/pluralize": ^0.0.33
@@ -3574,15 +3566,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitefu@npm:^1.0.6":
-  version: 1.0.7
-  resolution: "vitefu@npm:1.0.7"
+"vitefu@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "vitefu@npm:1.1.1"
   peerDependencies:
     vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
   peerDependenciesMeta:
     vite:
       optional: true
-  checksum: 10c0/f5d4db2d57155f637ed0e6e9b339f722908ec2beccd2e05a6ef0b1842b0b261c5cbc07f63742983689ef6ceff95700b0300dcd68f81a6fe9886c9cc7c4307321
+  checksum: 58de990bb7b4665969627034067c3892c7483ed52eb996d6a1353e76a45feee43117a04bfef806d7670136d895f6935cf7c0c143148954583094ff274fcccfdb
   languageName: node
   linkType: hard
 
