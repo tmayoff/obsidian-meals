@@ -26,6 +26,8 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     
+    - uses: DeterminateSystems/nix-installer-action@v19
+
     - name: install
       run: nix develop --command yarn install
       env:
