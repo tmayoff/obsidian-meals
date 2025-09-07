@@ -19,8 +19,8 @@ jobs:
 
       - name: Build
         run: |
-          yarn install
-          yarn run build
+          yarn-berry install
+          yarn-berry run build
 
       - name: Upload Release Artifact
         env:

@@ -26,8 +26,8 @@ jobs:
       - name: Build
         if: ${{ steps.release.outputs.release_created }}
         run: |
-          nix develop --command yarn install
-          nix develop --command yarn run build
+          nix develop --command yarn-berry install
+          nix develop --command yarn-berry run build
 
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}

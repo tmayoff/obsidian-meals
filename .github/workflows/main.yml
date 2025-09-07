@@ -32,15 +32,15 @@ jobs:
         registry-url: 'https://npm.pkg.github.com'
 
     - name: install
-      run: yarn install
+      run: yarn-berry install
       env:
         NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
     - name: build
-      run: yarn run build
+      run: yarn-berry run build
 
     - name: test
-      run: yarn run coverage
+      run: yarn-berry run coverage
 
     - name: Upload results to Codecov
       uses: codecov/codecov-action@v5
