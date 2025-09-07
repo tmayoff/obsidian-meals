@@ -117,11 +117,15 @@ function getFoodListRange(ctx: Context, file: TFile) {
     if (headings) {
         for (const header of headings) {
             if (header.heading === 'Food') {
+                console.error('Found food heading', header);
                 startHeader = header;
+                continue;
             }
 
-            if (startHeader === null && endHeader !== null) {
+            if (startHeader !== null && endHeader === null) {
+                console.error('End header found, ', header);
                 endHeader = header;
+                break;
             }
         }
     }
@@ -140,7 +144,7 @@ async function readIngredients(
     const metadata = ctx.app.metadataCache.getFileCache(file);
     const settings = get(ctx.settings);
 
-    const fileContent = await ctx.app.vault.cachedRead(file);
+    const fileContent = await ctx.app.vault.read(file);
     const endOffset = range.endOffset ? range.endOffset : fileContent.length;
 
     const list = metadata?.listItems;
