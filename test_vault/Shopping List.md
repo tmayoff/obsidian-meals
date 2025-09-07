@@ -1,20 +1,30 @@
-- [ ] Bacon 100 g
-- [ ] Pizza Dough 340 g
-- [ ] Tomato 1 
-- [ ] Baby Spinach 28 g
-- [ ] Basil Pesto 0.25 cup
-- [ ] Mozzarella Cheese 0.75 cup
-- [ ] Garlic clove 1 
-- [ ] Mayonnaise 4 tbsp
-- [ ] whole chicken thigh 6 
-- [ ] yogurt 3 tbsp
-- [ ] oil 2 tbsp
-- [ ] onion 2 medium
-- [ ] whole garlic clove 4 
-- [ ] whole -inch ginger 1 
-- [ ] whole green chilly 2 
-- [ ] tomato paste 3 tbsp
-- [ ] heavy cream 0.5 cup
-- [ ] water 0.75 cup
-- [ ] butter 2 tbsp
-- [ ] kasoori methi 2 tbsp
+# Household
+
+- [ ] Detergent  
+
+# Food
+- [ ] baby spinach 3 cup
+- [ ] Bulgur Wheat 0.5 cup
+- [ ] Chicken Breasts 2 
+- [ ] cooked brown or white rice 4 cup
+- [ ] dried red lentils 1.5 cup
+- [ ] Feta Cheese, crumbled 0.25 cup
+- [ ] fresh ginger 1 tbsp
+- [ ] full fat coconut milk 13.5 can
+- [ ] garam masala 1 tbsp
+- [ ] garlic 5 clove
+- [ ] Garlic, cloves 1 
+- [ ] ground turmeric 1 tsp
+- [ ] Lemon 1 
+- [ ] Mediterranean Spice Blend 1 tbsp
+- [ ] Mini cucumber 66 g
+- [ ] Mixed Olives 30 g
+- [ ] red pepper chili flakes 0.5 tsp
+- [ ] Roma Tomato 95 g
+- [ ] Sugar 1 tbsp
+- [ ] tomatoes 14 can
+- [ ] vegetable broth 3 cup
+- [ ] White Wine Vinegar 1 tbsp
+- [ ] yellow onion 1 large
+- [ ] Za'atar spice blend 1 tbsp
+# Other things

@@ -1,6 +1,6 @@
 ---
 source: https://youtube.com/shorts/oTA1lOcrg5Q?si=_mb449tTD743frEk
-servings: "4"
+servings: 4
 meal: Dinner
 ---
 # Ingredients

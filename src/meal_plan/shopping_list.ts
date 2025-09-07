@@ -1,9 +1,13 @@
-import { TFile } from 'obsidian';
-import type { Ingredient } from 'parse-ingredient';
+import type { HeadingCache, TFile } from 'obsidian';
+// import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
+import { Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
+import type { Ingredient } from '../types.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
+import { GetIngredientsFromList } from '../utils/parser.ts';
+import type { ErrCtx } from '../utils/result.ts';
 import { GetCurrentWeek, formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
@@ -48,7 +52,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
     if (mealPlanFile == null) {
         return;
     }
-    const ingredients = getMealPlanIngredients(ctx, mealPlanFile);
+    const newIngredients = getMealPlanIngredients(ctx, mealPlanFile);
 
     const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
 
@@ -58,15 +62,11 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
         file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
 
-    if (file instanceof TFile) {
-        ctx.app.vault.process(file, (data) => {
-            for (const i of ingredients) {
-                data += formatUnicorn(`- [ ] ${get(ctx.settings).shoppingListFormat} \n`, i);
-            }
-
-            return data;
-        });
+    if (file == null) {
+        return;
     }
+
+    await updateShoppingList(ctx, file, newIngredients);
 }
 
 export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
@@ -80,17 +80,90 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
         return;
     }
 
+    const newIngredients = getIngredientsRecipe(ctx, recipeFile);
+    await updateShoppingList(ctx, file, newIngredients);
+}
+
+async function updateShoppingList(ctx: Context, file: TFile, newIngredients: Ingredient[]) {
+    const foodListRange = getFoodListRange(ctx, file);
+    const existingIngredients = (await readIngredients(ctx, file, foodListRange)).unwrapOr(new Array<Ingredient>());
+    const ingredients = mergeIngredientLists(existingIngredients, newIngredients).sort((a, b) => {
+        return a.description.localeCompare(b.description);
+    });
+
     ctx.app.vault.process(file, (data) => {
-        const ingredients = getIngredientsRecipe(ctx, recipeFile);
+        const start = foodListRange.startOffset;
+        const end = foodListRange.endOffset ? foodListRange.endOffset : data.length;
+
+        let newContent = start !== 0 ? '\n' : '';
+
         for (const i of ingredients) {
             let formatted = formatUnicorn(`${get(ctx.settings).shoppingListFormat}`, i);
             formatted = formatted.replaceAll(/\([\s-]*\)/g, '');
             formatted.trim();
-            data += `- [ ] ${formatted}\n`;
+            newContent += `- [ ] ${formatted}\n`;
         }
 
-        return data;
+        return data.substring(0, start) + newContent + data.substring(end);
     });
+}
+
+function getFoodListRange(ctx: Context, file: TFile) {
+    const metadata = ctx.app.metadataCache.getFileCache(file);
+
+    let startHeader: HeadingCache | null = null;
+    let endHeader: HeadingCache | null = null;
+    const headings = metadata?.headings;
+    if (headings) {
+        for (const header of headings) {
+            if (header.heading === 'Food') {
+                console.error('Found food heading', header);
+                startHeader = header;
+                continue;
+            }
+
+            if (startHeader !== null && endHeader === null) {
+                console.error('End header found, ', header);
+                endHeader = header;
+                break;
+            }
+        }
+    }
+
+    const startOffset = startHeader ? startHeader.position.end.offset : 0;
+    const endOffset = endHeader?.position.start.offset;
+
+    return { startOffset, endOffset };
+}
+
+async function readIngredients(
+    ctx: Context,
+    file: TFile,
+    range: { startOffset: number; endOffset: number | undefined },
+): Promise<Result<Ingredient[], ErrCtx>> {
+    const metadata = ctx.app.metadataCache.getFileCache(file);
+    const settings = get(ctx.settings);
+
+    const fileContent = await ctx.app.vault.read(file);
+    const endOffset = range.endOffset ? range.endOffset : fileContent.length;
+
+    const list = metadata?.listItems;
+
+    if (list !== undefined) {
+        return GetIngredientsFromList(
+            list
+                .filter((l) => {
+                    return l.position.start.offset >= range.startOffset && l.position.end.offset <= endOffset;
+                })
+                .map((l) => {
+                    return fileContent.substring(l.position.start.offset, l.position.end.offset);
+                }),
+            settings.advancedIngredientParsing,
+            settings.debugMode,
+        );
+    }
+
+    return Ok(new Array<Ingredient>());
 }
 
 function getMealPlanIngredients(ctx: Context, file: TFile) {

@@ -29,9 +29,11 @@ export function GetRecipeMDFormatBoundedList(content: string): Result<string[], 
     );
 }
 
+const linePrefix = /^((- \[ \] )|(- ))([^\[\]]*$)/;
+
 export function GetIngredientsFromList(list: string[], advancedParsing: boolean, debug: boolean): Result<Ingredient[], ErrCtx> {
     const rawIngredient = list.filter((i) => {
-        return i.startsWith('-');
+        return linePrefix.test(i);
     });
 
     if (debug) {
@@ -51,6 +53,7 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
             }
             ingredients.push(ingredient.value);
         } else if (ingredient.error !== 'NO_INGREDIENT') {
+            console.error(ingredient.error);
             return Err(new ErrCtx(rawIngredient, ingredient.error));
         }
     }
@@ -60,16 +63,12 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
 
 export function ParseIngredient(content: string, advancedParse: boolean): Result<Ingredient, ParseErrors> {
     // Parse the ingredient line
-    const linePrefix = '-';
-    const prefixIndex = content.indexOf(linePrefix);
-    if (prefixIndex < 0) {
+    const match = content.match(linePrefix);
+    if (match === null) {
         return Err('NO_INGREDIENT');
     }
 
-    let ingredientContent = content;
-    if (prefixIndex >= 0) {
-        ingredientContent = ingredientContent.substring(prefixIndex + 1).trim();
-    }
+    let ingredientContent = match[4];
 
     if (ingredientContent === '') {
         return Err('INGREDIENT_EMPTY');
