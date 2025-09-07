@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/tmayoff/obsidian-meals/compare/1.0.2...1.1.0) (2025-09-07)
+
+
+### Features
+
+* Merge shopping list ([#327](https://github.com/tmayoff/obsidian-meals/issues/327)) ([935b5ee](https://github.com/tmayoff/obsidian-meals/commit/935b5ee2c4d10b82f732ba39e1c1b91a4f22c55b))
+
 ## [1.0.2](https://github.com/tmayoff/obsidian-meals/compare/1.0.1...1.0.2) (2025-06-24)
 
 
