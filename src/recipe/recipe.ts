@@ -12,7 +12,7 @@ export class Recipe {
     constructor(path: TFile, name: string = path.basename) {
         this.path = path;
         this.name = name;
-        this.ingredients = new Array();
+        this.ingredients = [];
     }
 
     public async fillIngredients(ctx: Context) {
@@ -27,7 +27,7 @@ export class Recipe {
 }
 
 export async function GetRecipes(ctx: Context, recipeDir: TFolder) {
-    const recipes: Recipe[] = new Array();
+    const recipes: Recipe[] = [];
 
     for (const file of recipeDir.children) {
         if (file instanceof TFile) {

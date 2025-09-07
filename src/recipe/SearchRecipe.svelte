@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Eye, Menu, Trash2 } from 'lucide-svelte';
-import { type Writable, derived, readonly, writable } from 'svelte/store';
+import { derived, readonly, type Writable, writable } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AddToPlanModal } from '../meal_plan/add_to_plan.ts';
 import { OpenMealPlanNote } from '../meal_plan/plan.ts';
@@ -44,6 +44,8 @@ const filteredRecipes = derived([searchIngredients, filterCombinator, recipes], 
                 return descs.contains(i);
             });
         }
+
+        return false;
     });
 });
 

@@ -9,7 +9,6 @@ test('wildcardToRegex', () => {
         expected: RegExp;
     }
 
-    // biome-ignore lint/performance/useTopLevelRegex: <explanation>
     const tests: Test[] = [{ input: '*', expected: /^.*$/ }];
 
     for (const test of tests) {

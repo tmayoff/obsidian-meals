@@ -1,4 +1,4 @@
-import { type Instance as PopperInstance, createPopper } from '@popperjs/core';
+import { createPopper, type Instance as PopperInstance } from '@popperjs/core';
 import { type App, type FuzzyMatch, FuzzySuggestModal, Scope, type SuggestModal } from 'obsidian';
 
 declare module 'obsidian' {
@@ -59,7 +59,7 @@ class Suggester<T> {
 
         const item = this.suggestions.indexOf(el);
         this.setSelectedItem(item, false);
-        // biome-ignore lint/correctness/useHookAtTopLevel: <explanation>
+
         this.useSelectedItem(event);
     }
 

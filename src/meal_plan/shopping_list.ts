@@ -8,7 +8,7 @@ import type { Ingredient } from '../types.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import { GetIngredientsFromList } from '../utils/parser.ts';
 import type { ErrCtx } from '../utils/result.ts';
-import { GetCurrentWeek, formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
+import { formatUnicorn, GetCurrentWeek, wildcardToRegex } from '../utils/utils.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
     const filePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
@@ -86,7 +86,7 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
 
 async function updateShoppingList(ctx: Context, file: TFile, newIngredients: Ingredient[]) {
     const foodListRange = getFoodListRange(ctx, file);
-    const existingIngredients = (await readIngredients(ctx, file, foodListRange)).unwrapOr(new Array<Ingredient>());
+    const existingIngredients = (await readIngredients(ctx, file, foodListRange)).unwrapOr([] as Ingredient[]);
     const ingredients = mergeIngredientLists(existingIngredients, newIngredients).sort((a, b) => {
         return a.description.localeCompare(b.description);
     });
@@ -163,7 +163,7 @@ async function readIngredients(
         );
     }
 
-    return Ok(new Array<Ingredient>());
+    return Ok([] as Ingredient[]);
 }
 
 function getMealPlanIngredients(ctx: Context, file: TFile) {
