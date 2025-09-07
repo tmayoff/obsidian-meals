@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/tmayoff/obsidian-meals/compare/1.1.0...1.1.1) (2025-09-07)
+
+
+### Bug Fixes
+
+* use yarn berry ([#329](https://github.com/tmayoff/obsidian-meals/issues/329)) ([b6afdca](https://github.com/tmayoff/obsidian-meals/commit/b6afdca15187af365eb24112f1217102543d6071))
+
 ## [1.1.0](https://github.com/tmayoff/obsidian-meals/compare/1.0.2...1.1.0) (2025-09-07)
 
 
