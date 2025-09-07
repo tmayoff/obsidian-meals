@@ -93,6 +93,20 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     });
 }
 
+async function readIngredients(ctx: Context, file: TFile) {
+    const metadata = await ctx.app.metadataCache.getFileCache(file);
+    const startHeading = metadata?.headings?.find((h) => {
+        return h.heading === 'Food';
+    });
+
+    let start = 0;
+    if (startHeading !== undefined) {
+        start = startHeading.position.end.offset;
+    }
+
+    const shoppingList = await ctx.app.vault.read(file);
+}
+
 function getMealPlanIngredients(ctx: Context, file: TFile) {
     const thisWeek = GetCurrentWeek(get(ctx.settings).startOfWeek);
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
