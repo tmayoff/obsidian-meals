@@ -1,9 +1,13 @@
 import { TFile } from 'obsidian';
-import type { Ingredient } from 'parse-ingredient';
+// import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
+import { Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
+import type { Ingredient } from '../types.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
+import { GetIngredientsFromList } from '../utils/parser.ts';
+import type { ErrCtx } from '../utils/result.ts';
 import { GetCurrentWeek, formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
@@ -80,8 +84,14 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
         return;
     }
 
+    const existingIngredients = (await readIngredients(ctx, file)).unwrapOr(new Array<Ingredient>());
+
+    const newIngredients = getIngredientsRecipe(ctx, recipeFile);
+
+    const ingredients = mergeIngredientLists(existingIngredients, newIngredients);
+
     ctx.app.vault.process(file, (data) => {
-        const ingredients = getIngredientsRecipe(ctx, recipeFile);
+        // TODO Replace the ingredients
         for (const i of ingredients) {
             let formatted = formatUnicorn(`${get(ctx.settings).shoppingListFormat}`, i);
             formatted = formatted.replaceAll(/\([\s-]*\)/g, '');
@@ -93,18 +103,29 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     });
 }
 
-async function readIngredients(ctx: Context, file: TFile) {
-    const metadata = await ctx.app.metadataCache.getFileCache(file);
-    const startHeading = metadata?.headings?.find((h) => {
-        return h.heading === 'Food';
-    });
+async function readIngredients(ctx: Context, file: TFile): Promise<Result<Ingredient[], ErrCtx>> {
+    const metadata = ctx.app.metadataCache.getFileCache(file);
+    // const startHeading = metadata?.headings?.find((h) => {
+    //     return h.heading === 'Food';
+    // });
 
-    let start = 0;
-    if (startHeading !== undefined) {
-        start = startHeading.position.end.offset;
+    const settings = get(ctx.settings);
+
+    const fileContent = await ctx.app.vault.cachedRead(file);
+
+    const list = metadata?.listItems;
+
+    if (list !== undefined) {
+        return GetIngredientsFromList(
+            list.map((l) => {
+                return fileContent.substring(l.position.start.offset, l.position.end.offset);
+            }),
+            settings.advancedIngredientParsing,
+            settings.debugMode,
+        );
     }
 
-    const shoppingList = await ctx.app.vault.read(file);
+    return Ok(new Array<Ingredient>());
 }
 
 function getMealPlanIngredients(ctx: Context, file: TFile) {
