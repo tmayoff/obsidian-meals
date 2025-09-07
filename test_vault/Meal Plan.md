@@ -1,3 +1,14 @@
+# Week of September 8th
+## Monday
+- [[Za'atar Chicken Bulgur Bowls]]
+## Tuesday
+- [[Creamy Tortellini]]
+## Wednesday
+- [[Za'atar Chicken Bulgur Bowls]]
+## Thursday
+## Friday
+## Saturday
+## Sunday
 # Week of April 20th
 ## Sunday
 ## Monday
