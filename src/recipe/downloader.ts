@@ -1,5 +1,5 @@
-import { type App, Modal, Setting, SuggestModal, getFrontMatterInfo, parseYaml, requestUrl, stringifyYaml } from 'obsidian';
-import { type Recipe, format, scrape } from 'recipe-rs';
+import { type App, getFrontMatterInfo, Modal, parseYaml, requestUrl, Setting, SuggestModal, stringifyYaml } from 'obsidian';
+import { format, type Recipe, scrape } from 'recipe-rs';
 import { get } from 'svelte/store';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
@@ -117,7 +117,7 @@ async function Download(url: string): Promise<Result<DownloadedContent, ErrCtx>>
         return Err(new ErrCtx(`${exception}`, ''));
     }
 
-    const sanitized = recipe.name.replace(/[:?\/<>"\|\*\\-]/gi, ' ').trim();
+    const sanitized = recipe.name.replace(/[:?/<>"|*-]/gi, ' ').trim();
 
     return Ok({ recipeName: sanitized, recipeContent: formatted, recipe: recipe });
 }

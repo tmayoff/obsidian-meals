@@ -8,7 +8,7 @@ export class Context {
     app: App;
     plugin: MealPlugin;
 
-    recipes = writable(new Array<Recipe>());
+    recipes = writable([] as Recipe[]);
 
     ingredients = derived(this.recipes, ($recipes) => {
         const ingredients = new Set<string>();

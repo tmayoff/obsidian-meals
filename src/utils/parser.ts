@@ -1,4 +1,4 @@
-import { type Ingredient as TIngredient, parseIngredient } from 'parse-ingredient';
+import { parseIngredient, type Ingredient as TIngredient } from 'parse-ingredient';
 import { singular } from 'pluralize';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { AltIngredient, Ingredient, ParseErrors } from '../types.ts';
@@ -29,7 +29,7 @@ export function GetRecipeMDFormatBoundedList(content: string): Result<string[], 
     );
 }
 
-const linePrefix = /^((- \[ \] )|(- ))([^\[\]]*$)/;
+const linePrefix = /^((- \[ \] )|(- ))([^[\]]*$)/;
 
 export function GetIngredientsFromList(list: string[], advancedParsing: boolean, debug: boolean): Result<Ingredient[], ErrCtx> {
     const rawIngredient = list.filter((i) => {

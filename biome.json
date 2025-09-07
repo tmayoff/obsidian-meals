@@ -59,6 +59,12 @@
                     }
                 }
             }
+        },
+        {
+            "includes": ["**/*.css"],
+            "linter": {
+                "enabled": false
+            }
         }
     ]
 }

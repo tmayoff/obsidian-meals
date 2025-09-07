@@ -14,7 +14,6 @@ import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts'
 import { Recipe } from './recipe/recipe.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
 
-// biome-ignore lint/style/noDefaultExport: <explanation>
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
     loadedSettings = false;
