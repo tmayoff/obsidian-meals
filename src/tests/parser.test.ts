@@ -30,13 +30,13 @@ test('GetRecipeMDFormatBoundedList', () => {
                 ---
                 - Chicken Thighs 6-8
                 ## Chicken Marinade
-                - 1 tsp ground cumin
-                - 1 tsp ground coriander
-                - 1/2 tsp turmeric powder
-                - 1 tbsp garam masala
-                - 1 tsp Kashmiri red chili powder
-                - 1 tsp salt
-                - 3 tbsp yogurt
+                - *1 tsp* ground cumin
+                - *1 tsp* ground coriander
+                - *1/2 tsp* turmeric powder
+                - *1 tbsp* garam masala
+                - *1 tsp* Kashmiri red chili powder
+                - *1 tsp* salt
+                - *3 tbsp* yogurt
                 - 1/2 Lemon
                 ## Base
                 ### Whole Spices

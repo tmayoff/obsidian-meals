@@ -68,7 +68,7 @@ export function ParseIngredient(content: string, advancedParse: boolean): Result
         return Err('NO_INGREDIENT');
     }
 
-    let ingredientContent = match[4];
+    let ingredientContent = match[4].replaceAll('*', '');
 
     if (ingredientContent === '') {
         return Err('INGREDIENT_EMPTY');
