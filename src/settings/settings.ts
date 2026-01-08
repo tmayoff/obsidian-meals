@@ -22,4 +22,5 @@ export class MealSettings {
     debugMode = false;
     startOfWeek = 0;
     includeNutritionalInformation = true;
+    showRecipeParseErrors = false;
 }

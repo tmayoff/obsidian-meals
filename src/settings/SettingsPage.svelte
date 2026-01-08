@@ -218,6 +218,14 @@ let onIgnoreListChanged = (e: Event) => {
 </Setting>
 
 <Setting>
+  <div slot="title">Show error when recipe file is invalid</div>
+  <div slot="description">
+    When enabled, a notification will be shown for each recipe file that fails to parse. When disabled, errors will only be logged to the console.
+  </div>
+  <Toggle slot="control" bind:enabled={$settings.showRecipeParseErrors} />
+</Setting>
+
+<Setting>
   <div slot="title">Debug mode</div>
   <div slot="desciption">
     This enables extra debugging tools: logging, menu options, etc...

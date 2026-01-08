@@ -1,0 +1,1 @@
+This is an invalid recipe that's missing the ingredients section. It should be ignored.

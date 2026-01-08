@@ -1,5 +1,6 @@
 import { Notice, TFile, TFolder } from 'obsidian';
 import type { Ingredient } from 'parse-ingredient';
+import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { GetIngredients } from './ingredients.ts';
 
@@ -19,7 +20,9 @@ export class Recipe {
         const res = await GetIngredients(ctx, this.path);
         if (res.isErr()) {
             console.error(`Failed to parse ingredients: ${res.error}`);
-            new Notice(`Failed to parse ingredients: ${res.error}`);
+            if (get(ctx.settings).showRecipeParseErrors) {
+                new Notice(`Failed to parse ingredients: ${res.error}`);
+            }
             return;
         }
         this.ingredients = res.unwrap();
