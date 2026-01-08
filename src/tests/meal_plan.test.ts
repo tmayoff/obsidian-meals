@@ -8,14 +8,12 @@ import { MealSettings } from '../settings/settings.ts';
 import * as Utils from '../utils/utils.ts';
 
 test('createTableWeekSection_basic', () => {
-    const weekHeader = 'Week of January 8th';
     const weekDate = 'January 8th';
     const dayHeaders = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    const result = createTableWeekSection(weekHeader, weekDate, dayHeaders);
+    const result = createTableWeekSection(weekDate, dayHeaders);
 
-    const expectedOutput = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const expectedOutput = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th | | | | | | | |`;
 
@@ -23,7 +21,6 @@ test('createTableWeekSection_basic', () => {
 });
 
 test('createTableWeekSection_respectsStartOfWeek', () => {
-    const weekHeader = 'Week of January 8th';
     const weekDate = 'January 8th';
 
     // Simulate startOfWeek = 1 (Monday)
@@ -35,10 +32,9 @@ test('createTableWeekSection_respectsStartOfWeek', () => {
         dayHeaders.push(DAYS_OF_WEEK[pos]);
     }
 
-    const result = createTableWeekSection(weekHeader, weekDate, dayHeaders);
+    const result = createTableWeekSection(weekDate, dayHeaders);
 
-    const expectedOutput = `# Week of January 8th
-| Week Start | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
+    const expectedOutput = `| Week Start | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
 |---|---|---|---|---|---|---|---|
 | January 8th | | | | | | | |`;
 
@@ -46,51 +42,44 @@ test('createTableWeekSection_respectsStartOfWeek', () => {
 });
 
 test('addRecipeToTable_emptyCell', () => {
-    const content = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th | | | | | | | |
-
-# Week of January 1st
-## Sunday
+| January 1st | | | | | | | |
 `;
 
-    const weekHeaderEnd = 'Week of January 8th'.length;
-    const result = addRecipeToTable(content, weekHeaderEnd, 'Monday', 'Pasta Carbonara');
+    const result = addRecipeToTable(content, 'January 8th', 'Monday', 'Pasta Carbonara');
 
     expect(result).toContain('| January 8th |  | [[Pasta Carbonara]] |  |  |  |  |  |');
+    // January 1st row should remain unchanged from input
+    expect(result).toContain('| January 1st | | | | | | | |');
 });
 
 test('addRecipeToTable_existingRecipe', () => {
-    const content = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th |  | [[Pasta Carbonara]] |  |  |  |  |  |
-
-# Week of January 1st
+| January 1st |  |  |  |  |  |  |  |
 `;
 
-    const weekHeaderEnd = 'Week of January 8th'.length;
-    const result = addRecipeToTable(content, weekHeaderEnd, 'Monday', 'Chicken Tikka Masala');
+    const result = addRecipeToTable(content, 'January 8th', 'Monday', 'Chicken Tikka Masala');
 
     expect(result).toContain('| January 8th |  | [[Pasta Carbonara]]<br>[[Chicken Tikka Masala]] |  |  |  |  |  |');
+    expect(result).toContain('| January 1st |  |  |  |  |  |  |  |');
 });
 
 test('addRecipeToTable_differentDays', () => {
-    const content = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th |  |  |  |  |  |  |  |
-
-# Week of January 1st
+| January 1st |  |  |  |  |  |  |  |
 `;
 
     let result = content;
-    const weekHeaderEnd = 'Week of January 8th'.length;
 
-    result = addRecipeToTable(result, weekHeaderEnd, 'Monday', 'Recipe 1');
-    result = addRecipeToTable(result, weekHeaderEnd, 'Wednesday', 'Recipe 2');
-    result = addRecipeToTable(result, weekHeaderEnd, 'Friday', 'Recipe 3');
+    result = addRecipeToTable(result, 'January 8th', 'Monday', 'Recipe 1');
+    result = addRecipeToTable(result, 'January 8th', 'Wednesday', 'Recipe 2');
+    result = addRecipeToTable(result, 'January 8th', 'Friday', 'Recipe 3');
 
     expect(result).toContain('[[Recipe 1]]');
     expect(result).toContain('[[Recipe 2]]');
@@ -112,6 +101,22 @@ test('addRecipeToTable_differentDays', () => {
         expect(cells[4]).toContain('Recipe 2'); // Wednesday
         expect(cells[6]).toContain('Recipe 3'); // Friday
     }
+
+    // Verify January 1st row is unchanged
+    expect(result).toContain('| January 1st |  |  |  |  |  |  |  |');
+});
+
+test('addRecipeToTable_headerSpacingVariations', () => {
+    // Test that header detection works with different spacing (e.g., "Week Start  |" with 2 spaces)
+    const content = `| Week Start  | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  |  |  |  |  |  |  |
+`;
+
+    const result = addRecipeToTable(content, 'January 8th', 'Monday', 'Test Recipe');
+
+    expect(result).toContain('[[Test Recipe]]');
+    expect(result).toContain('| January 8th |  | [[Test Recipe]] |  |  |  |  |  |');
 });
 
 test('formatDetection_list', () => {
@@ -131,41 +136,27 @@ test('formatDetection_list', () => {
 });
 
 test('formatDetection_table', () => {
-    const content = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th |  |  |  |  |  |  |  |
 `;
 
-    const header = 'Week of January 8th';
-    const headerIndex = content.indexOf(header) + header.length;
-    const afterHeader = content.slice(headerIndex);
-    const isTable = afterHeader.trimStart().startsWith('|');
+    const isTable = content.trimStart().startsWith('|');
 
     expect(isTable).toBe(true);
 });
 
 test('addRecipeToTable_multipleWeeks_table', () => {
-    const content = `# Week of January 15th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 15th |  |  |  |  |  |  |  |
-
-# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
-|---|---|---|---|---|---|---|---|
 | January 8th |  | [[Old Recipe]] |  |  |  |  |  |
-
-# Week of January 1st
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
-|---|---|---|---|---|---|---|---|
 | January 1st |  |  |  |  |  |  |  |
 `;
 
-    const weekHeaderEnd = 'Week of January 15th'.length;
-    const result = addRecipeToTable(content, weekHeaderEnd, 'Wednesday', 'New Recipe');
+    const result = addRecipeToTable(content, 'January 15th', 'Wednesday', 'New Recipe');
 
-    // Should add to the January 15th week (the most recent one)
+    // Should add to the January 15th week
     expect(result).toContain('| January 15th |  |  |  | [[New Recipe]] |  |  |  |');
 
     // Should not modify older weeks
@@ -174,27 +165,19 @@ test('addRecipeToTable_multipleWeeks_table', () => {
 });
 
 test('addRecipeToTable_multipleWeeks_addToCorrectWeek', () => {
-    const content = `# Week of January 15th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 15th |  |  |  |  |  |  |  |
-
-# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
-|---|---|---|---|---|---|---|---|
 | January 8th |  |  |  |  |  |  |  |
 `;
 
     // Add to week 1
     let result = content;
-    const week1HeaderEnd = 'Week of January 15th'.length;
-    result = addRecipeToTable(result, week1HeaderEnd, 'Monday', 'Recipe A');
+    result = addRecipeToTable(result, 'January 15th', 'Monday', 'Recipe A');
     expect(result).toContain('| January 15th |  | [[Recipe A]] |  |  |  |  |  |');
 
     // Add to week 2
-    const week2Start = result.indexOf('# Week of January 8th');
-    const week2HeaderEnd = week2Start + 'Week of January 8th'.length;
-    result = addRecipeToTable(result, week2HeaderEnd, 'Friday', 'Recipe B');
+    result = addRecipeToTable(result, 'January 8th', 'Friday', 'Recipe B');
 
     // Both weeks should have their recipes
     expect(result).toContain('| January 15th |  | [[Recipe A]] |  |  |  |  |  |');
@@ -280,8 +263,7 @@ describe('AddRecipeToMealPlan integration tests', () => {
 
     test('should add recipe to table format', async () => {
         // Setup initial file content with table format
-        fileContent = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th |  |  |  |  |  |  |  |
 `;
@@ -314,8 +296,7 @@ describe('AddRecipeToMealPlan integration tests', () => {
     });
 
     test('should add multiple recipes to same day in table format', async () => {
-        fileContent = `# Week of January 8th
-| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
 | January 8th |  | [[First Recipe]] |  |  |  |  |  |
 `;

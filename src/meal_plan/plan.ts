@@ -7,7 +7,7 @@ import { MealPlanFormat } from '../settings/settings.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import { GetCurrentWeek } from '../utils/utils.ts';
 
-export function createTableWeekSection(weekHeader: string, weekDate: string, dayHeaders: string[]): string {
+export function createTableWeekSection(weekDate: string, dayHeaders: string[]): string {
     // Build table header row
     const headerRow = `| Week Start | ${dayHeaders.join(' | ')} |`;
 
@@ -17,34 +17,28 @@ export function createTableWeekSection(weekHeader: string, weekDate: string, day
     // Build data row with date in first column and empty cells
     const dataRow = `| ${weekDate} |${Array(dayHeaders.length).fill(' ').join('|')}|`;
 
-    return `# ${weekHeader}\n${headerRow}\n${separatorRow}\n${dataRow}`;
+    return `${headerRow}\n${separatorRow}\n${dataRow}`;
 }
 
-export function addRecipeToTable(content: string, weekHeaderEnd: number, day: string, recipeName: string): string {
-    const afterHeader = content.slice(weekHeaderEnd);
-    const allLines = afterHeader.split('\n');
+export function addRecipeToTable(content: string, weekDate: string, day: string, recipeName: string): string {
+    const allLines = content.split('\n');
 
-    // Find table rows (skip empty lines) and track their indices
-    const tableLineIndices: number[] = [];
+    // Find the table header row (should be the first row starting with | and containing "Week Start")
+    let headerRowIndex = -1;
     for (let i = 0; i < allLines.length; i++) {
-        if (allLines[i].trim().startsWith('|')) {
-            tableLineIndices.push(i);
-        }
-        if (tableLineIndices.length === 3) {
-            break; // We only need the first 3 table rows
+        const line = allLines[i].trim();
+        if (line.startsWith('|') && line.includes('Week Start')) {
+            headerRowIndex = i;
+            break;
         }
     }
 
-    if (tableLineIndices.length < 3) {
-        // Not a valid table
+    if (headerRowIndex === -1) {
+        // No table found
         return content;
     }
 
-    const headerRowIndex = tableLineIndices[0];
-    const dataRowIndex = tableLineIndices[2]; // Skip separator row
-
     const headerRow = allLines[headerRowIndex];
-    const dataRow = allLines[dataRowIndex];
 
     // Parse header to find column index
     const headers = headerRow
@@ -58,11 +52,31 @@ export function addRecipeToTable(content: string, weekHeaderEnd: number, day: st
         return content;
     }
 
-    // Parse data row
-    const cells = dataRow
-        .split('|')
-        .map((c) => c.trim())
-        .filter((_, i) => i > 0 && i <= headers.length);
+    // Find the data row with the matching weekDate
+    let dataRowIndex = -1;
+    for (let i = headerRowIndex + 2; i < allLines.length; i++) {
+        // Skip separator row (+1) and start checking data rows (+2)
+        const line = allLines[i].trim();
+        if (line.startsWith('|') && line.includes(weekDate)) {
+            dataRowIndex = i;
+            break;
+        }
+    }
+
+    if (dataRowIndex === -1) {
+        // Row for this week not found
+        return content;
+    }
+
+    const dataRow = allLines[dataRowIndex];
+
+    // Parse data row - keep all parts including empty leading/trailing
+    const rawCells = dataRow.split('|');
+    // Extract actual cells (skip first empty and last empty)
+    const cells: string[] = [];
+    for (let i = 1; i < rawCells.length - 1; i++) {
+        cells.push(rawCells[i].trim());
+    }
 
     // Add recipe to the appropriate cell
     const recipeLink = `[[${recipeName}]]`;
@@ -74,15 +88,14 @@ export function addRecipeToTable(content: string, weekHeaderEnd: number, day: st
         cells[dayIndex] = `${currentCell}<br>${recipeLink}`;
     }
 
-    // Reconstruct data row
+    // Reconstruct data row with proper spacing
     const newDataRow = `| ${cells.join(' | ')} |`;
 
     // Replace the data row at its position
     allLines[dataRowIndex] = newDataRow;
 
     // Reconstruct content
-    const newAfterHeader = allLines.join('\n');
-    return content.slice(0, weekHeaderEnd) + newAfterHeader;
+    return allLines.join('\n');
 }
 
 export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
@@ -96,18 +109,18 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
         file.vault.process(file, (content) => {
-            const header = `Week of ${GetCurrentWeek(get(ctx.settings).startOfWeek)}`;
-            const headerIndex = content.indexOf(header) + header.length;
+            const weekDate = GetCurrentWeek(get(ctx.settings).startOfWeek);
+            const header = `Week of ${weekDate}`;
 
-            // Detect format: check if next non-empty line contains table marker
-            const afterHeader = content.slice(headerIndex);
-            const isTable = afterHeader.trimStart().startsWith('|');
+            // Detect format: check if content starts with table marker or has list headers
+            const isTable = content.trimStart().startsWith('|');
 
             if (isTable) {
                 // Table format: parse table, find correct column, insert recipe
-                content = addRecipeToTable(content, headerIndex, day, recipe.name);
+                content = addRecipeToTable(content, weekDate, day, recipe.name);
             } else {
                 // List format: existing logic
+                const headerIndex = content.indexOf(header) + header.length;
                 const dayHeader = `## ${day}`;
                 const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
                 const recipeLine = `\n- [[${recipe.name}]]`;
@@ -154,19 +167,31 @@ async function fillMealPlanNote(ctx: Context, filePath: string) {
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
         ctx.app.vault.process(file, (content) => {
-            if (content.includes(header)) {
+            // Check if this week already exists
+            if (content.includes(weekDate)) {
                 return content;
             }
 
-            let weekSection: string;
             if (settings.mealPlanFormat === MealPlanFormat.Table) {
-                weekSection = createTableWeekSection(header, weekDate, dayHeaders);
+                // Check if a table already exists
+                if (content.trimStart().startsWith('|')) {
+                    // Add a new row to existing table
+                    const lines = content.split('\n');
+                    // Find where to insert (after separator row, which is line 1)
+                    // Insert at line 2 (after header and separator)
+                    const newRow = `| ${weekDate} |${Array(dayHeaders.length).fill(' ').join('|')}|`;
+                    lines.splice(2, 0, newRow);
+                    return lines.join('\n');
+                } else {
+                    // Create new table
+                    const weekSection = createTableWeekSection(weekDate, dayHeaders);
+                    return `${weekSection}\n${content}`;
+                }
             } else {
                 // List format: add ## prefix to day headers
-                weekSection = `# ${header}\n${dayHeaders.map((d) => `## ${d}`).join('\n')}`;
+                const weekSection = `# ${header}\n${dayHeaders.map((d) => `## ${d}`).join('\n')}`;
+                return `${weekSection}\n${content}`;
             }
-
-            return `${weekSection}\n${content}`;
         });
     }
 }
