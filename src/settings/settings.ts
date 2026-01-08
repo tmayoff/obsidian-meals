@@ -10,11 +10,17 @@ export enum ShoppingListIgnoreBehaviour {
     Regex = 'Regex',
 }
 
+export enum MealPlanFormat {
+    List = 'List',
+    Table = 'Table',
+}
+
 export class MealSettings {
     recipeDirectory = 'Meals';
     mealPlanNote = 'Meal Plan';
     shoppingListNote = 'Shopping List';
     recipeFormat: RecipeFormat = RecipeFormat.RecipeMD;
+    mealPlanFormat: MealPlanFormat = MealPlanFormat.List;
     shoppingListIgnore: string[] = ['salt', 'pepper', 'olive oil', 'garlic powder'];
     shoppingListIgnoreBehaviour: ShoppingListIgnoreBehaviour = ShoppingListIgnoreBehaviour.Exact;
     advancedIngredientParsing = false;

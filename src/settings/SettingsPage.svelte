@@ -6,7 +6,7 @@ import { validateIgnoreBehaviour } from '../utils/utils.ts';
 import Setting from './Setting.svelte';
 
 // biome-ignore lint: doesn't actually work
-import { RecipeFormat, ShoppingListIgnoreBehaviour } from './settings.ts';
+import { MealPlanFormat, RecipeFormat, ShoppingListIgnoreBehaviour } from './settings.ts';
 
 let { plugin } = $$props;
 let settings = plugin.ctx.settings;
@@ -86,6 +86,24 @@ let onIgnoreListChanged = (e: Event) => {
       {#each DAYS_OF_WEEK as day, index}
         <option value={index}>{day}</option>
       {/each}
+    </select>
+  </div>
+</Setting>
+
+<Setting>
+  <div slot="title">Meal plan format</div>
+  <div slot="description">
+    <p>Choose how the meal plan is displayed:</p>
+    <ul>
+      <li><strong>List:</strong> Each day shown as a heading with recipes as bullet points (default)</li>
+      <li><strong>Table:</strong> Weekly grid with columns for each day, showing all days at a glance</li>
+    </ul>
+  </div>
+
+  <div slot="control">
+    <select class="dropdown" bind:value={$settings.mealPlanFormat}>
+      <option value={MealPlanFormat.List}>List</option>
+      <option value={MealPlanFormat.Table}>Table</option>
     </select>
   </div>
 </Setting>
