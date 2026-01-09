@@ -229,6 +229,13 @@ describe("AddMealPlanToShoppingList", () => {
 
         await AddMealPlanToShoppingList(mockContext);
 
+        // Verify shopping list contains week header
+        expect(shoppingListFileContent).toContain("## Week of January 8th");
+
+        // Verify shopping list contains recipe headers
+        expect(shoppingListFileContent).toContain("### Pasta");
+        expect(shoppingListFileContent).toContain("### Salad");
+
         // Verify shopping list contains ingredients from both recipes
         expect(shoppingListFileContent).toContain("pasta");
         expect(shoppingListFileContent).toContain("tomato sauce");
@@ -296,6 +303,13 @@ describe("AddMealPlanToShoppingList", () => {
         shoppingListFileContent = "# Food\n";
 
         await AddMealPlanToShoppingList(mockContext);
+
+        // Verify shopping list contains week header
+        expect(shoppingListFileContent).toContain("## Week of January 8th");
+
+        // Verify shopping list contains recipe headers
+        expect(shoppingListFileContent).toContain("### Pasta");
+        expect(shoppingListFileContent).toContain("### Salad");
 
         // Verify shopping list contains ingredients from both recipes
         expect(shoppingListFileContent).toContain("pasta");
@@ -547,13 +561,17 @@ describe("AddMealPlanToShoppingList", () => {
 
         await AddMealPlanToShoppingList(mockContext);
 
-        // Should merge pasta quantities (200g + 100g = 300g)
-        expect(shoppingListFileContent).toContain("pasta");
-        expect(shoppingListFileContent).toContain("300");
+        // Should have separate sections for each recipe
+        expect(shoppingListFileContent).toContain("### Pasta");
+        expect(shoppingListFileContent).toContain("### Pasta2");
 
-        // Count how many times "pasta" appears (should be once, merged)
+        // Should keep pasta quantities separate (200g in Pasta, 100g in Pasta2)
+        expect(shoppingListFileContent).toContain("pasta 200 g");
+        expect(shoppingListFileContent).toContain("pasta 100 g");
+
+        // Count how many times "pasta" appears (should be 4: 2 recipe headings + 2 ingredients)
         const pastaMatches = shoppingListFileContent.match(/pasta/gi);
-        expect(pastaMatches).toHaveLength(1);
+        expect(pastaMatches).toHaveLength(4);
     });
 });
 
@@ -891,6 +909,10 @@ describe("Multi-week shopping list", () => {
         expect(shoppingListFileContent).toContain("## Week of January 8th");
         expect(shoppingListFileContent).toContain("## Week of January 15th");
 
+        // Should have recipe headers within each week
+        expect(shoppingListFileContent).toContain("### Pasta");
+        expect(shoppingListFileContent).toContain("### Salad");
+
         // Should have ingredients under correct headers
         expect(shoppingListFileContent).toContain("pasta");
         expect(shoppingListFileContent).toContain("tomato sauce");
@@ -997,9 +1019,10 @@ describe("Multi-week shopping list", () => {
 
         await processSelectedWeeks(mockContext, mealPlanFile, weeks);
 
-        // Should have pasta listed twice (once per week), not merged
+        // Should have pasta listed 4 times total (twice per week: recipe heading + ingredient)
+        // Each week has "### Pasta" and "- [ ] pasta 200 g"
         const pastaMatches = shoppingListFileContent.match(/pasta/gi);
-        expect(pastaMatches).toHaveLength(2);
+        expect(pastaMatches).toHaveLength(4);
 
         // Each occurrence should have quantity 200 (not 400 if merged)
         const quantity200Matches = shoppingListFileContent.match(/200/g);

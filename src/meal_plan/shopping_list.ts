@@ -72,11 +72,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
 
     // If only one week, process it directly without showing modal
     if (weeks.length === 1) {
-        const ingredients = await getIngredientsForWeek(
-            ctx,
-            mealPlanFile,
-            weeks[0]
-        );
+        const recipes = await getRecipesForWeek(ctx, mealPlanFile, weeks[0]);
         const shoppingListFilePath = AppendMarkdownExt(
             settings.shoppingListNote
         );
@@ -88,7 +84,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
         if (file == null) {
             return;
         }
-        await updateShoppingList(ctx, file, ingredients);
+        await updateShoppingListMultiWeek(ctx, [{ week: weeks[0], recipes }]);
         return;
     }
 
@@ -277,9 +273,14 @@ function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
 // Multi-week shopping list functions
 // ============================================================================
 
+interface RecipeIngredients {
+    recipeName: string;
+    ingredients: Ingredient[];
+}
+
 interface WeekIngredients {
     week: import("./week_extractor.ts").WeekInfo;
-    ingredients: Ingredient[];
+    recipes: RecipeIngredients[];
 }
 
 /**
@@ -292,16 +293,12 @@ export async function processSelectedWeeks(
 ) {
     const weekIngredientsGroups: WeekIngredients[] = [];
 
-    // Extract ingredients for each selected week
+    // Extract ingredients for each selected week, grouped by recipe
     for (const week of selectedWeeks) {
-        const ingredients = await getIngredientsForWeek(
-            ctx,
-            mealPlanFile,
-            week
-        );
+        const recipes = await getRecipesForWeek(ctx, mealPlanFile, week);
         weekIngredientsGroups.push({
             week,
-            ingredients,
+            recipes,
         });
     }
 
@@ -310,50 +307,40 @@ export async function processSelectedWeeks(
 }
 
 /**
- * Extract ingredients for a specific week
+ * Extract recipe ingredients for a specific week, grouped by recipe
  */
-async function getIngredientsForWeek(
+async function getRecipesForWeek(
     ctx: Context,
     file: TFile,
     week: import("./week_extractor.ts").WeekInfo
-): Promise<Ingredient[]> {
+): Promise<RecipeIngredients[]> {
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
     const links = fileCache.links || [];
     const topLevel = fileCache.headings?.filter((h) => h.level === 1) || [];
 
-    let ingredients: Ingredient[] = [];
+    let recipes: RecipeIngredients[] = [];
 
     if (topLevel.length > 0) {
         // List format
-        ingredients = await getIngredientsForWeekListFormat(
-            ctx,
-            file,
-            week,
-            links
-        );
+        recipes = await getRecipesForWeekListFormat(ctx, file, week, links);
     } else {
         // Table format
-        ingredients = await getIngredientsForWeekTableFormat(
-            ctx,
-            file,
-            week,
-            links
-        );
+        recipes = await getRecipesForWeekTableFormat(ctx, file, week, links);
     }
 
-    return ingredients;
+    return recipes;
 }
 
 /**
- * Extract ingredients for a week in list format
+ * Extract ingredients for a week in list format, grouped by recipe
  */
-async function getIngredientsForWeekListFormat(
+async function getRecipesForWeekListFormat(
     ctx: Context,
     file: TFile,
     week: import("./week_extractor.ts").WeekInfo,
     links: any[]
-): Promise<Ingredient[]> {
-    let ingredients: Ingredient[] = [];
+): Promise<RecipeIngredients[]> {
+    const recipes: RecipeIngredients[] = [];
 
     for (const link of links) {
         // Filter by character offset range for this week
@@ -370,26 +357,29 @@ async function getIngredientsForWeekListFormat(
             file.path
         );
         if (recipeFile != null) {
-            ingredients = mergeIngredientLists(
-                ingredients,
-                getIngredientsRecipe(ctx, recipeFile)
-            );
+            const ingredients = getIngredientsRecipe(ctx, recipeFile);
+            if (ingredients.length > 0) {
+                recipes.push({
+                    recipeName: recipeFile.basename,
+                    ingredients,
+                });
+            }
         }
     }
 
-    return ingredients;
+    return recipes;
 }
 
 /**
- * Extract ingredients for a week in table format
+ * Extract ingredients for a week in table format, grouped by recipe
  */
-async function getIngredientsForWeekTableFormat(
+async function getRecipesForWeekTableFormat(
     ctx: Context,
     file: TFile,
     week: import("./week_extractor.ts").WeekInfo,
     links: any[]
-): Promise<Ingredient[]> {
-    let ingredients: Ingredient[] = [];
+): Promise<RecipeIngredients[]> {
+    const recipes: RecipeIngredients[] = [];
 
     for (const link of links) {
         const linkStart = link.position.start.offset;
@@ -402,19 +392,22 @@ async function getIngredientsForWeekTableFormat(
                 file.path
             );
             if (recipeFile != null) {
-                ingredients = mergeIngredientLists(
-                    ingredients,
-                    getIngredientsRecipe(ctx, recipeFile)
-                );
+                const ingredients = getIngredientsRecipe(ctx, recipeFile);
+                if (ingredients.length > 0) {
+                    recipes.push({
+                        recipeName: recipeFile.basename,
+                        ingredients,
+                    });
+                }
             }
         }
     }
 
-    return ingredients;
+    return recipes;
 }
 
 /**
- * Update shopping list with ingredients grouped by week
+ * Update shopping list with ingredients grouped by week and recipe
  */
 async function updateShoppingListMultiWeek(
     ctx: Context,
@@ -444,25 +437,31 @@ async function updateShoppingListMultiWeek(
 
         // Add each week as a section
         for (const weekGroup of weekGroups) {
-            // Week header
+            // Week header (H2)
             newContent += `## ${weekGroup.week.displayName}\n\n`;
 
-            // Sort and format ingredients for this week
-            const sortedIngredients = weekGroup.ingredients.sort((a, b) => {
-                return a.description.localeCompare(b.description);
-            });
+            // Add each recipe as a subsection
+            for (const recipe of weekGroup.recipes) {
+                // Recipe header (H3)
+                newContent += `### ${recipe.recipeName}\n\n`;
 
-            for (const ingredient of sortedIngredients) {
-                let formatted = formatUnicorn(
-                    settings.shoppingListFormat,
-                    ingredient
-                );
-                formatted = formatted.replaceAll(/\([\s-]*\)/g, "");
-                formatted = formatted.trim();
-                newContent += `- [ ] ${formatted}\n`;
+                // Sort and format ingredients for this recipe
+                const sortedIngredients = recipe.ingredients.sort((a, b) => {
+                    return a.description.localeCompare(b.description);
+                });
+
+                for (const ingredient of sortedIngredients) {
+                    let formatted = formatUnicorn(
+                        settings.shoppingListFormat,
+                        ingredient
+                    );
+                    formatted = formatted.replaceAll(/\([\s-]*\)/g, "");
+                    formatted = formatted.trim();
+                    newContent += `- [ ] ${formatted}\n`;
+                }
+
+                newContent += "\n"; // Extra line between recipes
             }
-
-            newContent += "\n"; // Extra line between weeks
         }
 
         return data.substring(0, start) + newContent + data.substring(end);
