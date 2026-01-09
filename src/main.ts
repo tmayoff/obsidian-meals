@@ -63,7 +63,7 @@ export default class MealPlugin extends Plugin {
 
         this.addCommand({
             id: 'create-shopping-list',
-            name: "Add week's shopping list",
+            name: 'Add meal plan to shopping list',
             callback: async () => {
                 await AddMealPlanToShoppingList(this.ctx);
             },

@@ -1,7 +1,8 @@
 import { writable } from "svelte/store";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { Context } from "../context.ts";
-import { AddMealPlanToShoppingList } from "../meal_plan/shopping_list.ts";
+import { AddMealPlanToShoppingList, processSelectedWeeks } from "../meal_plan/shopping_list.ts";
+import { extractWeeksFromMealPlan } from "../meal_plan/week_extractor.ts";
 import { Recipe } from "../recipe/recipe.ts";
 import { MealSettings } from "../settings/settings.ts";
 import type { Ingredient } from "../types.ts";
@@ -542,5 +543,427 @@ describe("AddMealPlanToShoppingList", () => {
         // Count how many times "pasta" appears (should be once, merged)
         const pastaMatches = shoppingListFileContent.match(/pasta/gi);
         expect(pastaMatches).toHaveLength(1);
+    });
+});
+
+describe("Multi-week shopping list", () => {
+    let mockContext: Context;
+    let mealPlanFileContent: string;
+    let shoppingListFileContent: string;
+    let mockRecipes: Recipe[];
+    let mockRecipe1File: any;
+    let mockRecipe2File: any;
+    let mockRecipe3File: any;
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        // Mock GetCurrentWeek to return a fixed date
+        vi.spyOn(Utils, "GetCurrentWeek").mockReturnValue("January 8th");
+
+        // Reset file contents
+        mealPlanFileContent = "";
+        shoppingListFileContent = "";
+
+        // Create mock recipes with ingredients
+        mockRecipe1File = {
+            path: "recipes/Pasta.md",
+            basename: "Pasta",
+        } as any;
+        const recipe1 = new Recipe(mockRecipe1File);
+        recipe1.ingredients = [
+            { description: "pasta", quantity: 200, unitOfMeasure: "g" },
+            { description: "tomato sauce", quantity: 1, unitOfMeasure: "cup" },
+        ] as Ingredient[];
+
+        mockRecipe2File = {
+            path: "recipes/Salad.md",
+            basename: "Salad",
+        } as any;
+        const recipe2 = new Recipe(mockRecipe2File);
+        recipe2.ingredients = [
+            { description: "lettuce", quantity: 1, unitOfMeasure: "head" },
+            { description: "tomatoes", quantity: 2, unitOfMeasure: "" },
+        ] as Ingredient[];
+
+        mockRecipe3File = {
+            path: "recipes/Soup.md",
+            basename: "Soup",
+        } as any;
+        const recipe3 = new Recipe(mockRecipe3File);
+        recipe3.ingredients = [
+            { description: "chicken broth", quantity: 4, unitOfMeasure: "cup" },
+            { description: "carrots", quantity: 2, unitOfMeasure: "" },
+        ] as Ingredient[];
+
+        mockRecipes = [recipe1, recipe2, recipe3];
+
+        // Create mock metadata cache
+        const mockMetadataCache = {
+            getFileCache: vi.fn((file) => {
+                if (file.path === "Meal Plan.md") {
+                    return {
+                        headings: [],
+                        links: [],
+                        listItems: [],
+                    };
+                }
+                if (file.path === "Shopping List.md") {
+                    return {
+                        headings: [
+                            {
+                                heading: "Food",
+                                level: 1,
+                                position: {
+                                    start: { offset: 0 },
+                                    end: { offset: 7 },
+                                },
+                            },
+                        ],
+                        listItems: [],
+                    };
+                }
+                return null;
+            }),
+            getFirstLinkpathDest: vi.fn((link, _sourcePath) => {
+                if (link === "Pasta") return mockRecipe1File;
+                if (link === "Salad") return mockRecipe2File;
+                if (link === "Soup") return mockRecipe3File;
+                return null;
+            }),
+        };
+
+        // Create mock vault
+        const mockVault = {
+            getFileByPath: vi.fn((path) => {
+                if (path === "Meal Plan.md") {
+                    return {
+                        path: "Meal Plan.md",
+                        basename: "Meal Plan",
+                    };
+                }
+                if (path === "Shopping List.md") {
+                    return {
+                        path: "Shopping List.md",
+                        basename: "Shopping List",
+                    };
+                }
+                return null;
+            }),
+            read: vi.fn(async (file) => {
+                if (file.path === "Shopping List.md") {
+                    return shoppingListFileContent;
+                }
+                if (file.path === "Meal Plan.md") {
+                    return mealPlanFileContent;
+                }
+                return "";
+            }),
+            create: vi.fn().mockResolvedValue({}),
+            process: vi.fn((file, callback) => {
+                if (file.path === "Shopping List.md") {
+                    shoppingListFileContent = callback(shoppingListFileContent);
+                }
+                return Promise.resolve();
+            }),
+        };
+
+        // Create mock context
+        const settings = new MealSettings();
+        settings.mealPlanNote = "Meal Plan";
+        settings.shoppingListNote = "Shopping List";
+        settings.startOfWeek = 0; // Sunday
+
+        mockContext = {
+            settings: writable(settings),
+            recipes: writable(mockRecipes),
+            app: {
+                vault: mockVault,
+                metadataCache: mockMetadataCache,
+            } as any,
+            plugin: {} as any,
+            ingredients: {} as any,
+            getRecipeFolder: vi.fn(),
+            isInRecipeFolder: vi.fn(),
+            loadRecipes: vi.fn(),
+            debugMode: vi.fn().mockReturnValue(false),
+        };
+    });
+
+    test("should extract multiple weeks from list format", async () => {
+        // Setup meal plan with three weeks (one past, two future)
+        mealPlanFileContent = `# Week of January 1st
+## Monday
+- [[Soup]]
+
+# Week of January 8th
+## Monday
+- [[Pasta]]
+
+# Week of January 15th
+## Tuesday
+- [[Salad]]
+`;
+
+        const mockMetadataCache = mockContext.app.metadataCache;
+        mockMetadataCache.getFileCache = vi.fn((file) => {
+            if (file.path === "Meal Plan.md") {
+                return {
+                    headings: [
+                        {
+                            heading: "Week of January 1st",
+                            level: 1,
+                            position: {
+                                start: { line: 0, col: 0, offset: 0 },
+                                end: { line: 0, col: 23, offset: 23 },
+                            },
+                        },
+                        {
+                            heading: "Week of January 8th",
+                            level: 1,
+                            position: {
+                                start: { line: 4, col: 0, offset: 50 },
+                                end: { line: 4, col: 23, offset: 73 },
+                            },
+                        },
+                        {
+                            heading: "Week of January 15th",
+                            level: 1,
+                            position: {
+                                start: { line: 8, col: 0, offset: 100 },
+                                end: { line: 8, col: 24, offset: 124 },
+                            },
+                        },
+                    ],
+                    links: [],
+                };
+            }
+            return null;
+        });
+
+        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
+        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+
+        // Should only return current and future weeks (not January 1st)
+        expect(weeks).toHaveLength(2);
+        expect(weeks[0].dateString).toBe("January 8th");
+        expect(weeks[1].dateString).toBe("January 15th");
+    });
+
+    test("should extract multiple weeks from table format", async () => {
+        // Setup meal plan in table format
+        mealPlanFileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 1st |  | [[Soup]] |  |  |  |  |  |
+| January 8th |  | [[Pasta]] |  |  |  |  |  |
+| January 15th |  |  | [[Salad]] |  |  |  |  |
+`;
+
+        const mockMetadataCache = mockContext.app.metadataCache;
+        mockMetadataCache.getFileCache = vi.fn((file) => {
+            if (file.path === "Meal Plan.md") {
+                return {
+                    headings: [], // No headings in table format
+                    links: [],
+                };
+            }
+            return null;
+        });
+
+        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
+        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+
+        // Should only return current and future weeks
+        expect(weeks).toHaveLength(2);
+        expect(weeks[0].dateString).toBe("January 8th");
+        expect(weeks[1].dateString).toBe("January 15th");
+    });
+
+    test("should group ingredients by week with headers", async () => {
+        // Setup meal plan with two future weeks
+        mealPlanFileContent = `# Week of January 8th
+## Monday
+- [[Pasta]]
+
+# Week of January 15th
+## Tuesday
+- [[Salad]]
+`;
+
+        const mockMetadataCache = mockContext.app.metadataCache;
+        mockMetadataCache.getFileCache = vi.fn((file) => {
+            if (file.path === "Meal Plan.md") {
+                return {
+                    headings: [
+                        {
+                            heading: "Week of January 8th",
+                            level: 1,
+                            position: {
+                                start: { line: 0, col: 0, offset: 0 },
+                                end: { line: 0, col: 23, offset: 23 },
+                            },
+                        },
+                        {
+                            heading: "Week of January 15th",
+                            level: 1,
+                            position: {
+                                start: { line: 4, col: 0, offset: 50 },
+                                end: { line: 4, col: 24, offset: 74 },
+                            },
+                        },
+                    ],
+                    links: [
+                        {
+                            link: "Pasta",
+                            original: "[[Pasta]]",
+                            position: {
+                                start: { line: 2, col: 2, offset: 40 },
+                                end: { line: 2, col: 11, offset: 49 },
+                            },
+                        },
+                        {
+                            link: "Salad",
+                            original: "[[Salad]]",
+                            position: {
+                                start: { line: 6, col: 2, offset: 90 },
+                                end: { line: 6, col: 11, offset: 99 },
+                            },
+                        },
+                    ],
+                    listItems: [],
+                };
+            }
+            if (file.path === "Shopping List.md") {
+                return {
+                    headings: [
+                        {
+                            heading: "Food",
+                            level: 1,
+                            position: {
+                                start: { line: 0, col: 0, offset: 0 },
+                                end: { line: 0, col: 7, offset: 7 },
+                            },
+                        },
+                    ],
+                    listItems: [],
+                };
+            }
+            return null;
+        });
+
+        shoppingListFileContent = "# Food\n";
+
+        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
+        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+
+        await processSelectedWeeks(mockContext, mealPlanFile, weeks);
+
+        // Should have week headers
+        expect(shoppingListFileContent).toContain("## Week of January 8th");
+        expect(shoppingListFileContent).toContain("## Week of January 15th");
+
+        // Should have ingredients under correct headers
+        expect(shoppingListFileContent).toContain("pasta");
+        expect(shoppingListFileContent).toContain("tomato sauce");
+        expect(shoppingListFileContent).toContain("lettuce");
+        expect(shoppingListFileContent).toContain("tomatoes");
+
+        // Verify ordering: January 8th ingredients should come before January 15th
+        const pastaIndex = shoppingListFileContent.indexOf("pasta");
+        const lettuceIndex = shoppingListFileContent.indexOf("lettuce");
+        const week8Index = shoppingListFileContent.indexOf("## Week of January 8th");
+        const week15Index = shoppingListFileContent.indexOf("## Week of January 15th");
+
+        expect(week8Index).toBeLessThan(pastaIndex);
+        expect(pastaIndex).toBeLessThan(week15Index);
+        expect(week15Index).toBeLessThan(lettuceIndex);
+    });
+
+    test("should not merge ingredients across weeks", async () => {
+        // Setup meal plan with pasta in both weeks
+        mealPlanFileContent = `# Week of January 8th
+## Monday
+- [[Pasta]]
+
+# Week of January 15th
+## Tuesday
+- [[Pasta]]
+`;
+
+        const mockMetadataCache = mockContext.app.metadataCache;
+        mockMetadataCache.getFileCache = vi.fn((file) => {
+            if (file.path === "Meal Plan.md") {
+                return {
+                    headings: [
+                        {
+                            heading: "Week of January 8th",
+                            level: 1,
+                            position: {
+                                start: { line: 0, col: 0, offset: 0 },
+                                end: { line: 0, col: 23, offset: 23 },
+                            },
+                        },
+                        {
+                            heading: "Week of January 15th",
+                            level: 1,
+                            position: {
+                                start: { line: 4, col: 0, offset: 50 },
+                                end: { line: 4, col: 24, offset: 74 },
+                            },
+                        },
+                    ],
+                    links: [
+                        {
+                            link: "Pasta",
+                            original: "[[Pasta]]",
+                            position: {
+                                start: { line: 2, col: 2, offset: 40 },
+                                end: { line: 2, col: 11, offset: 49 },
+                            },
+                        },
+                        {
+                            link: "Pasta",
+                            original: "[[Pasta]]",
+                            position: {
+                                start: { line: 6, col: 2, offset: 90 },
+                                end: { line: 6, col: 11, offset: 99 },
+                            },
+                        },
+                    ],
+                    listItems: [],
+                };
+            }
+            if (file.path === "Shopping List.md") {
+                return {
+                    headings: [
+                        {
+                            heading: "Food",
+                            level: 1,
+                            position: {
+                                start: { line: 0, col: 0, offset: 0 },
+                                end: { line: 0, col: 7, offset: 7 },
+                            },
+                        },
+                    ],
+                    listItems: [],
+                };
+            }
+            return null;
+        });
+
+        shoppingListFileContent = "# Food\n";
+
+        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
+        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+
+        await processSelectedWeeks(mockContext, mealPlanFile, weeks);
+
+        // Should have pasta listed twice (once per week), not merged
+        const pastaMatches = shoppingListFileContent.match(/pasta/gi);
+        expect(pastaMatches).toHaveLength(2);
+
+        // Each occurrence should have quantity 200 (not 400 if merged)
+        const quantity200Matches = shoppingListFileContent.match(/200/g);
+        expect(quantity200Matches).toHaveLength(2);
     });
 });
