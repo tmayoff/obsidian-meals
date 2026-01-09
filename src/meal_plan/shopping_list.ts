@@ -52,7 +52,7 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
     if (mealPlanFile == null) {
         return;
     }
-    const newIngredients = getMealPlanIngredients(ctx, mealPlanFile);
+    const newIngredients = await getMealPlanIngredients(ctx, mealPlanFile);
 
     const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
 
@@ -166,18 +166,38 @@ async function readIngredients(
     return Ok([] as Ingredient[]);
 }
 
-function getMealPlanIngredients(ctx: Context, file: TFile) {
+async function getMealPlanIngredients(ctx: Context, file: TFile): Promise<Ingredient[]> {
     const thisWeek = GetCurrentWeek(get(ctx.settings).startOfWeek);
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
+    const links = fileCache.links || [];
 
-    const topLevel = fileCache.headings!.filter((h) => {
-        return h.level === 1;
-    });
+    // Check if we have H1 headings (list format) or no headings (table format)
+    const topLevel = fileCache.headings?.filter((h) => h.level === 1) || [];
 
+    let ingredients: Ingredient[] = [];
+
+    if (topLevel.length > 0) {
+        // List format: use H1 headings to find boundaries
+        ingredients = await getMealPlanIngredientsListFormat(ctx, file, thisWeek, topLevel, links);
+    } else {
+        // Table format: parse table to find current week's row
+        ingredients = await getMealPlanIngredientsTableFormat(ctx, file, thisWeek, links);
+    }
+
+    return ingredients;
+}
+
+async function getMealPlanIngredientsListFormat(
+    ctx: Context,
+    file: TFile,
+    thisWeek: string,
+    topLevel: HeadingCache[],
+    links: any[],
+): Promise<Ingredient[]> {
     let end = -1;
     if (topLevel.length > 1) {
         end = topLevel.findIndex((h) => {
-            return h.level === 1 && h.heading.contains(thisWeek);
+            return h.level === 1 && h.heading.includes(thisWeek);
         });
         if (end < topLevel.length - 1) {
             end += 1;
@@ -187,7 +207,6 @@ function getMealPlanIngredients(ctx: Context, file: TFile) {
     const startPos = topLevel[0].position!;
     const endPos = end !== -1 ? topLevel[end]?.position! : null;
 
-    const links = fileCache.links!;
     let ingredients: Ingredient[] = [];
     for (const i of links) {
         // Skip links outside the bounds of the date range
@@ -208,9 +227,62 @@ function getMealPlanIngredients(ctx: Context, file: TFile) {
     return ingredients;
 }
 
+async function getMealPlanIngredientsTableFormat(
+    ctx: Context,
+    file: TFile,
+    thisWeek: string,
+    links: any[],
+): Promise<Ingredient[]> {
+    // Read file content to find the row with current week
+    const content = await ctx.app.vault.read(file);
+    const lines = content.split('\n');
+
+    // Find the row that contains the current week date
+    let currentWeekRowStart = -1;
+    let currentWeekRowEnd = -1;
+    let currentOffset = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const trimmedLine = line.trim();
+
+        if (trimmedLine.startsWith('|') && trimmedLine.includes(thisWeek)) {
+            // Found the row with the current week
+            currentWeekRowStart = currentOffset;
+            currentWeekRowEnd = currentOffset + line.length;
+            break;
+        }
+
+        // Add length of line + newline character for next iteration
+        currentOffset += line.length + 1;
+    }
+
+    // If we didn't find the current week, return empty list
+    if (currentWeekRowStart === -1) {
+        return [];
+    }
+
+    // Extract links that fall within the current week's row
+    let ingredients: Ingredient[] = [];
+    for (const link of links) {
+        const linkStart = link.position.start.offset;
+        const linkEnd = link.position.end.offset;
+
+        // Check if link is within the current week's row
+        if (linkStart >= currentWeekRowStart && linkEnd <= currentWeekRowEnd) {
+            const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(link.link, file.path);
+            if (recipeFile != null) {
+                ingredients = mergeIngredientLists(ingredients, getIngredientsRecipe(ctx, recipeFile));
+            }
+        }
+    }
+
+    return ingredients;
+}
+
 function mergeIngredientLists(left: Ingredient[], right: Ingredient[]) {
     //  Before adding an ingredient check if it's already in the list
-    //  If it is add the quanities together otherwise add it to the list
+    //  If it is add the quantities together otherwise add it to the list
     for (const i of right) {
         const existing = left.findIndex((existing) => {
             return existing.description === i.description && i.unitOfMeasure === existing.unitOfMeasure;

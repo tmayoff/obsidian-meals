@@ -1,30 +1,19 @@
-# Household
-
-- [ ] Detergent  
-
-# Food
-- [ ] baby spinach 3 cup
-- [ ] Bulgur Wheat 0.5 cup
-- [ ] Chicken Breasts 2 
-- [ ] cooked brown or white rice 4 cup
-- [ ] dried red lentils 1.5 cup
-- [ ] Feta Cheese, crumbled 0.25 cup
-- [ ] fresh ginger 1 tbsp
-- [ ] full fat coconut milk 13.5 can
-- [ ] garam masala 1 tbsp
-- [ ] garlic 5 clove
-- [ ] Garlic, cloves 1 
-- [ ] ground turmeric 1 tsp
-- [ ] Lemon 1 
-- [ ] Mediterranean Spice Blend 1 tbsp
-- [ ] Mini cucumber 66 g
-- [ ] Mixed Olives 30 g
-- [ ] red pepper chili flakes 0.5 tsp
-- [ ] Roma Tomato 95 g
-- [ ] Sugar 1 tbsp
-- [ ] tomatoes 14 can
-- [ ] vegetable broth 3 cup
-- [ ] White Wine Vinegar 1 tbsp
-- [ ] yellow onion 1 large
-- [ ] Za'atar spice blend 1 tbsp
-# Other things
+- [ ] butter 2 tbsp
+- [ ] Fresh Three Cheese Tortellini 350 g
+- [ ] heavy cream 0.5 cup
+- [ ] Heavy Cream 45 ml
+- [ ] kasoori methi 2 tbsp
+- [ ] Lacinato Kale 1 bunch
+- [ ] Minced Garlic 15 ml
+- [ ] oil 2 tbsp
+- [ ] onion 2 medium
+- [ ] Roasted Pepper 1 
+- [ ] tomato paste 3 tbsp
+- [ ] Vegetable Demi-Glace 30 ml
+- [ ] water 0.75 cup
+- [ ] whole -inch ginger 1 
+- [ ] whole chicken thighs 6 
+- [ ] whole garlic cloves 4 
+- [ ] whole green chillies 2 
+- [ ] yogurt 3 tbsp
+- [ ] Zingy Garlic and Oregano Spices (salt, paprika, garlic, vinegar powder, onion, red bell pepper, black pepper, sunflower oil, oregano, parsley, chives, cayenne pepper) 10 g

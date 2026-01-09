@@ -1,7 +1,7 @@
 import { Notice, TFile, TFolder } from 'obsidian';
-import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
+import type { Ingredient } from '../types.ts';
 import { GetIngredients } from './ingredients.ts';
 
 export class Recipe {
