@@ -140,6 +140,8 @@ Development must be done using Test-Driven Development (TDD) best practices. Alw
 -   Debug mode adds extra commands and logging (enable in settings)
 -   Shopping list uses Obsidian's metadata cache (`listItems`, `headings`, `links`) for parsing
 -   Development builds include inline sourcemaps for debugging
+-   You should always use Test-Driven Development (TDD) practices when adding features or fixing bugs.
+    -   Write tests first, then implement the functionality to make the tests pass.
 
 ## Important Constraints
 
@@ -148,13 +150,15 @@ Development must be done using Test-Driven Development (TDD) best practices. Alw
 **NEVER use dynamic imports (`await import()` or `import()`)** in this codebase. They break Obsidian's plugin bundler and cause module resolution errors at runtime.
 
 ❌ **BAD - Do not do this:**
+
 ```typescript
-const { SomeModule } = await import('./some-module.ts');
+const { SomeModule } = await import("./some-module.ts");
 ```
 
 ✅ **GOOD - Always use static imports:**
+
 ```typescript
-import { SomeModule } from './some-module.ts';
+import { SomeModule } from "./some-module.ts";
 ```
 
 **Why:** Vite's bundling process for Obsidian plugins requires all imports to be statically analyzable at build time. Dynamic imports create separate chunks that cannot be properly resolved by Obsidian's module loader.

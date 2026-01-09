@@ -3,7 +3,8 @@ import extractorSvelte from '@unocss/extractor-svelte';
 import { presetUno } from '@unocss/preset-uno';
 import builtins from 'builtin-modules';
 import UnoCSS from 'unocss/vite';
-import { type PluginOption, defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
+
 // import wasmPack from "vite-plugin-wasm-pack";
 
 const setOutDir = (mode: string) => {

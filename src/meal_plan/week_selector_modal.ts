@@ -1,8 +1,8 @@
 import { Modal } from 'obsidian';
 import { mount, unmount } from 'svelte';
 import type { Context } from '../context.ts';
-import type { WeekInfo } from './week_extractor.ts';
 import WeekSelector from './WeekSelector.svelte';
+import type { WeekInfo } from './week_extractor.ts';
 
 export class WeekSelectorModal extends Modal {
     private component: Record<string, any> | null = null;

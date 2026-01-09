@@ -6,6 +6,10 @@ export function GetCurrentWeek(startOfWeek: number) {
     return moment().weekday(startOfWeek).format('MMMM Do');
 }
 
+export function GetWeekDateFromMoment(date: moment.Moment, startOfWeek: number) {
+    return date.clone().weekday(startOfWeek).format('MMMM Do');
+}
+
 // https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format#4673436
 export function formatUnicorn(fmtString: string, obj: object) {
     let str = fmtString;
