@@ -1,12 +1,23 @@
 import { writable } from "svelte/store";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import type { Context } from "../context.ts";
-import { AddMealPlanToShoppingList, processSelectedWeeks } from "../meal_plan/shopping_list.ts";
+import {
+    AddMealPlanToShoppingList,
+    processSelectedWeeks,
+} from "../meal_plan/shopping_list.ts";
 import { extractWeeksFromMealPlan } from "../meal_plan/week_extractor.ts";
 import { Recipe } from "../recipe/recipe.ts";
 import { MealSettings } from "../settings/settings.ts";
 import type { Ingredient } from "../types.ts";
 import * as Utils from "../utils/utils.ts";
+
+vi.mock("../meal_plan/WeekSelector.svelte", () => {
+    return {
+        WeekSelectorModal: {
+            open: vi.fn(),
+        },
+    };
+});
 
 describe("AddMealPlanToShoppingList", () => {
     let mockContext: Context;
@@ -741,8 +752,14 @@ describe("Multi-week shopping list", () => {
             return null;
         });
 
-        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
-        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+        const mealPlanFile = mockContext.app.vault.getFileByPath(
+            "Meal Plan.md"
+        ) as any;
+        const weeks = await extractWeeksFromMealPlan(
+            mockContext,
+            mealPlanFile,
+            0
+        );
 
         // Should only return current and future weeks (not January 1st)
         expect(weeks).toHaveLength(2);
@@ -770,8 +787,14 @@ describe("Multi-week shopping list", () => {
             return null;
         });
 
-        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
-        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+        const mealPlanFile = mockContext.app.vault.getFileByPath(
+            "Meal Plan.md"
+        ) as any;
+        const weeks = await extractWeeksFromMealPlan(
+            mockContext,
+            mealPlanFile,
+            0
+        );
 
         // Should only return current and future weeks
         expect(weeks).toHaveLength(2);
@@ -853,8 +876,14 @@ describe("Multi-week shopping list", () => {
 
         shoppingListFileContent = "# Food\n";
 
-        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
-        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+        const mealPlanFile = mockContext.app.vault.getFileByPath(
+            "Meal Plan.md"
+        ) as any;
+        const weeks = await extractWeeksFromMealPlan(
+            mockContext,
+            mealPlanFile,
+            0
+        );
 
         await processSelectedWeeks(mockContext, mealPlanFile, weeks);
 
@@ -871,8 +900,12 @@ describe("Multi-week shopping list", () => {
         // Verify ordering: January 8th ingredients should come before January 15th
         const pastaIndex = shoppingListFileContent.indexOf("pasta");
         const lettuceIndex = shoppingListFileContent.indexOf("lettuce");
-        const week8Index = shoppingListFileContent.indexOf("## Week of January 8th");
-        const week15Index = shoppingListFileContent.indexOf("## Week of January 15th");
+        const week8Index = shoppingListFileContent.indexOf(
+            "## Week of January 8th"
+        );
+        const week15Index = shoppingListFileContent.indexOf(
+            "## Week of January 15th"
+        );
 
         expect(week8Index).toBeLessThan(pastaIndex);
         expect(pastaIndex).toBeLessThan(week15Index);
@@ -953,8 +986,14 @@ describe("Multi-week shopping list", () => {
 
         shoppingListFileContent = "# Food\n";
 
-        const mealPlanFile = mockContext.app.vault.getFileByPath("Meal Plan.md") as any;
-        const weeks = await extractWeeksFromMealPlan(mockContext, mealPlanFile, 0);
+        const mealPlanFile = mockContext.app.vault.getFileByPath(
+            "Meal Plan.md"
+        ) as any;
+        const weeks = await extractWeeksFromMealPlan(
+            mockContext,
+            mealPlanFile,
+            0
+        );
 
         await processSelectedWeeks(mockContext, mealPlanFile, weeks);
 

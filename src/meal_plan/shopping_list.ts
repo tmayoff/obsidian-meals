@@ -1,16 +1,15 @@
-import type { HeadingCache, TFile } from 'obsidian';
-// import type { Ingredient } from 'parse-ingredient';
-import { get } from 'svelte/store';
-import { Ok, type Result } from 'ts-results-es';
-import type { Context } from '../context.ts';
-import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
-import type { Ingredient } from '../types.ts';
-import { AppendMarkdownExt } from '../utils/filesystem.ts';
-import { GetIngredientsFromList } from '../utils/parser.ts';
-import type { ErrCtx } from '../utils/result.ts';
-import { formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
-import { extractWeeksFromMealPlan } from './week_extractor.ts';
-import { WeekSelectorModal } from './week_selector_modal.ts';
+import type { HeadingCache, TFile } from "obsidian";
+import { get } from "svelte/store";
+import { Ok, type Result } from "ts-results-es";
+import type { Context } from "../context.ts";
+import { ShoppingListIgnoreBehaviour } from "../settings/settings.ts";
+import type { Ingredient } from "../types.ts";
+import { AppendMarkdownExt } from "../utils/filesystem.ts";
+import { GetIngredientsFromList } from "../utils/parser.ts";
+import type { ErrCtx } from "../utils/result.ts";
+import { formatUnicorn, wildcardToRegex } from "../utils/utils.ts";
+import { extractWeeksFromMealPlan } from "./week_extractor.ts";
+import { WeekSelectorModal } from "./week_selector_modal.ts";
 
 export async function ClearCheckedIngredients(ctx: Context) {
     const filePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
@@ -20,9 +19,11 @@ export async function ClearCheckedIngredients(ctx: Context) {
         return;
     }
 
-    const listItems = ctx.app.metadataCache.getFileCache(file)?.listItems?.filter((i) => {
-        return i.task !== undefined && i.task !== ' ';
-    });
+    const listItems = ctx.app.metadataCache
+        .getFileCache(file)
+        ?.listItems?.filter((i) => {
+            return i.task !== undefined && i.task !== " ";
+        });
     if (listItems === undefined) {
         return;
     }
@@ -39,7 +40,8 @@ export async function ClearCheckedIngredients(ctx: Context) {
         const start = pos.start.offset - offset;
         const length = pos.end.offset - pos.start.offset + 1;
 
-        content = content.substring(0, start) + content.substring(start + length);
+        content =
+            content.substring(0, start) + content.substring(start + length);
         offset += length;
     }
 
@@ -57,7 +59,11 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
     }
 
     // Extract all current/future weeks from the meal plan
-    const weeks = await extractWeeksFromMealPlan(ctx, mealPlanFile, settings.startOfWeek);
+    const weeks = await extractWeeksFromMealPlan(
+        ctx,
+        mealPlanFile,
+        settings.startOfWeek
+    );
 
     if (weeks.length === 0) {
         // No weeks found
@@ -66,11 +72,17 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
 
     // If only one week, process it directly without showing modal
     if (weeks.length === 1) {
-        const ingredients = await getIngredientsForWeek(ctx, mealPlanFile, weeks[0]);
-        const shoppingListFilePath = AppendMarkdownExt(settings.shoppingListNote);
+        const ingredients = await getIngredientsForWeek(
+            ctx,
+            mealPlanFile,
+            weeks[0]
+        );
+        const shoppingListFilePath = AppendMarkdownExt(
+            settings.shoppingListNote
+        );
         let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
         if (file == null) {
-            await ctx.app.vault.create(shoppingListFilePath, '');
+            await ctx.app.vault.create(shoppingListFilePath, "");
             file = ctx.app.vault.getFileByPath(shoppingListFilePath);
         }
         if (file == null) {
@@ -87,10 +99,12 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
 }
 
 export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
-    const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
+    const shoppingListFilePath = AppendMarkdownExt(
+        get(ctx.settings).shoppingListNote
+    );
     let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
-        ctx.app.vault.create(shoppingListFilePath, '');
+        ctx.app.vault.create(shoppingListFilePath, "");
         file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
     if (file == null) {
@@ -101,22 +115,36 @@ export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     await updateShoppingList(ctx, file, newIngredients);
 }
 
-async function updateShoppingList(ctx: Context, file: TFile, newIngredients: Ingredient[]) {
+async function updateShoppingList(
+    ctx: Context,
+    file: TFile,
+    newIngredients: Ingredient[]
+) {
     const foodListRange = getFoodListRange(ctx, file);
-    const existingIngredients = (await readIngredients(ctx, file, foodListRange)).unwrapOr([] as Ingredient[]);
-    const ingredients = mergeIngredientLists(existingIngredients, newIngredients).sort((a, b) => {
+    const existingIngredients = (
+        await readIngredients(ctx, file, foodListRange)
+    ).unwrapOr([] as Ingredient[]);
+    const ingredients = mergeIngredientLists(
+        existingIngredients,
+        newIngredients
+    ).sort((a, b) => {
         return a.description.localeCompare(b.description);
     });
 
     ctx.app.vault.process(file, (data) => {
         const start = foodListRange.startOffset;
-        const end = foodListRange.endOffset ? foodListRange.endOffset : data.length;
+        const end = foodListRange.endOffset
+            ? foodListRange.endOffset
+            : data.length;
 
-        let newContent = start !== 0 ? '\n' : '';
+        let newContent = start !== 0 ? "\n" : "";
 
         for (const i of ingredients) {
-            let formatted = formatUnicorn(`${get(ctx.settings).shoppingListFormat}`, i);
-            formatted = formatted.replaceAll(/\([\s-]*\)/g, '');
+            let formatted = formatUnicorn(
+                `${get(ctx.settings).shoppingListFormat}`,
+                i
+            );
+            formatted = formatted.replaceAll(/\([\s-]*\)/g, "");
             formatted.trim();
             newContent += `- [ ] ${formatted}\n`;
         }
@@ -133,14 +161,14 @@ function getFoodListRange(ctx: Context, file: TFile) {
     const headings = metadata?.headings;
     if (headings) {
         for (const header of headings) {
-            if (header.heading === 'Food') {
-                console.error('Found food heading', header);
+            if (header.heading === "Food") {
+                console.error("Found food heading", header);
                 startHeader = header;
                 continue;
             }
 
             if (startHeader !== null && endHeader === null) {
-                console.error('End header found, ', header);
+                console.error("End header found, ", header);
                 endHeader = header;
                 break;
             }
@@ -156,7 +184,7 @@ function getFoodListRange(ctx: Context, file: TFile) {
 async function readIngredients(
     ctx: Context,
     file: TFile,
-    range: { startOffset: number; endOffset: number | undefined },
+    range: { startOffset: number; endOffset: number | undefined }
 ): Promise<Result<Ingredient[], ErrCtx>> {
     const metadata = ctx.app.metadataCache.getFileCache(file);
     const settings = get(ctx.settings);
@@ -170,13 +198,19 @@ async function readIngredients(
         return GetIngredientsFromList(
             list
                 .filter((l) => {
-                    return l.position.start.offset >= range.startOffset && l.position.end.offset <= endOffset;
+                    return (
+                        l.position.start.offset >= range.startOffset &&
+                        l.position.end.offset <= endOffset
+                    );
                 })
                 .map((l) => {
-                    return fileContent.substring(l.position.start.offset, l.position.end.offset);
+                    return fileContent.substring(
+                        l.position.start.offset,
+                        l.position.end.offset
+                    );
                 }),
             settings.advancedIngredientParsing,
-            settings.debugMode,
+            settings.debugMode
         );
     }
 
@@ -188,7 +222,10 @@ function mergeIngredientLists(left: Ingredient[], right: Ingredient[]) {
     //  If it is add the quantities together otherwise add it to the list
     for (const i of right) {
         const existing = left.findIndex((existing) => {
-            return existing.description === i.description && i.unitOfMeasure === existing.unitOfMeasure;
+            return (
+                existing.description === i.description &&
+                i.unitOfMeasure === existing.unitOfMeasure
+            );
         });
         if (existing === -1) {
             left.push(structuredClone(i));
@@ -241,7 +278,7 @@ function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
 // ============================================================================
 
 interface WeekIngredients {
-    week: import('./week_extractor.ts').WeekInfo;
+    week: import("./week_extractor.ts").WeekInfo;
     ingredients: Ingredient[];
 }
 
@@ -251,13 +288,17 @@ interface WeekIngredients {
 export async function processSelectedWeeks(
     ctx: Context,
     mealPlanFile: TFile,
-    selectedWeeks: import('./week_extractor.ts').WeekInfo[],
+    selectedWeeks: import("./week_extractor.ts").WeekInfo[]
 ) {
     const weekIngredientsGroups: WeekIngredients[] = [];
 
     // Extract ingredients for each selected week
     for (const week of selectedWeeks) {
-        const ingredients = await getIngredientsForWeek(ctx, mealPlanFile, week);
+        const ingredients = await getIngredientsForWeek(
+            ctx,
+            mealPlanFile,
+            week
+        );
         weekIngredientsGroups.push({
             week,
             ingredients,
@@ -274,7 +315,7 @@ export async function processSelectedWeeks(
 async function getIngredientsForWeek(
     ctx: Context,
     file: TFile,
-    week: import('./week_extractor.ts').WeekInfo,
+    week: import("./week_extractor.ts").WeekInfo
 ): Promise<Ingredient[]> {
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
     const links = fileCache.links || [];
@@ -284,10 +325,20 @@ async function getIngredientsForWeek(
 
     if (topLevel.length > 0) {
         // List format
-        ingredients = await getIngredientsForWeekListFormat(ctx, file, week, links);
+        ingredients = await getIngredientsForWeekListFormat(
+            ctx,
+            file,
+            week,
+            links
+        );
     } else {
         // Table format
-        ingredients = await getIngredientsForWeekTableFormat(ctx, file, week, links);
+        ingredients = await getIngredientsForWeekTableFormat(
+            ctx,
+            file,
+            week,
+            links
+        );
     }
 
     return ingredients;
@@ -299,8 +350,8 @@ async function getIngredientsForWeek(
 async function getIngredientsForWeekListFormat(
     ctx: Context,
     file: TFile,
-    week: import('./week_extractor.ts').WeekInfo,
-    links: any[],
+    week: import("./week_extractor.ts").WeekInfo,
+    links: any[]
 ): Promise<Ingredient[]> {
     let ingredients: Ingredient[] = [];
 
@@ -314,9 +365,15 @@ async function getIngredientsForWeekListFormat(
             continue;
         }
 
-        const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(link.link, file.path);
+        const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(
+            link.link,
+            file.path
+        );
         if (recipeFile != null) {
-            ingredients = mergeIngredientLists(ingredients, getIngredientsRecipe(ctx, recipeFile));
+            ingredients = mergeIngredientLists(
+                ingredients,
+                getIngredientsRecipe(ctx, recipeFile)
+            );
         }
     }
 
@@ -329,8 +386,8 @@ async function getIngredientsForWeekListFormat(
 async function getIngredientsForWeekTableFormat(
     ctx: Context,
     file: TFile,
-    week: import('./week_extractor.ts').WeekInfo,
-    links: any[],
+    week: import("./week_extractor.ts").WeekInfo,
+    links: any[]
 ): Promise<Ingredient[]> {
     let ingredients: Ingredient[] = [];
 
@@ -340,9 +397,15 @@ async function getIngredientsForWeekTableFormat(
 
         // Check if link is within this week's row range
         if (linkStart >= week.startOffset && linkEnd <= week.endOffset) {
-            const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(link.link, file.path);
+            const recipeFile = ctx.app.metadataCache.getFirstLinkpathDest(
+                link.link,
+                file.path
+            );
             if (recipeFile != null) {
-                ingredients = mergeIngredientLists(ingredients, getIngredientsRecipe(ctx, recipeFile));
+                ingredients = mergeIngredientLists(
+                    ingredients,
+                    getIngredientsRecipe(ctx, recipeFile)
+                );
             }
         }
     }
@@ -353,13 +416,16 @@ async function getIngredientsForWeekTableFormat(
 /**
  * Update shopping list with ingredients grouped by week
  */
-async function updateShoppingListMultiWeek(ctx: Context, weekGroups: WeekIngredients[]) {
+async function updateShoppingListMultiWeek(
+    ctx: Context,
+    weekGroups: WeekIngredients[]
+) {
     const settings = get(ctx.settings);
     const shoppingListFilePath = AppendMarkdownExt(settings.shoppingListNote);
 
     let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     if (file == null) {
-        await ctx.app.vault.create(shoppingListFilePath, '');
+        await ctx.app.vault.create(shoppingListFilePath, "");
         file = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
 
@@ -370,9 +436,11 @@ async function updateShoppingListMultiWeek(ctx: Context, weekGroups: WeekIngredi
     await ctx.app.vault.process(file, (data) => {
         const foodListRange = getFoodListRange(ctx, file);
         const start = foodListRange.startOffset;
-        const end = foodListRange.endOffset ? foodListRange.endOffset : data.length;
+        const end = foodListRange.endOffset
+            ? foodListRange.endOffset
+            : data.length;
 
-        let newContent = start !== 0 ? '\n' : '';
+        let newContent = start !== 0 ? "\n" : "";
 
         // Add each week as a section
         for (const weekGroup of weekGroups) {
@@ -385,13 +453,16 @@ async function updateShoppingListMultiWeek(ctx: Context, weekGroups: WeekIngredi
             });
 
             for (const ingredient of sortedIngredients) {
-                let formatted = formatUnicorn(settings.shoppingListFormat, ingredient);
-                formatted = formatted.replaceAll(/\([\s-]*\)/g, '');
+                let formatted = formatUnicorn(
+                    settings.shoppingListFormat,
+                    ingredient
+                );
+                formatted = formatted.replaceAll(/\([\s-]*\)/g, "");
                 formatted = formatted.trim();
                 newContent += `- [ ] ${formatted}\n`;
             }
 
-            newContent += '\n'; // Extra line between weeks
+            newContent += "\n"; // Extra line between weeks
         }
 
         return data.substring(0, start) + newContent + data.substring(end);
