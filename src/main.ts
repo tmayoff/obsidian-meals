@@ -101,7 +101,7 @@ export default class MealPlugin extends Plugin {
                             .setTitle('Add to meal plan')
                             .setIcon('utensils')
                             .onClick(() => {
-                                new AddToPlanModal(this.ctx, new Recipe(t), false).open();
+                                new AddToPlanModal(this.ctx, new Recipe(t)).open();
                             });
                     });
 

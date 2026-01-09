@@ -245,7 +245,7 @@ let onIgnoreListChanged = (e: Event) => {
 
 <Setting>
   <div slot="title">Debug mode</div>
-  <div slot="desciption">
+  <div slot="description">
     This enables extra debugging tools: logging, menu options, etc...
   </div>
   <Toggle slot="control" bind:enabled={$settings.debugMode} />
