@@ -102,8 +102,9 @@ function isToday(date: moment.Moment): boolean {
 <style>
     .calendar-container {
         padding: 1rem;
-        min-width: 400px;
-        max-width: 600px;
+        width: 500px;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .calendar-header {
@@ -113,6 +114,9 @@ function isToday(date: moment.Moment): boolean {
     .calendar-header h2 {
         margin: 0 0 0.25rem 0;
         font-size: 1.1rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .calendar-subtitle {
@@ -138,6 +142,7 @@ function isToday(date: moment.Moment): boolean {
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-shrink: 0;
     }
 
     .nav-btn:hover {
@@ -160,12 +165,13 @@ function isToday(date: moment.Moment): boolean {
 
     .calendar-grid {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 2px;
         background: var(--background-modifier-border);
         border: 1px solid var(--background-modifier-border);
         border-radius: 4px;
         overflow: hidden;
+        width: 100%;
     }
 
     .day-header {
@@ -175,11 +181,12 @@ function isToday(date: moment.Moment): boolean {
         font-weight: 600;
         font-size: 0.75rem;
         color: var(--text-muted);
+        min-width: 0;
     }
 
     .day-cell {
         background: var(--background-primary);
-        min-height: 70px;
+        height: 70px;
         padding: 0.25rem;
         display: flex;
         flex-direction: column;
@@ -188,6 +195,8 @@ function isToday(date: moment.Moment): boolean {
         border: none;
         text-align: left;
         transition: background-color 0.15s ease;
+        overflow: hidden;
+        min-width: 0;
     }
 
     .day-cell:hover {
@@ -234,7 +243,9 @@ function isToday(date: moment.Moment): boolean {
         flex-direction: column;
         gap: 1px;
         width: 100%;
+        min-width: 0;
         overflow: hidden;
+        flex: 1;
     }
 
     .recipe-tag {
@@ -246,7 +257,8 @@ function isToday(date: moment.Moment): boolean {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 100%;
+        display: block;
+        cursor: help;
     }
 
     .day-cell.today .recipe-tag {

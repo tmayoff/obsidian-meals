@@ -1,10 +1,11 @@
+import moment from 'moment';
 import { writable } from 'svelte/store';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
-import { AddRecipeToMealPlan, addRecipeToTable, createTableWeekSection } from '../meal_plan/plan.ts';
+import { AddRecipeToMealPlan, AddRecipeToMealPlanByDate, addRecipeToTable, createTableWeekSection } from '../meal_plan/plan.ts';
 import { Recipe } from '../recipe/recipe.ts';
-import { MealSettings } from '../settings/settings.ts';
+import { MealPlanFormat, MealSettings } from '../settings/settings.ts';
 import * as Utils from '../utils/utils.ts';
 
 test('createTableWeekSection_basic', () => {
@@ -329,5 +330,180 @@ describe('AddRecipeToMealPlan integration tests', () => {
         // Verify it's in the correct week
         const jan8Section = fileContent.split('# Week of January 1st')[0];
         expect(jan8Section).toContain('- [[Test Recipe]]');
+    });
+});
+
+describe('AddRecipeToMealPlanByDate integration tests', () => {
+    let mockContext: Context;
+    let mockRecipe: Recipe;
+    let fileContent: string;
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        fileContent = '';
+
+        const mockFile = {
+            path: 'test-recipe.md',
+            basename: 'Test Recipe',
+        } as any;
+        mockRecipe = new Recipe(mockFile);
+
+        const mockVault = {
+            getFileByPath: vi.fn().mockReturnValue({
+                vault: {
+                    process: vi.fn((_file, callback) => {
+                        fileContent = callback(fileContent);
+                        return Promise.resolve();
+                    }),
+                },
+            }),
+            process: vi.fn((_file, callback) => {
+                fileContent = callback(fileContent);
+                return Promise.resolve();
+            }),
+            create: vi.fn().mockResolvedValue({}),
+        };
+
+        const settings = new MealSettings();
+        settings.mealPlanNote = 'Meal Plan';
+        settings.startOfWeek = 0; // Sunday
+        settings.mealPlanFormat = MealPlanFormat.List;
+
+        mockContext = {
+            settings: writable(settings),
+            app: {
+                vault: mockVault,
+            } as any,
+            plugin: {} as any,
+            recipes: writable([]),
+            ingredients: {} as any,
+            getRecipeFolder: vi.fn(),
+            isInRecipeFolder: vi.fn(),
+            loadRecipes: vi.fn(),
+            debugMode: vi.fn().mockReturnValue(false),
+        };
+    });
+
+    test('should add recipe to specific date in list format', async () => {
+        // January 7th 2024 is a Sunday, so "Week of January 7th" is the correct week start
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const targetDate = moment('2024-01-08'); // A Monday in the week of January 7th
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Monday');
+
+        expect(fileContent).toContain('## Monday\n- [[Test Recipe]]');
+    });
+
+    test('should add recipe to specific date in table format', async () => {
+        // January 7th 2024 is a Sunday, so "Week of January 7th" is the correct week start
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  |  |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-10'); // Wednesday in the week of January 7th
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Wednesday');
+
+        expect(fileContent).toContain('[[Test Recipe]]');
+        // Verify the recipe was added to the table
+        const dataRow = fileContent.split('\n').find((line) => line.includes('January 7th') && line.includes('Test Recipe'));
+        expect(dataRow).toBeDefined();
+    });
+
+    test('should create new week section when adding to future week in list format', async () => {
+        // January 7th 2024 is a Sunday
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        // Add to a future week (January 15th is a Monday in the week of January 14th)
+        const targetDate = moment('2024-01-15');
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Monday');
+
+        // Should create new week section
+        expect(fileContent).toContain('# Week of January 14th');
+        expect(fileContent).toContain('- [[Test Recipe]]');
+    });
+
+    test('should create new week row when adding to future week in table format', async () => {
+        const settings = new MealSettings();
+        settings.mealPlanNote = 'Meal Plan';
+        settings.startOfWeek = 0;
+        settings.mealPlanFormat = MealPlanFormat.Table;
+        mockContext.settings = writable(settings);
+
+        // January 7th 2024 is a Sunday
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  |  |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-15');
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Monday');
+
+        // Should add new row for the new week
+        expect(fileContent).toContain('January 14th');
+        expect(fileContent).toContain('[[Test Recipe]]');
+    });
+
+    test('should not duplicate week section if it already exists', async () => {
+        // January 7th 2024 is a Sunday
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+- [[Existing Recipe]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday in week of January 7th
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Monday');
+
+        // Should only have one "Week of January 7th" header
+        const weekHeaderCount = (fileContent.match(/# Week of January 7th/g) || []).length;
+        expect(weekHeaderCount).toBe(1);
+
+        // Should have both recipes
+        expect(fileContent).toContain('[[Existing Recipe]]');
+        expect(fileContent).toContain('[[Test Recipe]]');
+    });
+
+    test('should handle adding to past weeks', async () => {
+        // January 14th 2024 is a Sunday
+        fileContent = `# Week of January 14th
+## Sunday
+## Monday
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        // Add to a past week (January 3rd 2024 is Wednesday in week starting Dec 31st)
+        const targetDate = moment('2024-01-03');
+        await AddRecipeToMealPlanByDate(mockContext, mockRecipe, targetDate, 'Wednesday');
+
+        // Should create the past week section (Dec 31st 2023 is a Sunday)
+        expect(fileContent).toContain('December 31st');
+        expect(fileContent).toContain('- [[Test Recipe]]');
     });
 });

@@ -39,7 +39,7 @@ export async function extractDailyRecipes(ctx: Context, file: TFile, startOfWeek
 }
 
 /**
- * Extract recipes from list format
+ * Extract recipes and other entries from list format
  */
 function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string, links: any[], startOfWeek: number): Map<string, string[]> {
     const dailyRecipes = new Map<string, string[]>();
@@ -83,17 +83,13 @@ function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string,
 
             // Get the range for this day's content
             const dayEndOffset = getNextDayOffset(dayHeading, dayHeadings, weekEndOffset);
+            const dayContent = content.slice(dayHeading.position.end.offset, dayEndOffset);
 
-            // Find recipe links within this day's range
-            const dayRecipes: string[] = [];
-            for (const link of links) {
-                if (link.position.start.offset > dayHeading.position.end.offset && link.position.start.offset < dayEndOffset) {
-                    dayRecipes.push(link.link);
-                }
-            }
+            // Extract all entries (both links and plain text list items)
+            const dayEntries = extractEntriesFromListContent(dayContent, links, dayHeading.position.end.offset, dayEndOffset);
 
-            if (dayRecipes.length > 0) {
-                dailyRecipes.set(dateKey, dayRecipes);
+            if (dayEntries.length > 0) {
+                dailyRecipes.set(dateKey, dayEntries);
             }
         }
     }
@@ -102,7 +98,66 @@ function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string,
 }
 
 /**
- * Extract recipes from table format
+ * Extract entries from list content, including both links and plain text items
+ */
+function extractEntriesFromListContent(dayContent: string, links: any[], startOffset: number, endOffset: number): string[] {
+    const entries: string[] = [];
+    const lines = dayContent.split('\n');
+
+    // Track which character positions have links
+    const linkRanges: { start: number; end: number; text: string }[] = [];
+    for (const link of links) {
+        if (link.position.start.offset >= startOffset && link.position.end.offset <= endOffset) {
+            linkRanges.push({
+                start: link.position.start.offset,
+                end: link.position.end.offset,
+                text: link.link,
+            });
+        }
+    }
+
+    let currentOffset = startOffset;
+    for (const line of lines) {
+        const trimmedLine = line.trim();
+        const lineStart = currentOffset;
+        const lineEnd = currentOffset + line.length;
+
+        // Check if this is a list item (starts with - or - [ ])
+        if (trimmedLine.startsWith('- ') || trimmedLine.startsWith('- [ ]') || trimmedLine.startsWith('- [x]')) {
+            // Find any links on this line
+            const lineLinks = linkRanges.filter((lr) => lr.start >= lineStart && lr.end <= lineEnd);
+
+            if (lineLinks.length > 0) {
+                // Add the link text
+                for (const linkRange of lineLinks) {
+                    entries.push(linkRange.text);
+                }
+            } else {
+                // No links - extract plain text
+                let text = trimmedLine;
+                // Remove list marker
+                if (text.startsWith('- [ ] ')) {
+                    text = text.slice(6);
+                } else if (text.startsWith('- [x] ')) {
+                    text = text.slice(6);
+                } else if (text.startsWith('- ')) {
+                    text = text.slice(2);
+                }
+                text = text.trim();
+                if (text.length > 0) {
+                    entries.push(text);
+                }
+            }
+        }
+
+        currentOffset = lineEnd + 1; // +1 for newline
+    }
+
+    return entries;
+}
+
+/**
+ * Extract recipes and other entries from table format
  */
 function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek: number): Map<string, string[]> {
     const dailyRecipes = new Map<string, string[]>();
@@ -164,7 +219,7 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
             colOffset += cells[i].length + 1; // +1 for |
         }
 
-        // Find recipe links in each day column
+        // Find entries in each day column
         for (let colIndex = 1; colIndex < headerColumns.length; colIndex++) {
             const dayName = headerColumns[colIndex];
             const dayIndex = DAYS_OF_WEEK.indexOf(dayName);
@@ -179,22 +234,55 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
             if (colIndex >= colPositions.length) continue;
 
             const colPos = colPositions[colIndex];
-            const dayRecipes: string[] = [];
+            const cellContent = cells[colIndex] || '';
 
-            for (const link of links) {
-                if (link.position.start.offset >= colPos.start && link.position.end.offset <= colPos.end) {
-                    dayRecipes.push(link.link);
-                }
-            }
+            // Extract entries from cell (both links and plain text)
+            const dayEntries = extractEntriesFromTableCell(cellContent, links, colPos.start, colPos.end);
 
-            if (dayRecipes.length > 0) {
+            if (dayEntries.length > 0) {
                 const existing = dailyRecipes.get(dateKey) || [];
-                dailyRecipes.set(dateKey, [...existing, ...dayRecipes]);
+                dailyRecipes.set(dateKey, [...existing, ...dayEntries]);
             }
         }
     }
 
     return dailyRecipes;
+}
+
+/**
+ * Extract entries from a table cell, including both links and plain text items
+ */
+function extractEntriesFromTableCell(cellContent: string, links: any[], cellStart: number, cellEnd: number): string[] {
+    const entries: string[] = [];
+
+    // Find links within this cell
+    const cellLinks: string[] = [];
+    for (const link of links) {
+        if (link.position.start.offset >= cellStart && link.position.end.offset <= cellEnd) {
+            cellLinks.push(link.link);
+        }
+    }
+
+    // If there are links, include them
+    if (cellLinks.length > 0) {
+        entries.push(...cellLinks);
+    }
+
+    // Also check for plain text entries (separated by <br> in table cells)
+    // Remove link syntax to find remaining text
+    let remainingText = cellContent;
+    // Remove [[...]] patterns
+    remainingText = remainingText.replace(/\[\[([^\]]+)\]\]/g, '');
+    // Split by <br> and extract non-empty entries
+    const textParts = remainingText.split(/<br\s*\/?>/i);
+    for (const part of textParts) {
+        const trimmed = part.trim();
+        if (trimmed.length > 0) {
+            entries.push(trimmed);
+        }
+    }
+
+    return entries;
 }
 
 /**
