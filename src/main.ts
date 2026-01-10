@@ -1,7 +1,8 @@
-import { type App, Modal, Plugin, PluginSettingTab, TFile } from 'obsidian';
+import { type App, MarkdownView, Modal, Plugin, PluginSettingTab, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Context } from './context.ts';
 import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
+import MealPlanCalendarWrapper from './meal_plan/MealPlanCalendarWrapper.svelte';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
@@ -13,10 +14,13 @@ import { mount, unmount } from 'svelte';
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
 import { Recipe } from './recipe/recipe.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
+import { AppendMarkdownExt } from './utils/filesystem.ts';
 
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
     loadedSettings = false;
+    private mealPlanCalendarComponent: Record<string, any> | null = null;
+    private mealPlanCalendarContainer: HTMLElement | null = null;
 
     async onload() {
         this.addSettingTab(new MealPluginSettingsTab(this.app, this));
@@ -43,6 +47,19 @@ export default class MealPlugin extends Plugin {
                     }
                 }),
             );
+
+            // Listen for active leaf changes to inject calendar into meal plan note
+            this.registerEvent(
+                this.app.workspace.on('active-leaf-change', (leaf) => {
+                    this.handleMealPlanCalendarInjection(leaf);
+                }),
+            );
+
+            // Also check the current active leaf on startup
+            const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
+            if (activeLeaf) {
+                this.handleMealPlanCalendarInjection(activeLeaf);
+            }
         });
 
         this.addCommand({
@@ -170,6 +187,60 @@ export default class MealPlugin extends Plugin {
             });
         } else {
             this.removeCommand('reload-recipes');
+        }
+    }
+
+    private handleMealPlanCalendarInjection(leaf: any) {
+        // Clean up previous calendar if it exists
+        this.cleanupMealPlanCalendar();
+
+        if (!leaf) return;
+
+        const settings = get(this.ctx.settings);
+
+        // Check if the setting is enabled
+        if (!settings.showCalendarInMealPlan) return;
+
+        const view = leaf.view;
+
+        // Check if it's a MarkdownView
+        if (!(view instanceof MarkdownView)) return;
+
+        // Check if it's the meal plan note
+        const mealPlanFilePath = AppendMarkdownExt(settings.mealPlanNote);
+        if (view.file?.path !== mealPlanFilePath) return;
+
+        // Get the content container
+        const contentContainer = view.containerEl.querySelector('.cm-sizer');
+        if (!contentContainer) return;
+
+        // Check if calendar is already injected
+        if (contentContainer.querySelector('.meal-plan-calendar-wrapper')) return;
+
+        // Create container for the calendar
+        this.mealPlanCalendarContainer = document.createElement('div');
+        this.mealPlanCalendarContainer.className = 'meal-plan-calendar-injection';
+
+        // Insert at the beginning of the content
+        contentContainer.insertBefore(this.mealPlanCalendarContainer, contentContainer.firstChild);
+
+        // Mount the Svelte component
+        this.mealPlanCalendarComponent = mount(MealPlanCalendarWrapper, {
+            target: this.mealPlanCalendarContainer,
+            props: {
+                ctx: this.ctx,
+            },
+        });
+    }
+
+    private cleanupMealPlanCalendar() {
+        if (this.mealPlanCalendarComponent) {
+            unmount(this.mealPlanCalendarComponent);
+            this.mealPlanCalendarComponent = null;
+        }
+        if (this.mealPlanCalendarContainer) {
+            this.mealPlanCalendarContainer.remove();
+            this.mealPlanCalendarContainer = null;
         }
     }
 }

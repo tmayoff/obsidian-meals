@@ -1,18 +1,21 @@
 <script lang="ts">
-import { ChevronLeft, ChevronRight } from 'lucide-svelte';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-svelte';
 import moment from 'moment';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import { type CalendarData, type DayData, generateCalendarData } from './calendar_data.ts';
 
 type Props = {
-    recipeName: string;
+    mode?: 'add-recipe' | 'meal-plan-view';
+    recipeName?: string;
     startOfWeek: number;
     dailyRecipes: Map<string, string[]>;
-    onSelectDay: (date: moment.Moment, dayName: string) => void;
-    onCancel: () => void;
+    onSelectDay?: (date: moment.Moment, dayName: string) => void;
+    onCancel?: () => void;
+    onAddRecipe?: (date: moment.Moment, dayName: string) => void;
+    onRecipeClick?: (recipeName: string, date: moment.Moment, dayName: string) => void;
 };
 
-let { recipeName, startOfWeek, dailyRecipes, onSelectDay, onCancel }: Props = $props();
+let { mode = 'add-recipe', recipeName, startOfWeek, dailyRecipes, onSelectDay, onCancel, onAddRecipe, onRecipeClick }: Props = $props();
 
 // Current display month
 let displayMonth = $state(moment().startOf('month'));
@@ -36,7 +39,23 @@ function goToToday() {
 }
 
 function handleDayClick(day: DayData) {
-    onSelectDay(day.date, day.dayName);
+    if (mode === 'add-recipe' && onSelectDay) {
+        onSelectDay(day.date, day.dayName);
+    }
+}
+
+function handleAddClick(e: Event, day: DayData) {
+    e.stopPropagation();
+    if (onAddRecipe) {
+        onAddRecipe(day.date, day.dayName);
+    }
+}
+
+function handleRecipeClick(e: Event, recipe: string, day: DayData) {
+    e.stopPropagation();
+    if (mode === 'meal-plan-view' && onRecipeClick) {
+        onRecipeClick(recipe, day.date, day.dayName);
+    }
 }
 
 function isToday(date: moment.Moment): boolean {
@@ -44,11 +63,13 @@ function isToday(date: moment.Moment): boolean {
 }
 </script>
 
-<div class="calendar-container">
-    <div class="calendar-header">
-        <h2>Add "{recipeName}" to Meal Plan</h2>
-        <p class="calendar-subtitle">Select a day to add this recipe</p>
-    </div>
+<div class="calendar-container" class:embedded={mode === 'meal-plan-view'}>
+    {#if mode === 'add-recipe' && recipeName}
+        <div class="calendar-header">
+            <h2>Add "{recipeName}" to Meal Plan</h2>
+            <p class="calendar-subtitle">Select a day to add this recipe</p>
+        </div>
+    {/if}
 
     <div class="calendar-nav">
         <button class="nav-btn" onclick={previousMonth} aria-label="Previous month">
@@ -71,32 +92,68 @@ function isToday(date: moment.Moment): boolean {
         <!-- Calendar days -->
         {#each calendarData.weeks as week}
             {#each week.days as day}
-                <button
-                    class="day-cell"
-                    class:other-month={!day.isCurrentMonth}
-                    class:today={isToday(day.date)}
-                    class:has-recipes={day.recipes.length > 0}
-                    onclick={() => handleDayClick(day)}
-                >
-                    <span class="day-number">{day.date.date()}</span>
-                    {#if day.recipes.length > 0}
-                        <div class="day-recipes">
-                            {#each day.recipes.slice(0, 2) as recipe}
-                                <span class="recipe-tag" title={recipe}>{recipe}</span>
-                            {/each}
-                            {#if day.recipes.length > 2}
-                                <span class="recipe-more">+{day.recipes.length - 2} more</span>
-                            {/if}
-                        </div>
-                    {/if}
-                </button>
+                {#if mode === 'add-recipe'}
+                    <button
+                        class="day-cell clickable"
+                        class:other-month={!day.isCurrentMonth}
+                        class:today={isToday(day.date)}
+                        class:has-recipes={day.recipes.length > 0}
+                        onclick={() => handleDayClick(day)}
+                    >
+                        <span class="day-number">{day.date.date()}</span>
+                        {#if day.recipes.length > 0}
+                            <div class="day-recipes">
+                                {#each day.recipes.slice(0, 2) as recipe}
+                                    <span class="recipe-tag" title={recipe}>{recipe}</span>
+                                {/each}
+                                {#if day.recipes.length > 2}
+                                    <span class="recipe-more">+{day.recipes.length - 2} more</span>
+                                {/if}
+                            </div>
+                        {/if}
+                    </button>
+                {:else}
+                    <div
+                        class="day-cell"
+                        class:other-month={!day.isCurrentMonth}
+                        class:today={isToday(day.date)}
+                        class:has-recipes={day.recipes.length > 0}
+                    >
+                        <span class="day-number">{day.date.date()}</span>
+                        {#if day.recipes.length > 0}
+                            <div class="day-recipes">
+                                {#each day.recipes.slice(0, 2) as recipe}
+                                    <button
+                                        class="recipe-tag clickable"
+                                        title={recipe}
+                                        onclick={(e) => handleRecipeClick(e, recipe, day)}
+                                    >
+                                        {recipe}
+                                    </button>
+                                {/each}
+                                {#if day.recipes.length > 2}
+                                    <span class="recipe-more">+{day.recipes.length - 2} more</span>
+                                {/if}
+                            </div>
+                        {/if}
+                        <button
+                            class="add-recipe-btn"
+                            onclick={(e) => handleAddClick(e, day)}
+                            aria-label="Add recipe to {day.dayName}"
+                        >
+                            <Plus size={14} />
+                        </button>
+                    </div>
+                {/if}
             {/each}
         {/each}
     </div>
 
-    <div class="calendar-actions">
-        <button onclick={onCancel}>Cancel</button>
-    </div>
+    {#if mode === 'add-recipe' && onCancel}
+        <div class="calendar-actions">
+            <button onclick={onCancel}>Cancel</button>
+        </div>
+    {/if}
 </div>
 
 <style>
@@ -105,6 +162,11 @@ function isToday(date: moment.Moment): boolean {
         width: 500px;
         max-width: 100%;
         box-sizing: border-box;
+    }
+
+    .calendar-container.embedded {
+        width: 100%;
+        padding: 0 0 1rem 0;
     }
 
     .calendar-header {
@@ -191,15 +253,20 @@ function isToday(date: moment.Moment): boolean {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        cursor: pointer;
+        cursor: default;
         border: none;
         text-align: left;
         transition: background-color 0.15s ease;
         overflow: hidden;
         min-width: 0;
+        position: relative;
     }
 
-    .day-cell:hover {
+    .day-cell.clickable {
+        cursor: pointer;
+    }
+
+    .day-cell.clickable:hover {
         background: var(--background-modifier-hover);
     }
 
@@ -259,11 +326,26 @@ function isToday(date: moment.Moment): boolean {
         text-overflow: ellipsis;
         display: block;
         cursor: help;
+        border: none;
+        width: 100%;
+        text-align: left;
+    }
+
+    .recipe-tag.clickable {
+        cursor: pointer;
+    }
+
+    .recipe-tag.clickable:hover {
+        background: var(--interactive-accent-hover);
     }
 
     .day-cell.today .recipe-tag {
         background: var(--background-primary);
         color: var(--text-normal);
+    }
+
+    .day-cell.today .recipe-tag.clickable:hover {
+        background: var(--background-modifier-hover);
     }
 
     .recipe-more {
@@ -281,5 +363,42 @@ function isToday(date: moment.Moment): boolean {
         justify-content: flex-end;
         margin-top: 1rem;
         gap: 0.5rem;
+    }
+
+    .add-recipe-btn {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 18px;
+        height: 18px;
+        padding: 0;
+        border: none;
+        border-radius: 3px;
+        background: var(--background-modifier-border);
+        color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.15s ease, background-color 0.15s ease;
+    }
+
+    .day-cell:hover .add-recipe-btn {
+        opacity: 1;
+    }
+
+    .add-recipe-btn:hover {
+        background: var(--interactive-accent);
+        color: var(--text-on-accent);
+    }
+
+    .day-cell.today .add-recipe-btn {
+        background: var(--background-primary);
+        color: var(--text-normal);
+    }
+
+    .day-cell.today .add-recipe-btn:hover {
+        background: var(--background-modifier-hover);
     }
 </style>

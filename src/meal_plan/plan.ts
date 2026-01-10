@@ -395,3 +395,145 @@ function parseWeekDateString(dateStr: string): moment.Moment | null {
 
     return date;
 }
+
+/**
+ * Remove a recipe from the meal plan for a specific date
+ */
+export async function RemoveRecipeFromMealPlan(ctx: Context, recipeName: string, date: moment.Moment) {
+    const settings = get(ctx.settings);
+    let filePath = settings.mealPlanNote;
+    if (!filePath.endsWith('.md')) {
+        filePath += '.md';
+    }
+
+    const weekDate = GetWeekDateFromMoment(date, settings.startOfWeek);
+    const dayName = date.format('dddd');
+
+    const file = ctx.app.vault.getFileByPath(filePath);
+    if (file != null) {
+        await file.vault.process(file, (content) => {
+            const isTable = content.trimStart().startsWith('|');
+
+            if (isTable) {
+                content = removeRecipeFromTable(content, weekDate, dayName, recipeName);
+            } else {
+                content = removeRecipeFromList(content, weekDate, dayName, recipeName);
+            }
+
+            return content;
+        });
+    }
+}
+
+/**
+ * Remove a recipe from a table-formatted meal plan
+ */
+function removeRecipeFromTable(content: string, weekDate: string, day: string, recipeName: string): string {
+    const allLines = content.split('\n');
+
+    // Find the table header row
+    let headerRowIndex = -1;
+    for (let i = 0; i < allLines.length; i++) {
+        const line = allLines[i].trim();
+        if (line.startsWith('|') && line.includes('Week Start')) {
+            headerRowIndex = i;
+            break;
+        }
+    }
+
+    if (headerRowIndex === -1) {
+        return content;
+    }
+
+    const headerRow = allLines[headerRowIndex];
+
+    // Parse header to find column index
+    const headers = headerRow
+        .split('|')
+        .map((h) => h.trim())
+        .filter((h) => h.length > 0);
+    const dayIndex = headers.indexOf(day);
+
+    if (dayIndex === -1) {
+        return content;
+    }
+
+    // Find the data row with the matching weekDate
+    let dataRowIndex = -1;
+    for (let i = headerRowIndex + 2; i < allLines.length; i++) {
+        const line = allLines[i].trim();
+        if (line.startsWith('|') && line.includes(weekDate)) {
+            dataRowIndex = i;
+            break;
+        }
+    }
+
+    if (dataRowIndex === -1) {
+        return content;
+    }
+
+    const dataRow = allLines[dataRowIndex];
+
+    // Parse data row
+    const rawCells = dataRow.split('|');
+    const cells: string[] = [];
+    for (let i = 1; i < rawCells.length - 1; i++) {
+        cells.push(rawCells[i].trim());
+    }
+
+    // Remove recipe from the cell
+    const recipeLink = `[[${recipeName}]]`;
+    const currentCell = cells[dayIndex];
+
+    if (currentCell.includes(recipeLink)) {
+        // Handle both standalone and <br>-separated recipes
+        const newCell = currentCell.replace(`<br>${recipeLink}`, '').replace(`${recipeLink}<br>`, '').replace(recipeLink, '');
+        cells[dayIndex] = newCell.trim();
+    }
+
+    // Reconstruct data row
+    const newDataRow = `| ${cells.join(' | ')} |`;
+    allLines[dataRowIndex] = newDataRow;
+
+    return allLines.join('\n');
+}
+
+/**
+ * Remove a recipe from a list-formatted meal plan
+ */
+function removeRecipeFromList(content: string, weekDate: string, day: string, recipeName: string): string {
+    const header = `Week of ${weekDate}`;
+    const headerIndex = content.indexOf(header);
+
+    if (headerIndex === -1) {
+        return content;
+    }
+
+    const dayHeader = `## ${day}`;
+    const dayHeaderIndex = content.indexOf(dayHeader, headerIndex);
+
+    if (dayHeaderIndex === -1) {
+        return content;
+    }
+
+    // Find the end of this day's section (next ## header or # header or end of file)
+    const nextDayMatch = content.slice(dayHeaderIndex + dayHeader.length).match(/\n## |\n# /);
+    const sectionEnd = nextDayMatch ? dayHeaderIndex + dayHeader.length + (nextDayMatch.index ?? 0) : content.length;
+
+    // Get the section content
+    const sectionStart = dayHeaderIndex + dayHeader.length;
+    const sectionContent = content.slice(sectionStart, sectionEnd);
+
+    // Remove the recipe line (handles both - [[Recipe]] and - [ ] [[Recipe]] formats)
+    const recipePattern = new RegExp(`\\n- (?:\\[[ x]\\] )?\\[\\[${escapeRegExp(recipeName)}\\]\\]`, 'g');
+    const newSectionContent = sectionContent.replace(recipePattern, '');
+
+    return content.slice(0, sectionStart) + newSectionContent + content.slice(sectionEnd);
+}
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegExp(string: string): string {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}

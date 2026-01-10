@@ -109,6 +109,14 @@ let onIgnoreListChanged = (e: Event) => {
 </Setting>
 
 <Setting>
+  <div slot="title">Show calendar in meal plan</div>
+  <div slot="description">
+    Display an interactive calendar at the top of the meal plan note for easy recipe management
+  </div>
+  <Toggle slot="control" bind:enabled={$settings.showCalendarInMealPlan} />
+</Setting>
+
+<Setting>
   <div slot="title">Recipe format</div>
   <div slot="description">
     What format to use for reading the recipes

@@ -3,7 +3,13 @@ import { writable } from 'svelte/store';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
-import { AddRecipeToMealPlan, AddRecipeToMealPlanByDate, addRecipeToTable, createTableWeekSection } from '../meal_plan/plan.ts';
+import {
+    AddRecipeToMealPlan,
+    AddRecipeToMealPlanByDate,
+    addRecipeToTable,
+    createTableWeekSection,
+    RemoveRecipeFromMealPlan,
+} from '../meal_plan/plan.ts';
 import { Recipe } from '../recipe/recipe.ts';
 import { MealPlanFormat, MealSettings } from '../settings/settings.ts';
 import * as Utils from '../utils/utils.ts';
@@ -505,5 +511,199 @@ describe('AddRecipeToMealPlanByDate integration tests', () => {
         // Should create the past week section (Dec 31st 2023 is a Sunday)
         expect(fileContent).toContain('December 31st');
         expect(fileContent).toContain('- [[Test Recipe]]');
+    });
+});
+
+describe('RemoveRecipeFromMealPlan', () => {
+    let mockContext: Context;
+    let fileContent: string;
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        fileContent = '';
+
+        const mockVault = {
+            getFileByPath: vi.fn().mockReturnValue({
+                vault: {
+                    process: vi.fn((_file, callback) => {
+                        fileContent = callback(fileContent);
+                        return Promise.resolve();
+                    }),
+                },
+            }),
+            process: vi.fn((_file, callback) => {
+                fileContent = callback(fileContent);
+                return Promise.resolve();
+            }),
+        };
+
+        const settings = new MealSettings();
+        settings.mealPlanNote = 'Meal Plan';
+        settings.startOfWeek = 0; // Sunday
+
+        mockContext = {
+            settings: writable(settings),
+            app: {
+                vault: mockVault,
+            } as any,
+            plugin: {} as any,
+            recipes: writable([]),
+            ingredients: {} as any,
+            getRecipeFolder: vi.fn(),
+            isInRecipeFolder: vi.fn(),
+            loadRecipes: vi.fn(),
+            debugMode: vi.fn().mockReturnValue(false),
+        };
+    });
+
+    test('should remove recipe from list format', async () => {
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+- [[Test Recipe]]
+- [[Another Recipe]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday in week of January 7th
+        await RemoveRecipeFromMealPlan(mockContext, 'Test Recipe', targetDate);
+
+        expect(fileContent).not.toContain('- [[Test Recipe]]');
+        expect(fileContent).toContain('- [[Another Recipe]]');
+    });
+
+    test('should remove recipe from table format', async () => {
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  | [[Test Recipe]] |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday in week of January 7th
+        await RemoveRecipeFromMealPlan(mockContext, 'Test Recipe', targetDate);
+
+        expect(fileContent).not.toContain('[[Test Recipe]]');
+        // Table structure should be preserved
+        expect(fileContent).toContain('| Week Start |');
+        expect(fileContent).toContain('| January 7th |');
+    });
+
+    test('should remove recipe when multiple recipes in same day (table)', async () => {
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  | [[Recipe 1]]<br>[[Recipe 2]]<br>[[Recipe 3]] |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday
+        await RemoveRecipeFromMealPlan(mockContext, 'Recipe 2', targetDate);
+
+        expect(fileContent).toContain('[[Recipe 1]]');
+        expect(fileContent).not.toContain('[[Recipe 2]]');
+        expect(fileContent).toContain('[[Recipe 3]]');
+    });
+
+    test('should remove first recipe from multiple in same day (table)', async () => {
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  | [[Recipe 1]]<br>[[Recipe 2]] |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday
+        await RemoveRecipeFromMealPlan(mockContext, 'Recipe 1', targetDate);
+
+        expect(fileContent).not.toContain('[[Recipe 1]]');
+        expect(fileContent).toContain('[[Recipe 2]]');
+        expect(fileContent).not.toContain('<br>[[Recipe 2]]'); // Should clean up orphan <br>
+    });
+
+    test('should remove last recipe from multiple in same day (table)', async () => {
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 7th |  | [[Recipe 1]]<br>[[Recipe 2]] |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday
+        await RemoveRecipeFromMealPlan(mockContext, 'Recipe 2', targetDate);
+
+        expect(fileContent).toContain('[[Recipe 1]]');
+        expect(fileContent).not.toContain('[[Recipe 2]]');
+        expect(fileContent).not.toContain('[[Recipe 1]]<br>'); // Should clean up trailing <br>
+    });
+
+    test('should handle list format with checkbox items', async () => {
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+- [ ] [[Test Recipe]]
+- [x] [[Completed Recipe]]
+## Tuesday
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday
+        await RemoveRecipeFromMealPlan(mockContext, 'Test Recipe', targetDate);
+
+        expect(fileContent).not.toContain('[[Test Recipe]]');
+        expect(fileContent).toContain('- [x] [[Completed Recipe]]');
+    });
+
+    test('should not modify other weeks in list format', async () => {
+        fileContent = `# Week of January 14th
+## Sunday
+## Monday
+- [[Same Recipe Name]]
+## Tuesday
+
+# Week of January 7th
+## Sunday
+## Monday
+- [[Same Recipe Name]]
+## Tuesday
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday in week of January 7th
+        await RemoveRecipeFromMealPlan(mockContext, 'Same Recipe Name', targetDate);
+
+        // Should remove from January 7th week only
+        const jan14Section = fileContent.split('# Week of January 7th')[0];
+        expect(jan14Section).toContain('[[Same Recipe Name]]');
+
+        const jan7Section = fileContent.split('# Week of January 7th')[1];
+        expect(jan7Section).not.toContain('[[Same Recipe Name]]');
+    });
+
+    test('should not modify other weeks in table format', async () => {
+        fileContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 14th |  | [[Same Recipe]] |  |  |  |  |  |
+| January 7th |  | [[Same Recipe]] |  |  |  |  |  |
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday in week of January 7th
+        await RemoveRecipeFromMealPlan(mockContext, 'Same Recipe', targetDate);
+
+        // Should still have recipe in January 14th
+        expect(fileContent).toContain('| January 14th |  | [[Same Recipe]] |');
+        // Should be removed from January 7th
+        expect(fileContent).toMatch(/\| January 7th \|[^|]*\|[^[]*\|/);
+    });
+
+    test('should handle recipes with special characters', async () => {
+        fileContent = `# Week of January 7th
+## Sunday
+## Monday
+- [[Recipe (with) Parens]]
+- [[Another Recipe]]
+## Tuesday
+`;
+
+        const targetDate = moment('2024-01-08'); // Monday
+        await RemoveRecipeFromMealPlan(mockContext, 'Recipe (with) Parens', targetDate);
+
+        expect(fileContent).not.toContain('[[Recipe (with) Parens]]');
+        expect(fileContent).toContain('[[Another Recipe]]');
     });
 });
