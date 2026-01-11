@@ -40,21 +40,24 @@ async function loadData() {
 function handleAddRecipe(date: moment.Moment, dayName: string) {
     new RecipeSelectModal(ctx, async (recipe) => {
         await AddRecipeToMealPlanByDate(ctx, recipe, date, dayName);
-        await loadData();
+        // Don't call loadData() here - the metadataCache 'changed' event will trigger it
+        // after the cache is updated with the new link positions
     }).open();
 }
 
 function handleRecipeClick(recipeName: string, date: moment.Moment, dayName: string) {
     new RecipePreviewModal(ctx, recipeName, date, dayName, async () => {
-        await loadData();
+        // Don't call loadData() here - the metadataCache 'changed' event will trigger it
+        // after the cache is updated with the new link positions
     }).open();
 }
 
 onMount(async () => {
     await loadData();
 
-    // Subscribe to file changes to refresh the calendar
-    eventRef = ctx.app.vault.on('modify', async (file) => {
+    // Subscribe to metadata cache changes instead of vault modify events
+    // This ensures we refresh AFTER the metadata cache has updated with new link positions
+    eventRef = ctx.app.metadataCache.on('changed', async (file) => {
         const settings = get(ctx.settings);
         const mealPlanFilePath = AppendMarkdownExt(settings.mealPlanNote);
         if (file.path === mealPlanFilePath) {
@@ -65,7 +68,7 @@ onMount(async () => {
 
 onDestroy(() => {
     if (eventRef) {
-        ctx.app.vault.offref(eventRef);
+        ctx.app.metadataCache.offref(eventRef);
     }
 });
 </script>
