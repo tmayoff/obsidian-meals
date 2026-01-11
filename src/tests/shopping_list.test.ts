@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { Context } from '../context.ts';
 import { AddMealPlanToShoppingList, processSelectedWeeks } from '../meal_plan/shopping_list.ts';
 import { extractWeeksFromMealPlan } from '../meal_plan/week_extractor.ts';
@@ -26,6 +26,11 @@ describe('AddMealPlanToShoppingList', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+
+        // Mock system time to January 10, 2025 (within "Week of January 8th")
+        // This ensures tests work regardless of when they're run
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2025-01-10T12:00:00'));
 
         // Mock GetCurrentWeek to return a fixed date
         vi.spyOn(Utils, 'GetCurrentWeek').mockReturnValue('January 8th');
@@ -151,6 +156,10 @@ describe('AddMealPlanToShoppingList', () => {
             loadRecipes: vi.fn(),
             debugMode: vi.fn().mockReturnValue(false),
         };
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     test('should extract recipes from list format and add to shopping list', async () => {
@@ -582,6 +591,11 @@ describe('Multi-week shopping list', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
+        // Mock system time to January 10, 2025 (within "Week of January 8th")
+        // This ensures tests work regardless of when they're run
+        vi.useFakeTimers();
+        vi.setSystemTime(new Date('2025-01-10T12:00:00'));
+
         // Mock GetCurrentWeek to return a fixed date
         vi.spyOn(Utils, 'GetCurrentWeek').mockReturnValue('January 8th');
 
@@ -712,6 +726,10 @@ describe('Multi-week shopping list', () => {
             loadRecipes: vi.fn(),
             debugMode: vi.fn().mockReturnValue(false),
         };
+    });
+
+    afterEach(() => {
+        vi.useRealTimers();
     });
 
     test('should extract multiple weeks from list format', async () => {

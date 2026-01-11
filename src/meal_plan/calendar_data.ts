@@ -195,10 +195,12 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
 
     // Process data rows (skip header and separator)
     for (let rowIndex = headerRowIndex + 2; rowIndex < lines.length; rowIndex++) {
-        const line = lines[rowIndex].trim();
-        if (!line.startsWith('|')) continue;
+        const originalLine = lines[rowIndex];
+        const trimmedLine = originalLine.trim();
+        if (!trimmedLine.startsWith('|')) continue;
 
-        const cells = line.split('|').filter((_c, i, arr) => i > 0 && i < arr.length - 1);
+        // Use original line for offset calculations, but parse cells from trimmed
+        const cells = trimmedLine.split('|').filter((_c, i, arr) => i > 0 && i < arr.length - 1);
         if (cells.length === 0) continue;
 
         const weekDateStr = cells[0].trim();
@@ -208,8 +210,11 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
         const weekStartDate = weekDate.clone().weekday(startOfWeek);
         const rowOffset = lineOffsets[rowIndex];
 
-        // Calculate column character positions within this row
-        let colOffset = line.indexOf('|') + 1; // Start after first |
+        // Calculate leading whitespace offset
+        const leadingWhitespace = originalLine.length - originalLine.trimStart().length;
+
+        // Calculate column character positions within this row using original line positions
+        let colOffset = leadingWhitespace + trimmedLine.indexOf('|') + 1; // Start after first |
         const colPositions: { start: number; end: number }[] = [];
 
         for (let i = 0; i < cells.length; i++) {
