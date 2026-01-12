@@ -138,6 +138,10 @@ export default class MealPlugin extends Plugin {
             this.updateDebugMode(this.ctx.debugMode());
             await this.ctx.loadRecipes(null);
             this.saveSettings();
+
+            // Re-evaluate calendar injection when settings change
+            const activeLeaf = this.app.workspace.getActiveViewOfType(MarkdownView)?.leaf;
+            this.handleMealPlanCalendarInjection(activeLeaf ?? null);
         });
 
         console.info('obisidan-meals plugin loaded');

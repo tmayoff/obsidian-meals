@@ -803,11 +803,11 @@ export async function convertMealPlanFormat(ctx: Context, targetFormat: MealPlan
         }
 
         if (targetFormat === MealPlanFormat.Table && currentFormat === 'list') {
-            new Notice('Converting meal plan from list to table format...');
+            new Notice('Converting meal plan from list to table format');
             return convertListToTable(content, dayHeaders);
         }
         if (targetFormat === MealPlanFormat.List && currentFormat === 'table') {
-            new Notice('Converting meal plan from table to list format...');
+            new Notice('Converting meal plan from table to list format');
             return convertTableToList(content, dayHeaders);
         }
         // Format already matches, no conversion needed
