@@ -6,7 +6,8 @@
         "formatWithErrors": true,
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 140
+        "lineWidth": 140,
+        "includes": ["**", "!**/test_vault", "!**/build"]
     },
     "javascript": {
         "formatter": {
