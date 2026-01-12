@@ -1,5 +1,6 @@
 import type moment from 'moment';
 import { Component, MarkdownRenderer, Modal } from 'obsidian';
+import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import { RemoveRecipeFromMealPlan } from './plan.ts';
@@ -36,7 +37,10 @@ export class RecipePreviewModal extends Modal {
         const recipeContent = contentEl.createDiv('recipe-preview-content');
 
         // Load and render recipe content
-        const recipeFile = this.ctx.app.vault.getFileByPath(AppendMarkdownExt(this.recipeName));
+        // Look for the recipe in the recipe directory
+        const settings = get(this.ctx.settings);
+        const recipePath = `${settings.recipeDirectory}/${this.recipeName}`;
+        const recipeFile = this.ctx.app.vault.getFileByPath(AppendMarkdownExt(recipePath));
 
         if (recipeFile) {
             const content = await this.ctx.app.vault.read(recipeFile);
