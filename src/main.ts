@@ -1,18 +1,18 @@
-import { type App, MarkdownView, Modal, Plugin, PluginSettingTab, TFile } from 'obsidian';
+import { type App, MarkdownView, Modal, Plugin, PluginSettingTab, TFile, type WorkspaceLeaf } from 'obsidian';
+import initWasm from 'recipe-rs';
+import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
+import { mount, unmount } from 'svelte';
 import { get } from 'svelte/store';
+import 'virtual:uno.css';
 import { Context } from './context.ts';
 import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
 import MealPlanCalendarWrapper from './meal_plan/MealPlanCalendarWrapper.svelte';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
-import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings } from './settings/settings.ts';
-import 'virtual:uno.css';
-import initWasm from 'recipe-rs';
-import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
-import { mount, unmount } from 'svelte';
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
 import { Recipe } from './recipe/recipe.ts';
+import SearchRecipe from './recipe/SearchRecipe.svelte';
+import { MealSettings } from './settings/settings.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
 import { AppendMarkdownExt } from './utils/filesystem.ts';
 
@@ -190,7 +190,7 @@ export default class MealPlugin extends Plugin {
         }
     }
 
-    private handleMealPlanCalendarInjection(leaf: any) {
+    private handleMealPlanCalendarInjection(leaf: WorkspaceLeaf | null) {
         // Clean up previous calendar if it exists
         this.cleanupMealPlanCalendar();
 
