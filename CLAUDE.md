@@ -16,7 +16,7 @@ yarn dev
 yarn build
 
 # Type checking (Svelte components)
-yarn check
+yarn run check
 
 # Run all tests
 yarn test

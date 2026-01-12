@@ -12,8 +12,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
 import { Recipe } from './recipe/recipe.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings } from './settings/settings.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
+import { MealSettings } from './settings/settings.ts';
 import { AppendMarkdownExt } from './utils/filesystem.ts';
 
 export default class MealPlugin extends Plugin {

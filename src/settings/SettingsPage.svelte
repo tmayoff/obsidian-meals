@@ -2,6 +2,7 @@
 import { Notice } from 'obsidian';
 import Toggle from '../components/Toggle.svelte';
 import { DAYS_OF_WEEK } from '../constants.ts';
+import { convertMealPlanFormat } from '../meal_plan/plan.ts';
 import { validateIgnoreBehaviour } from '../utils/utils.ts';
 import Setting from './Setting.svelte';
 
@@ -36,6 +37,14 @@ let onIgnoreListChanged = (e: Event) => {
         new Notice(res.error.message);
         return;
     }
+};
+
+let onMealPlanFormatChanged = async (e: Event) => {
+    const target = e.target as HTMLSelectElement;
+    const newFormat = target.value as MealPlanFormat;
+
+    // Convert existing meal plan to the new format
+    await convertMealPlanFormat(plugin.ctx, newFormat);
 };
 </script>
 
@@ -101,7 +110,7 @@ let onIgnoreListChanged = (e: Event) => {
   </div>
 
   <div slot="control">
-    <select class="dropdown" bind:value={$settings.mealPlanFormat}>
+    <select class="dropdown" bind:value={$settings.mealPlanFormat} onchange={onMealPlanFormatChanged}>
       <option value={MealPlanFormat.List}>List</option>
       <option value={MealPlanFormat.Table}>Table</option>
     </select>

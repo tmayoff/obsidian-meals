@@ -16,7 +16,17 @@ type Props = {
     onDayClick?: (date: moment.Moment, dayName: string, items: CalendarItem[]) => void;
 };
 
-let { mode = 'add-recipe', recipeName, startOfWeek, dailyItems, onSelectDay, onCancel, onAddRecipe, onItemClick, onDayClick }: Props = $props();
+let {
+    mode = 'add-recipe',
+    recipeName,
+    startOfWeek,
+    dailyItems,
+    onSelectDay,
+    onCancel,
+    onAddRecipe,
+    onItemClick,
+    onDayClick,
+}: Props = $props();
 
 // Current display month
 let displayMonth = $state(moment().startOf('month'));

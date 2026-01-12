@@ -1,5 +1,25 @@
+# Week of January 5th
+## Monday
+- [[Butter Chicken]]
+## Tuesday
+- Eating out
+## Wednesday
+- [[Creamy Tortellini]]
+## Thursday
+- [[Creamy Garlic Chicken & Potatoes]]
+## Friday
+## Saturday
+- [[Creamy Tortellini]]
+## Sunday
 
-| Week Start   | Monday                   | Tuesday                              | Wednesday                        | Thursday                             | Friday | Saturday              | Sunday |
-| ------------ | ------------------------ | ------------------------------------ | -------------------------------- | ------------------------------------ | ------ | --------------------- | ------ |
-| January 5th  | [[Butter Chicken]]       | Eating out                           | [[Creamy Tortellini]]            | [[Creamy Garlic Chicken & Potatoes]] |        | [[Creamy Tortellini]] |        |
-| January 12th | Eating out at restaurant | [[Creamy Garlic Chicken & Potatoes]] | [[Quick & Easy Red Lentil Dahl]] |                                      |        |                       |        |
+# Week of January 12th
+## Monday
+- Eating out at restaurant
+## Tuesday
+- [[Creamy Garlic Chicken & Potatoes]]
+## Wednesday
+- [[Quick & Easy Red Lentil Dahl]]
+## Thursday
+## Friday
+## Saturday
+## Sunday

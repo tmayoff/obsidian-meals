@@ -46,7 +46,13 @@ export async function extractDailyRecipes(ctx: Context, file: TFile, startOfWeek
 /**
  * Extract items from list format
  */
-function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string, links: any[], startOfWeek: number): Map<string, CalendarItem[]> {
+function extractDailyRecipesFromList(
+    ctx: Context,
+    file: TFile,
+    content: string,
+    links: any[],
+    startOfWeek: number,
+): Map<string, CalendarItem[]> {
     const dailyRecipes = new Map<string, CalendarItem[]>();
     const fileCache = ctx.app.metadataCache.getFileCache(file);
     const headings = fileCache?.headings || [];

@@ -1,6 +1,6 @@
 import type moment from 'moment';
 import momentLib from 'moment';
-import type { App } from 'obsidian';
+import { type App, Notice } from 'obsidian';
 import { get } from 'svelte/store';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
@@ -536,4 +536,281 @@ function removeRecipeFromList(content: string, weekDate: string, day: string, re
  */
 function escapeRegExp(string: string): string {
     return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Convert meal plan content from list format to table format
+ * @param content The list-formatted meal plan content
+ * @param dayHeaders Array of day names in the correct order for the table
+ * @returns The converted table-formatted content
+ */
+export function convertListToTable(content: string, dayHeaders: string[]): string {
+    // Parse all weeks from the list format
+    const weeks: { weekDate: string; days: Map<string, string[]> }[] = [];
+
+    // Match week headers (# Week of ...)
+    const weekPattern = /^# Week of (.+)$/gm;
+    const dayPattern = /^## (.+)$/gm;
+
+    weekPattern.lastIndex = 0;
+
+    let weekMatch = weekPattern.exec(content);
+    while (weekMatch !== null) {
+        const weekDate = weekMatch[1];
+        const weekStart = weekMatch.index + weekMatch[0].length;
+
+        // Find the next week header to determine this week's section
+        weekPattern.lastIndex = weekStart;
+        const nextWeekMatch = weekPattern.exec(content);
+        const weekEnd = nextWeekMatch ? nextWeekMatch.index : content.length;
+        weekPattern.lastIndex = weekStart; // Reset for outer loop
+
+        const weekSection = content.slice(weekStart, weekEnd);
+        const days = new Map<string, string[]>();
+
+        // Find all day sections within this week
+        dayPattern.lastIndex = 0;
+        const dayMatches: { day: string; start: number; index: number }[] = [];
+
+        let dayMatch = dayPattern.exec(weekSection);
+        while (dayMatch !== null) {
+            const dayName = dayMatch[1];
+            if (dayHeaders.includes(dayName)) {
+                dayMatches.push({
+                    day: dayName,
+                    start: dayMatch.index + dayMatch[0].length,
+                    index: dayMatch.index,
+                });
+            }
+            dayMatch = dayPattern.exec(weekSection);
+        }
+
+        // Extract items for each day
+        for (let i = 0; i < dayMatches.length; i++) {
+            const { day, start } = dayMatches[i];
+            const end = i < dayMatches.length - 1 ? dayMatches[i + 1].index : weekSection.length;
+
+            const dayContent = weekSection.slice(start, end);
+            const items = extractItemsFromListDay(dayContent);
+            days.set(day, items);
+        }
+
+        weeks.push({ weekDate, days });
+        weekMatch = weekPattern.exec(content);
+    }
+
+    // Build the table
+    const headerRow = `| Week Start | ${dayHeaders.join(' | ')} |`;
+    const separatorRow = `|${Array(dayHeaders.length + 1)
+        .fill('---')
+        .join('|')}|`;
+
+    const dataRows = weeks.map((week) => {
+        const cells = dayHeaders.map((day) => {
+            const items = week.days.get(day) || [];
+            return items.join('<br>');
+        });
+        return `| ${week.weekDate} | ${cells.join(' | ')} |`;
+    });
+
+    return `${headerRow}\n${separatorRow}\n${dataRows.join('\n')}\n`;
+}
+
+/**
+ * Extract items from a day section in list format
+ */
+function extractItemsFromListDay(dayContent: string): string[] {
+    const items: string[] = [];
+    const lines = dayContent.split('\n');
+
+    for (const line of lines) {
+        const trimmedLine = line.trim();
+
+        // Check if this is a list item
+        if (trimmedLine.startsWith('- ')) {
+            let item = trimmedLine.slice(2);
+
+            // Handle checkbox items
+            if (item.startsWith('[ ] ') || item.startsWith('[x] ')) {
+                item = item.slice(4);
+            }
+
+            item = item.trim();
+            if (item.length > 0) {
+                items.push(item);
+            }
+        }
+    }
+
+    return items;
+}
+
+/**
+ * Convert meal plan content from table format to list format
+ * @param content The table-formatted meal plan content
+ * @param dayHeaders Array of day names in the correct order for the list
+ * @returns The converted list-formatted content
+ */
+export function convertTableToList(content: string, dayHeaders: string[]): string {
+    const lines = content.split('\n');
+
+    // Find header row to get column positions
+    let headerRowIndex = -1;
+    let headerColumns: string[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (line.startsWith('|') && line.includes('Week Start')) {
+            headerRowIndex = i;
+            headerColumns = line
+                .split('|')
+                .map((c) => c.trim())
+                .filter((c) => c.length > 0);
+            break;
+        }
+    }
+
+    if (headerRowIndex === -1) {
+        return content; // Not a valid table format, return as-is
+    }
+
+    // Parse all data rows
+    const weeks: { weekDate: string; days: Map<string, string[]> }[] = [];
+
+    for (let rowIndex = headerRowIndex + 2; rowIndex < lines.length; rowIndex++) {
+        const trimmedLine = lines[rowIndex].trim();
+        if (!trimmedLine.startsWith('|')) continue;
+
+        const cells = trimmedLine.split('|').filter((_c, i, arr) => i > 0 && i < arr.length - 1);
+        if (cells.length === 0) continue;
+
+        const weekDate = cells[0].trim();
+        if (!weekDate) continue;
+
+        const days = new Map<string, string[]>();
+
+        // Extract items from each day column
+        for (let colIndex = 1; colIndex < headerColumns.length; colIndex++) {
+            const dayName = headerColumns[colIndex];
+
+            if (colIndex >= cells.length + 1) continue;
+
+            const cellContent = (cells[colIndex] || '').trim();
+            const items = extractItemsFromTableCell(cellContent);
+
+            if (items.length > 0) {
+                days.set(dayName, items);
+            }
+        }
+
+        weeks.push({ weekDate, days });
+    }
+
+    // Build the list format
+    const listSections = weeks.map((week) => {
+        const weekHeader = `# Week of ${week.weekDate}`;
+
+        const daySections = dayHeaders.map((day) => {
+            const items = week.days.get(day) || [];
+            const dayHeader = `## ${day}`;
+
+            if (items.length === 0) {
+                return dayHeader;
+            }
+            return `${dayHeader}\n${items.map((item) => `- ${item}`).join('\n')}`;
+        });
+
+        return `${weekHeader}\n${daySections.join('\n')}`;
+    });
+
+    return `${listSections.join('\n\n')}\n`;
+}
+
+/**
+ * Extract items from a table cell
+ */
+function extractItemsFromTableCell(cellContent: string): string[] {
+    if (!cellContent || cellContent.length === 0) {
+        return [];
+    }
+
+    // Split by <br> tag
+    const parts = cellContent.split(/<br\s*\/?>/i);
+    const items: string[] = [];
+
+    for (const part of parts) {
+        const trimmed = part.trim();
+        if (trimmed.length > 0) {
+            items.push(trimmed);
+        }
+    }
+
+    return items;
+}
+
+/**
+ * Detect the format of a meal plan file content
+ * @returns 'table' if the content is in table format, 'list' if in list format, or null if no meal plan content is detected
+ */
+export function detectMealPlanFormat(content: string): 'table' | 'list' | null {
+    const trimmedContent = content.trim();
+
+    if (trimmedContent.length === 0) {
+        return null;
+    }
+
+    // Check for table format (starts with | and has Week Start header)
+    if (trimmedContent.startsWith('|') && trimmedContent.includes('Week Start')) {
+        return 'table';
+    }
+
+    // Check for list format (has # Week of header)
+    if (/^# Week of /m.test(trimmedContent)) {
+        return 'list';
+    }
+
+    return null;
+}
+
+/**
+ * Convert an existing meal plan file to the specified format
+ * @param ctx The plugin context
+ * @param targetFormat The format to convert to
+ */
+export async function convertMealPlanFormat(ctx: Context, targetFormat: MealPlanFormat): Promise<void> {
+    const settings = get(ctx.settings);
+    const filePath = AppendMarkdownExt(settings.mealPlanNote);
+
+    const file = ctx.app.vault.getFileByPath(filePath);
+    if (file == null) {
+        // No meal plan file exists, nothing to convert
+        return;
+    }
+
+    // Build day headers based on start of week
+    const dayHeaders: string[] = [];
+    for (let i = 0; i < DAYS_OF_WEEK.length; ++i) {
+        const pos = (i + settings.startOfWeek) % DAYS_OF_WEEK.length;
+        dayHeaders.push(DAYS_OF_WEEK[pos]);
+    }
+
+    await ctx.app.vault.process(file, (content) => {
+        const currentFormat = detectMealPlanFormat(content);
+
+        if (currentFormat === null) {
+            // No meal plan content detected, nothing to convert
+            return content;
+        }
+
+        if (targetFormat === MealPlanFormat.Table && currentFormat === 'list') {
+            new Notice('Converting meal plan from list to table format...');
+            return convertListToTable(content, dayHeaders);
+        }
+        if (targetFormat === MealPlanFormat.List && currentFormat === 'table') {
+            new Notice('Converting meal plan from table to list format...');
+            return convertTableToList(content, dayHeaders);
+        }
+        // Format already matches, no conversion needed
+        return content;
+    });
 }

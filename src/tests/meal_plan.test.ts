@@ -7,7 +7,10 @@ import {
     AddRecipeToMealPlan,
     AddRecipeToMealPlanByDate,
     addRecipeToTable,
+    convertListToTable,
+    convertTableToList,
     createTableWeekSection,
+    detectMealPlanFormat,
     RemoveRecipeFromMealPlan,
 } from '../meal_plan/plan.ts';
 import { Recipe } from '../recipe/recipe.ts';
@@ -705,5 +708,324 @@ describe('RemoveRecipeFromMealPlan', () => {
 
         expect(fileContent).not.toContain('[[Recipe (with) Parens]]');
         expect(fileContent).toContain('[[Another Recipe]]');
+    });
+});
+
+describe('convertListToTable', () => {
+    const defaultDayHeaders = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    test('should convert empty list format to table format', () => {
+        const listContent = `# Week of January 8th
+## Sunday
+## Monday
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const result = convertListToTable(listContent, defaultDayHeaders);
+
+        expect(result).toContain('| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |');
+        expect(result).toContain('|---|---|---|---|---|---|---|---|');
+        expect(result).toContain('| January 8th |');
+    });
+
+    test('should convert list format with recipes to table format', () => {
+        const listContent = `# Week of January 8th
+## Sunday
+## Monday
+- [[Pasta Carbonara]]
+## Tuesday
+## Wednesday
+- [[Chicken Tikka Masala]]
+- [[Garlic Bread]]
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const result = convertListToTable(listContent, defaultDayHeaders);
+
+        expect(result).toContain('| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |');
+        expect(result).toContain('[[Pasta Carbonara]]');
+        expect(result).toContain('[[Chicken Tikka Masala]]<br>[[Garlic Bread]]');
+    });
+
+    test('should convert multiple weeks from list to table', () => {
+        const listContent = `# Week of January 15th
+## Sunday
+## Monday
+- [[Recipe A]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+
+# Week of January 8th
+## Sunday
+## Monday
+- [[Recipe B]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const result = convertListToTable(listContent, defaultDayHeaders);
+
+        expect(result).toContain('| January 15th |');
+        expect(result).toContain('| January 8th |');
+        expect(result).toContain('[[Recipe A]]');
+        expect(result).toContain('[[Recipe B]]');
+    });
+
+    test('should handle list format with checkbox items', () => {
+        const listContent = `# Week of January 8th
+## Sunday
+## Monday
+- [ ] [[Unchecked Recipe]]
+- [x] [[Checked Recipe]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const result = convertListToTable(listContent, defaultDayHeaders);
+
+        expect(result).toContain('[[Unchecked Recipe]]');
+        expect(result).toContain('[[Checked Recipe]]');
+    });
+
+    test('should handle list format with plain text items', () => {
+        const listContent = `# Week of January 8th
+## Sunday
+## Monday
+- [[Recipe Link]]
+- Plain text item
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const result = convertListToTable(listContent, defaultDayHeaders);
+
+        expect(result).toContain('[[Recipe Link]]');
+        expect(result).toContain('Plain text item');
+    });
+
+    test('should respect custom day order (Monday start)', () => {
+        const mondayStartHeaders = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const listContent = `# Week of January 8th
+## Monday
+- [[Recipe A]]
+## Tuesday
+## Wednesday
+## Thursday
+## Friday
+## Saturday
+## Sunday
+`;
+
+        const result = convertListToTable(listContent, mondayStartHeaders);
+
+        expect(result).toContain('| Week Start | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |');
+        expect(result).toContain('[[Recipe A]]');
+    });
+});
+
+describe('convertTableToList', () => {
+    const defaultDayHeaders = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    test('should convert empty table format to list format', () => {
+        const tableContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  |  |  |  |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, defaultDayHeaders);
+
+        expect(result).toContain('# Week of January 8th');
+        expect(result).toContain('## Sunday');
+        expect(result).toContain('## Monday');
+        expect(result).toContain('## Tuesday');
+        expect(result).toContain('## Wednesday');
+        expect(result).toContain('## Thursday');
+        expect(result).toContain('## Friday');
+        expect(result).toContain('## Saturday');
+    });
+
+    test('should convert table format with recipes to list format', () => {
+        const tableContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  | [[Pasta Carbonara]] |  | [[Chicken Tikka Masala]]<br>[[Garlic Bread]] |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, defaultDayHeaders);
+
+        expect(result).toContain('# Week of January 8th');
+        expect(result).toContain('## Monday\n- [[Pasta Carbonara]]');
+        expect(result).toContain('## Wednesday\n- [[Chicken Tikka Masala]]\n- [[Garlic Bread]]');
+    });
+
+    test('should convert multiple weeks from table to list', () => {
+        const tableContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 15th |  | [[Recipe A]] |  |  |  |  |  |
+| January 8th |  | [[Recipe B]] |  |  |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, defaultDayHeaders);
+
+        expect(result).toContain('# Week of January 15th');
+        expect(result).toContain('# Week of January 8th');
+        expect(result).toContain('[[Recipe A]]');
+        expect(result).toContain('[[Recipe B]]');
+    });
+
+    test('should handle table with plain text items', () => {
+        const tableContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  | [[Recipe Link]]<br>Plain text item |  |  |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, defaultDayHeaders);
+
+        expect(result).toContain('- [[Recipe Link]]');
+        expect(result).toContain('- Plain text item');
+    });
+
+    test('should respect custom day order (Monday start)', () => {
+        const mondayStartHeaders = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const tableContent = `| Week Start | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday | Sunday |
+|---|---|---|---|---|---|---|---|
+| January 8th | [[Recipe A]] |  |  |  |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, mondayStartHeaders);
+
+        expect(result).toContain('# Week of January 8th');
+        expect(result).toContain('## Monday\n- [[Recipe A]]');
+        // Day order should match the headers
+        const mondayIndex = result.indexOf('## Monday');
+        const tuesdayIndex = result.indexOf('## Tuesday');
+        expect(mondayIndex).toBeLessThan(tuesdayIndex);
+    });
+
+    test('should preserve order of items in cell', () => {
+        const tableContent = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  | [[First]]<br>[[Second]]<br>[[Third]] |  |  |  |  |  |
+`;
+
+        const result = convertTableToList(tableContent, defaultDayHeaders);
+
+        const firstIndex = result.indexOf('[[First]]');
+        const secondIndex = result.indexOf('[[Second]]');
+        const thirdIndex = result.indexOf('[[Third]]');
+
+        expect(firstIndex).toBeLessThan(secondIndex);
+        expect(secondIndex).toBeLessThan(thirdIndex);
+    });
+});
+
+describe('Format conversion round-trip', () => {
+    const defaultDayHeaders = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    test('list -> table -> list should preserve recipes', () => {
+        const originalList = `# Week of January 8th
+## Sunday
+## Monday
+- [[Recipe A]]
+- [[Recipe B]]
+## Tuesday
+## Wednesday
+- [[Recipe C]]
+## Thursday
+## Friday
+## Saturday
+`;
+
+        const table = convertListToTable(originalList, defaultDayHeaders);
+        const backToList = convertTableToList(table, defaultDayHeaders);
+
+        expect(backToList).toContain('[[Recipe A]]');
+        expect(backToList).toContain('[[Recipe B]]');
+        expect(backToList).toContain('[[Recipe C]]');
+    });
+
+    test('table -> list -> table should preserve recipes', () => {
+        const originalTable = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  | [[Recipe A]]<br>[[Recipe B]] |  | [[Recipe C]] |  |  |  |
+`;
+
+        const list = convertTableToList(originalTable, defaultDayHeaders);
+        const backToTable = convertListToTable(list, defaultDayHeaders);
+
+        expect(backToTable).toContain('[[Recipe A]]');
+        expect(backToTable).toContain('[[Recipe B]]');
+        expect(backToTable).toContain('[[Recipe C]]');
+    });
+});
+
+describe('detectMealPlanFormat', () => {
+    test('should detect list format', () => {
+        const content = `# Week of January 8th
+## Sunday
+## Monday
+- [[Recipe]]
+## Tuesday
+`;
+
+        expect(detectMealPlanFormat(content)).toBe('list');
+    });
+
+    test('should detect table format', () => {
+        const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
+|---|---|---|---|---|---|---|---|
+| January 8th |  | [[Recipe]] |  |  |  |  |  |
+`;
+
+        expect(detectMealPlanFormat(content)).toBe('table');
+    });
+
+    test('should return null for empty content', () => {
+        expect(detectMealPlanFormat('')).toBeNull();
+        expect(detectMealPlanFormat('   ')).toBeNull();
+    });
+
+    test('should return null for content without meal plan structure', () => {
+        const content = `# Some other heading
+This is just random content without meal plan structure.
+`;
+
+        expect(detectMealPlanFormat(content)).toBeNull();
+    });
+
+    test('should handle content with leading whitespace', () => {
+        const listContent = `
+# Week of January 8th
+## Sunday
+`;
+
+        const tableContent = `
+| Week Start | Sunday | Monday |
+|---|---|---|
+| January 8th |  |  |
+`;
+
+        // List format with leading whitespace should still be detected (pattern uses multiline mode)
+        expect(detectMealPlanFormat(listContent)).toBe('list');
+
+        // Table format with leading whitespace should be detected after trimming
+        expect(detectMealPlanFormat(tableContent)).toBe('table');
     });
 });
