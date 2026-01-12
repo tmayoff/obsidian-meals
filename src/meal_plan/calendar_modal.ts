@@ -6,14 +6,14 @@ import type { Context } from '../context.ts';
 import type { Recipe } from '../recipe/recipe.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import CalendarView from './CalendarView.svelte';
-import { extractDailyRecipes } from './calendar_data.ts';
+import { type CalendarItem, extractDailyRecipes } from './calendar_data.ts';
 import { AddRecipeToMealPlanByDate } from './plan.ts';
 
 export class CalendarModal extends Modal {
     private component: Record<string, any> | null = null;
     private ctx: Context;
     private recipe: Recipe;
-    private dailyRecipes: Map<string, string[]> = new Map();
+    private dailyItems: Map<string, CalendarItem[]> = new Map();
 
     constructor(ctx: Context, recipe: Recipe) {
         super(ctx.app);
@@ -35,7 +35,7 @@ export class CalendarModal extends Modal {
             props: {
                 recipeName: this.recipe.name,
                 startOfWeek: settings.startOfWeek,
-                dailyRecipes: this.dailyRecipes,
+                dailyItems: this.dailyItems,
                 onSelectDay: async (date: moment.Moment, dayName: string) => {
                     await AddRecipeToMealPlanByDate(this.ctx, this.recipe, date, dayName);
                     this.close();
@@ -53,7 +53,7 @@ export class CalendarModal extends Modal {
         const mealPlanFile = this.ctx.app.vault.getFileByPath(mealPlanFilePath);
 
         if (mealPlanFile) {
-            this.dailyRecipes = await extractDailyRecipes(this.ctx, mealPlanFile, settings.startOfWeek);
+            this.dailyItems = await extractDailyRecipes(this.ctx, mealPlanFile, settings.startOfWeek);
         }
     }
 

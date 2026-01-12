@@ -3,10 +3,15 @@ import type { TFile } from 'obsidian';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
 
+export interface CalendarItem {
+    name: string;
+    isRecipe: boolean;
+}
+
 export interface DayData {
     date: moment.Moment;
     dayName: string;
-    recipes: string[]; // Recipe names for this day
+    items: CalendarItem[]; // Items (recipes and non-recipes) for this day
     isCurrentMonth: boolean;
 }
 
@@ -21,10 +26,10 @@ export interface CalendarData {
 }
 
 /**
- * Extract recipes for each day from the meal plan file
- * Returns a map of date string (YYYY-MM-DD) to array of recipe names
+ * Extract items for each day from the meal plan file
+ * Returns a map of date string (YYYY-MM-DD) to array of CalendarItems
  */
-export async function extractDailyRecipes(ctx: Context, file: TFile, startOfWeek: number): Promise<Map<string, string[]>> {
+export async function extractDailyRecipes(ctx: Context, file: TFile, startOfWeek: number): Promise<Map<string, CalendarItem[]>> {
     const content = await ctx.app.vault.read(file);
     const fileCache = ctx.app.metadataCache.getFileCache(file);
     const links = fileCache?.links || [];
@@ -33,16 +38,16 @@ export async function extractDailyRecipes(ctx: Context, file: TFile, startOfWeek
     const isTable = content.trimStart().startsWith('|');
 
     if (isTable) {
-        return extractDailyRecipesFromTable(content, links, startOfWeek);
+        return extractDailyRecipesFromTable(content, startOfWeek);
     }
     return extractDailyRecipesFromList(ctx, file, content, links, startOfWeek);
 }
 
 /**
- * Extract recipes and other entries from list format
+ * Extract items from list format
  */
-function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string, links: any[], startOfWeek: number): Map<string, string[]> {
-    const dailyRecipes = new Map<string, string[]>();
+function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string, links: any[], startOfWeek: number): Map<string, CalendarItem[]> {
+    const dailyRecipes = new Map<string, CalendarItem[]>();
     const fileCache = ctx.app.metadataCache.getFileCache(file);
     const headings = fileCache?.headings || [];
 
@@ -100,8 +105,8 @@ function extractDailyRecipesFromList(ctx: Context, file: TFile, content: string,
 /**
  * Extract entries from list content, including both links and plain text items
  */
-function extractEntriesFromListContent(dayContent: string, links: any[], startOffset: number, endOffset: number): string[] {
-    const entries: string[] = [];
+function extractEntriesFromListContent(dayContent: string, links: any[], startOffset: number, endOffset: number): CalendarItem[] {
+    const entries: CalendarItem[] = [];
     const lines = dayContent.split('\n');
 
     // Track which character positions have links
@@ -128,12 +133,12 @@ function extractEntriesFromListContent(dayContent: string, links: any[], startOf
             const lineLinks = linkRanges.filter((lr) => lr.start >= lineStart && lr.end <= lineEnd);
 
             if (lineLinks.length > 0) {
-                // Add the link text
+                // Add the link text as recipes
                 for (const linkRange of lineLinks) {
-                    entries.push(linkRange.text);
+                    entries.push({ name: linkRange.text, isRecipe: true });
                 }
             } else {
-                // No links - extract plain text
+                // No links - extract plain text as non-recipe
                 let text = trimmedLine;
                 // Remove list marker
                 if (text.startsWith('- [ ] ')) {
@@ -145,7 +150,7 @@ function extractEntriesFromListContent(dayContent: string, links: any[], startOf
                 }
                 text = text.trim();
                 if (text.length > 0) {
-                    entries.push(text);
+                    entries.push({ name: text, isRecipe: false });
                 }
             }
         }
@@ -157,10 +162,10 @@ function extractEntriesFromListContent(dayContent: string, links: any[], startOf
 }
 
 /**
- * Extract recipes and other entries from table format
+ * Extract items from table format
  */
-function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek: number): Map<string, string[]> {
-    const dailyRecipes = new Map<string, string[]>();
+function extractDailyRecipesFromTable(content: string, startOfWeek: number): Map<string, CalendarItem[]> {
+    const dailyRecipes = new Map<string, CalendarItem[]>();
     const lines = content.split('\n');
 
     // Find header row to get column positions
@@ -181,25 +186,11 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
 
     if (headerRowIndex === -1) return dailyRecipes;
 
-    // Calculate character offsets for each line
-    let currentOffset = 0;
-    const lineOffsets: { start: number; end: number }[] = [];
-
-    for (const line of lines) {
-        lineOffsets.push({
-            start: currentOffset,
-            end: currentOffset + line.length,
-        });
-        currentOffset += line.length + 1; // +1 for newline
-    }
-
     // Process data rows (skip header and separator)
     for (let rowIndex = headerRowIndex + 2; rowIndex < lines.length; rowIndex++) {
-        const originalLine = lines[rowIndex];
-        const trimmedLine = originalLine.trim();
+        const trimmedLine = lines[rowIndex].trim();
         if (!trimmedLine.startsWith('|')) continue;
 
-        // Use original line for offset calculations, but parse cells from trimmed
         const cells = trimmedLine.split('|').filter((_c, i, arr) => i > 0 && i < arr.length - 1);
         if (cells.length === 0) continue;
 
@@ -208,21 +199,6 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
         if (!weekDate) continue;
 
         const weekStartDate = weekDate.clone().weekday(startOfWeek);
-        const rowOffset = lineOffsets[rowIndex];
-
-        // Calculate leading whitespace offset
-        const leadingWhitespace = originalLine.length - originalLine.trimStart().length;
-
-        // Calculate column character positions within this row using original line positions
-        let colOffset = leadingWhitespace + trimmedLine.indexOf('|') + 1; // Start after first |
-        const colPositions: { start: number; end: number }[] = [];
-
-        for (let i = 0; i < cells.length; i++) {
-            const cellStart = rowOffset.start + colOffset;
-            const cellEnd = cellStart + cells[i].length;
-            colPositions.push({ start: cellStart, end: cellEnd });
-            colOffset += cells[i].length + 1; // +1 for |
-        }
 
         // Find entries in each day column
         for (let colIndex = 1; colIndex < headerColumns.length; colIndex++) {
@@ -235,14 +211,13 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
             const dayDate = weekStartDate.clone().add(adjustedDayIndex, 'days');
             const dateKey = dayDate.format('YYYY-MM-DD');
 
-            // Check if we have position data for this column
-            if (colIndex >= colPositions.length) continue;
+            // Check if we have data for this column
+            if (colIndex >= cells.length) continue;
 
-            const colPos = colPositions[colIndex];
             const cellContent = cells[colIndex] || '';
 
             // Extract entries from cell (both links and plain text)
-            const dayEntries = extractEntriesFromTableCell(cellContent, links, colPos.start, colPos.end);
+            const dayEntries = extractEntriesFromTableCell(cellContent);
 
             if (dayEntries.length > 0) {
                 const existing = dailyRecipes.get(dateKey) || [];
@@ -257,33 +232,28 @@ function extractDailyRecipesFromTable(content: string, links: any[], startOfWeek
 /**
  * Extract entries from a table cell, including both links and plain text items
  */
-function extractEntriesFromTableCell(cellContent: string, links: any[], cellStart: number, cellEnd: number): string[] {
-    const entries: string[] = [];
+function extractEntriesFromTableCell(cellContent: string): CalendarItem[] {
+    const entries: CalendarItem[] = [];
 
-    // Find links within this cell
-    const cellLinks: string[] = [];
-    for (const link of links) {
-        if (link.position.start.offset >= cellStart && link.position.end.offset <= cellEnd) {
-            cellLinks.push(link.link);
-        }
+    // Extract recipe links directly from [[...]] patterns in cell content
+    // This is more reliable than position-based detection for tables
+    const linkPattern = /\[\[([^\]]+)\]\]/g;
+    for (const match of cellContent.matchAll(linkPattern)) {
+        // Handle display text syntax [[link|display]] - use the link part
+        const linkText = match[1].split('|')[0];
+        entries.push({ name: linkText, isRecipe: true });
     }
 
-    // If there are links, include them
-    if (cellLinks.length > 0) {
-        entries.push(...cellLinks);
-    }
-
-    // Also check for plain text entries (separated by <br> in table cells)
-    // Remove link syntax to find remaining text
+    // Extract plain text entries (not inside [[...]]) separated by <br>
     let remainingText = cellContent;
-    // Remove [[...]] patterns
+    // Remove [[...]] patterns to find remaining plain text
     remainingText = remainingText.replace(/\[\[([^\]]+)\]\]/g, '');
-    // Split by <br> and extract non-empty entries
+    // Split by <br> and extract non-empty entries as non-recipes
     const textParts = remainingText.split(/<br\s*\/?>/i);
     for (const part of textParts) {
         const trimmed = part.trim();
         if (trimmed.length > 0) {
-            entries.push(trimmed);
+            entries.push({ name: trimmed, isRecipe: false });
         }
     }
 
@@ -296,7 +266,7 @@ function extractEntriesFromTableCell(cellContent: string, links: any[], cellStar
 export function generateCalendarData(
     displayMonth: moment.Moment,
     startOfWeek: number,
-    dailyRecipes: Map<string, string[]>,
+    dailyItems: Map<string, CalendarItem[]>,
     weeksToShow = 6,
 ): CalendarData {
     const weeks: WeekData[] = [];
@@ -322,7 +292,7 @@ export function generateCalendarData(
             days.push({
                 date,
                 dayName: DAYS_OF_WEEK[dayIndex],
-                recipes: dailyRecipes.get(dateKey) || [],
+                items: dailyItems.get(dateKey) || [],
                 isCurrentMonth: date.month() === displayMonth.month(),
             });
         }

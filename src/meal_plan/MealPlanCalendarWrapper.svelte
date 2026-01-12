@@ -6,7 +6,7 @@ import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import CalendarView from './CalendarView.svelte';
-import { extractDailyRecipes } from './calendar_data.ts';
+import { type CalendarItem, extractDailyRecipes } from './calendar_data.ts';
 import { AddRecipeToMealPlanByDate } from './plan.ts';
 import { RecipePreviewModal } from './RecipePreviewModal.ts';
 import { RecipeSelectModal } from './RecipeSelectModal.ts';
@@ -17,7 +17,7 @@ type Props = {
 
 let { ctx }: Props = $props();
 
-let dailyRecipes: Map<string, string[]> = $state(new Map());
+let dailyItems: Map<string, CalendarItem[]> = $state(new Map());
 let startOfWeek: number = $state(0);
 
 let fileRef: TFile | null = null;
@@ -31,9 +31,9 @@ async function loadData() {
     fileRef = ctx.app.vault.getFileByPath(mealPlanFilePath);
 
     if (fileRef) {
-        dailyRecipes = await extractDailyRecipes(ctx, fileRef, startOfWeek);
+        dailyItems = await extractDailyRecipes(ctx, fileRef, startOfWeek);
     } else {
-        dailyRecipes = new Map();
+        dailyItems = new Map();
     }
 }
 
@@ -45,11 +45,14 @@ function handleAddRecipe(date: moment.Moment, dayName: string) {
     }).open();
 }
 
-function handleRecipeClick(recipeName: string, date: moment.Moment, dayName: string) {
-    new RecipePreviewModal(ctx, recipeName, date, dayName, async () => {
-        // Don't call loadData() here - the metadataCache 'changed' event will trigger it
-        // after the cache is updated with the new link positions
-    }).open();
+function handleItemClick(item: CalendarItem, date: moment.Moment, dayName: string) {
+    // Only open the recipe preview modal for actual recipes
+    if (item.isRecipe) {
+        new RecipePreviewModal(ctx, item.name, date, dayName, async () => {
+            // Don't call loadData() here - the metadataCache 'changed' event will trigger it
+            // after the cache is updated with the new link positions
+        }).open();
+    }
 }
 
 onMount(async () => {
@@ -77,9 +80,9 @@ onDestroy(() => {
     <CalendarView
         mode="meal-plan-view"
         {startOfWeek}
-        {dailyRecipes}
+        {dailyItems}
         onAddRecipe={handleAddRecipe}
-        onRecipeClick={handleRecipeClick}
+        onItemClick={handleItemClick}
     />
 </div>
 

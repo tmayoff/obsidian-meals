@@ -1,14 +1,14 @@
 import moment from 'moment';
 import { describe, expect, test } from 'vitest';
-import { generateCalendarData } from '../meal_plan/calendar_data.ts';
+import { type CalendarItem, generateCalendarData } from '../meal_plan/calendar_data.ts';
 
 describe('generateCalendarData', () => {
     test('should generate 6 weeks of calendar data by default', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0; // Sunday
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         expect(result.weeks).toHaveLength(6);
         expect(result.currentMonth.month()).toBe(0); // January
@@ -17,9 +17,9 @@ describe('generateCalendarData', () => {
     test('should generate correct number of days per week', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         for (const week of result.weeks) {
             expect(week.days).toHaveLength(7);
@@ -29,9 +29,9 @@ describe('generateCalendarData', () => {
     test('should respect startOfWeek setting (Sunday)', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0; // Sunday
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         // First day of each week should be Sunday
         for (const week of result.weeks) {
@@ -43,9 +43,9 @@ describe('generateCalendarData', () => {
     test('should respect startOfWeek setting (Monday)', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 1; // Monday
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         // First day of each week should be Monday
         for (const week of result.weeks) {
@@ -57,9 +57,9 @@ describe('generateCalendarData', () => {
     test('should mark days in current month correctly', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         // Find a day that should be in January
         const jan15 = result.weeks.flatMap((w) => w.days).find((d) => d.date.date() === 15 && d.date.month() === 0);
@@ -72,40 +72,46 @@ describe('generateCalendarData', () => {
         }
     });
 
-    test('should include recipes from dailyRecipes map', () => {
+    test('should include items from dailyItems map', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
-        dailyRecipes.set('2024-01-15', ['Recipe A', 'Recipe B']);
-        dailyRecipes.set('2024-01-20', ['Recipe C']);
+        const dailyItems = new Map<string, CalendarItem[]>();
+        dailyItems.set('2024-01-15', [
+            { name: 'Recipe A', isRecipe: true },
+            { name: 'Recipe B', isRecipe: true },
+        ]);
+        dailyItems.set('2024-01-20', [{ name: 'Recipe C', isRecipe: true }]);
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         const jan15 = result.weeks.flatMap((w) => w.days).find((d) => d.date.format('YYYY-MM-DD') === '2024-01-15');
-        expect(jan15?.recipes).toEqual(['Recipe A', 'Recipe B']);
+        expect(jan15?.items).toEqual([
+            { name: 'Recipe A', isRecipe: true },
+            { name: 'Recipe B', isRecipe: true },
+        ]);
 
         const jan20 = result.weeks.flatMap((w) => w.days).find((d) => d.date.format('YYYY-MM-DD') === '2024-01-20');
-        expect(jan20?.recipes).toEqual(['Recipe C']);
+        expect(jan20?.items).toEqual([{ name: 'Recipe C', isRecipe: true }]);
     });
 
-    test('should return empty recipes array for days without recipes', () => {
+    test('should return empty items array for days without items', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
-        dailyRecipes.set('2024-01-15', ['Recipe A']);
+        const dailyItems = new Map<string, CalendarItem[]>();
+        dailyItems.set('2024-01-15', [{ name: 'Recipe A', isRecipe: true }]);
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         const jan16 = result.weeks.flatMap((w) => w.days).find((d) => d.date.format('YYYY-MM-DD') === '2024-01-16');
-        expect(jan16?.recipes).toEqual([]);
+        expect(jan16?.items).toEqual([]);
     });
 
     test('should handle custom weeksToShow parameter', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes, 4);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems, 4);
 
         expect(result.weeks).toHaveLength(4);
     });
@@ -114,9 +120,9 @@ describe('generateCalendarData', () => {
         // January 2024 starts on Monday
         const displayMonth = moment('2024-01-01');
         const startOfWeek = 0; // Sunday
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         // First week should start with December 31, 2023 (Sunday before Jan 1)
         const firstDay = result.weeks[0].days[0];
@@ -128,9 +134,9 @@ describe('generateCalendarData', () => {
     test('should have consecutive dates across weeks', () => {
         const displayMonth = moment('2024-01-15');
         const startOfWeek = 0;
-        const dailyRecipes = new Map<string, string[]>();
+        const dailyItems = new Map<string, CalendarItem[]>();
 
-        const result = generateCalendarData(displayMonth, startOfWeek, dailyRecipes);
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
 
         const allDays = result.weeks.flatMap((w) => w.days);
 
@@ -140,5 +146,22 @@ describe('generateCalendarData', () => {
             const diff = currDay.diff(prevDay, 'days');
             expect(diff).toBe(1);
         }
+    });
+
+    test('should distinguish between recipe and non-recipe items', () => {
+        const displayMonth = moment('2024-01-15');
+        const startOfWeek = 0;
+        const dailyItems = new Map<string, CalendarItem[]>();
+        dailyItems.set('2024-01-15', [
+            { name: 'Pasta Recipe', isRecipe: true },
+            { name: 'Leftovers', isRecipe: false },
+        ]);
+
+        const result = generateCalendarData(displayMonth, startOfWeek, dailyItems);
+
+        const jan15 = result.weeks.flatMap((w) => w.days).find((d) => d.date.format('YYYY-MM-DD') === '2024-01-15');
+        expect(jan15?.items).toHaveLength(2);
+        expect(jan15?.items[0]).toEqual({ name: 'Pasta Recipe', isRecipe: true });
+        expect(jan15?.items[1]).toEqual({ name: 'Leftovers', isRecipe: false });
     });
 });

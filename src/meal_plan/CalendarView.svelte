@@ -2,26 +2,26 @@
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-svelte';
 import moment from 'moment';
 import { DAYS_OF_WEEK } from '../constants.ts';
-import { type CalendarData, type DayData, generateCalendarData } from './calendar_data.ts';
+import { type CalendarData, type CalendarItem, type DayData, generateCalendarData } from './calendar_data.ts';
 
 type Props = {
     mode?: 'add-recipe' | 'meal-plan-view';
     recipeName?: string;
     startOfWeek: number;
-    dailyRecipes: Map<string, string[]>;
+    dailyItems: Map<string, CalendarItem[]>;
     onSelectDay?: (date: moment.Moment, dayName: string) => void;
     onCancel?: () => void;
     onAddRecipe?: (date: moment.Moment, dayName: string) => void;
-    onRecipeClick?: (recipeName: string, date: moment.Moment, dayName: string) => void;
+    onItemClick?: (item: CalendarItem, date: moment.Moment, dayName: string) => void;
 };
 
-let { mode = 'add-recipe', recipeName, startOfWeek, dailyRecipes, onSelectDay, onCancel, onAddRecipe, onRecipeClick }: Props = $props();
+let { mode = 'add-recipe', recipeName, startOfWeek, dailyItems, onSelectDay, onCancel, onAddRecipe, onItemClick }: Props = $props();
 
 // Current display month
 let displayMonth = $state(moment().startOf('month'));
 
 // Generate calendar data reactively
-let calendarData: CalendarData = $derived(generateCalendarData(displayMonth, startOfWeek, dailyRecipes));
+let calendarData: CalendarData = $derived(generateCalendarData(displayMonth, startOfWeek, dailyItems));
 
 // Ordered day headers based on startOfWeek
 let dayHeaders: string[] = $derived(Array.from({ length: 7 }, (_, i) => DAYS_OF_WEEK[(startOfWeek + i) % 7]));
@@ -51,10 +51,10 @@ function handleAddClick(e: Event, day: DayData) {
     }
 }
 
-function handleRecipeClick(e: Event, recipe: string, day: DayData) {
+function handleItemClick(e: Event, item: CalendarItem, day: DayData) {
     e.stopPropagation();
-    if (mode === 'meal-plan-view' && onRecipeClick) {
-        onRecipeClick(recipe, day.date, day.dayName);
+    if (mode === 'meal-plan-view' && onItemClick) {
+        onItemClick(item, day.date, day.dayName);
     }
 }
 
@@ -97,17 +97,17 @@ function isToday(date: moment.Moment): boolean {
                         class="day-cell clickable"
                         class:other-month={!day.isCurrentMonth}
                         class:today={isToday(day.date)}
-                        class:has-recipes={day.recipes.length > 0}
+                        class:has-items={day.items.length > 0}
                         onclick={() => handleDayClick(day)}
                     >
                         <span class="day-number">{day.date.date()}</span>
-                        {#if day.recipes.length > 0}
-                            <div class="day-recipes">
-                                {#each day.recipes.slice(0, 2) as recipe}
-                                    <span class="recipe-tag" title={recipe}>{recipe}</span>
+                        {#if day.items.length > 0}
+                            <div class="day-items">
+                                {#each day.items.slice(0, 2) as item}
+                                    <span class="item-tag" class:non-recipe={!item.isRecipe} title={item.name}>{item.name}</span>
                                 {/each}
-                                {#if day.recipes.length > 2}
-                                    <span class="recipe-more">+{day.recipes.length - 2} more</span>
+                                {#if day.items.length > 2}
+                                    <span class="item-more">+{day.items.length - 2} more</span>
                                 {/if}
                             </div>
                         {/if}
@@ -117,22 +117,23 @@ function isToday(date: moment.Moment): boolean {
                         class="day-cell"
                         class:other-month={!day.isCurrentMonth}
                         class:today={isToday(day.date)}
-                        class:has-recipes={day.recipes.length > 0}
+                        class:has-items={day.items.length > 0}
                     >
                         <span class="day-number">{day.date.date()}</span>
-                        {#if day.recipes.length > 0}
-                            <div class="day-recipes">
-                                {#each day.recipes.slice(0, 2) as recipe}
+                        {#if day.items.length > 0}
+                            <div class="day-items">
+                                {#each day.items.slice(0, 2) as item}
                                     <button
-                                        class="recipe-tag clickable"
-                                        title={recipe}
-                                        onclick={(e) => handleRecipeClick(e, recipe, day)}
+                                        class="item-tag clickable"
+                                        class:non-recipe={!item.isRecipe}
+                                        title={item.name}
+                                        onclick={(e) => handleItemClick(e, item, day)}
                                     >
-                                        {recipe}
+                                        {item.name}
                                     </button>
                                 {/each}
-                                {#if day.recipes.length > 2}
-                                    <span class="recipe-more">+{day.recipes.length - 2} more</span>
+                                {#if day.items.length > 2}
+                                    <span class="item-more">+{day.items.length - 2} more</span>
                                 {/if}
                             </div>
                         {/if}
@@ -291,11 +292,11 @@ function isToday(date: moment.Moment): boolean {
         background: var(--interactive-accent-hover);
     }
 
-    .day-cell.has-recipes {
+    .day-cell.has-items {
         background: var(--background-secondary-alt);
     }
 
-    .day-cell.has-recipes.today {
+    .day-cell.has-items.today {
         background: var(--interactive-accent);
     }
 
@@ -305,7 +306,7 @@ function isToday(date: moment.Moment): boolean {
         margin-bottom: 0.125rem;
     }
 
-    .day-recipes {
+    .day-items {
         display: flex;
         flex-direction: column;
         gap: 1px;
@@ -315,7 +316,7 @@ function isToday(date: moment.Moment): boolean {
         flex: 1;
     }
 
-    .recipe-tag {
+    .item-tag {
         font-size: 0.65rem;
         background: var(--interactive-accent);
         color: var(--text-on-accent);
@@ -331,29 +332,43 @@ function isToday(date: moment.Moment): boolean {
         text-align: left;
     }
 
-    .recipe-tag.clickable {
+    .item-tag.non-recipe {
+        background: var(--background-modifier-border);
+        color: var(--text-normal);
+    }
+
+    .item-tag.clickable {
         cursor: pointer;
     }
 
-    .recipe-tag.clickable:hover {
+    .item-tag.clickable:hover {
         background: var(--interactive-accent-hover);
     }
 
-    .day-cell.today .recipe-tag {
+    .item-tag.non-recipe.clickable:hover {
+        background: var(--background-modifier-hover);
+    }
+
+    .day-cell.today .item-tag {
         background: var(--background-primary);
         color: var(--text-normal);
     }
 
-    .day-cell.today .recipe-tag.clickable:hover {
+    .day-cell.today .item-tag.non-recipe {
+        background: var(--background-modifier-border);
+        color: var(--text-normal);
+    }
+
+    .day-cell.today .item-tag.clickable:hover {
         background: var(--background-modifier-hover);
     }
 
-    .recipe-more {
+    .item-more {
         font-size: 0.6rem;
         color: var(--text-muted);
     }
 
-    .day-cell.today .recipe-more {
+    .day-cell.today .item-more {
         color: var(--text-on-accent);
         opacity: 0.8;
     }
