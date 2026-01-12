@@ -13,9 +13,10 @@ type Props = {
     onCancel?: () => void;
     onAddRecipe?: (date: moment.Moment, dayName: string) => void;
     onItemClick?: (item: CalendarItem, date: moment.Moment, dayName: string) => void;
+    onDayClick?: (date: moment.Moment, dayName: string, items: CalendarItem[]) => void;
 };
 
-let { mode = 'add-recipe', recipeName, startOfWeek, dailyItems, onSelectDay, onCancel, onAddRecipe, onItemClick }: Props = $props();
+let { mode = 'add-recipe', recipeName, startOfWeek, dailyItems, onSelectDay, onCancel, onAddRecipe, onItemClick, onDayClick }: Props = $props();
 
 // Current display month
 let displayMonth = $state(moment().startOf('month'));
@@ -55,6 +56,12 @@ function handleItemClick(e: Event, item: CalendarItem, day: DayData) {
     e.stopPropagation();
     if (mode === 'meal-plan-view' && onItemClick) {
         onItemClick(item, day.date, day.dayName);
+    }
+}
+
+function handleDayClickInViewMode(day: DayData) {
+    if (mode === 'meal-plan-view' && onDayClick) {
+        onDayClick(day.date, day.dayName, day.items);
     }
 }
 
@@ -113,11 +120,16 @@ function isToday(date: moment.Moment): boolean {
                         {/if}
                     </button>
                 {:else}
+                    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
                     <div
-                        class="day-cell"
+                        class="day-cell clickable"
                         class:other-month={!day.isCurrentMonth}
                         class:today={isToday(day.date)}
                         class:has-items={day.items.length > 0}
+                        role="button"
+                        tabindex="0"
+                        onclick={() => handleDayClickInViewMode(day)}
+                        onkeydown={(e) => e.key === 'Enter' && handleDayClickInViewMode(day)}
                     >
                         <span class="day-number">{day.date.date()}</span>
                         {#if day.items.length > 0}

@@ -7,6 +7,7 @@ import type { Context } from '../context.ts';
 import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import CalendarView from './CalendarView.svelte';
 import { type CalendarItem, extractDailyRecipes } from './calendar_data.ts';
+import { DayDetailModal } from './DayDetailModal.ts';
 import { AddRecipeToMealPlanByDate } from './plan.ts';
 import { RecipePreviewModal } from './RecipePreviewModal.ts';
 import { RecipeSelectModal } from './RecipeSelectModal.ts';
@@ -55,6 +56,13 @@ function handleItemClick(item: CalendarItem, date: moment.Moment, dayName: strin
     }
 }
 
+function handleDayClick(date: moment.Moment, dayName: string, items: CalendarItem[]) {
+    new DayDetailModal(ctx, date, dayName, items, async () => {
+        // Don't call loadData() here - the metadataCache 'changed' event will trigger it
+        // after the cache is updated with the new link positions
+    }).open();
+}
+
 onMount(async () => {
     await loadData();
 
@@ -83,6 +91,7 @@ onDestroy(() => {
         {dailyItems}
         onAddRecipe={handleAddRecipe}
         onItemClick={handleItemClick}
+        onDayClick={handleDayClick}
     />
 </div>
 
