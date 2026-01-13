@@ -102,6 +102,27 @@ export function addRecipeToTable(content: string, weekDate: string, day: string,
     return allLines.join('\n');
 }
 
+/**
+ * Insert a recipe into meal plan content at the specified week and day
+ */
+function insertRecipeIntoContent(content: string, weekDate: string, day: string, recipeName: string): string {
+    const header = `Week of ${weekDate}`;
+
+    // Detect format: check if content starts with table marker or has list headers
+    const isTable = content.trimStart().startsWith('|');
+
+    if (isTable) {
+        // Table format: parse table, find correct column, insert recipe
+        return addRecipeToTable(content, weekDate, day, recipeName);
+    }
+    // List format: existing logic
+    const headerIndex = content.indexOf(header) + header.length;
+    const dayHeader = `## ${day}`;
+    const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
+    const recipeLine = `\n- [[${recipeName}]]`;
+    return content.slice(0, dayHeaderIndex) + recipeLine + content.slice(dayHeaderIndex);
+}
+
 export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: string) {
     let filePath = get(ctx.settings).mealPlanNote;
     if (!filePath.endsWith('.md')) {
@@ -112,27 +133,8 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
 
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
-        file.vault.process(file, (content) => {
-            const weekDate = GetCurrentWeek(get(ctx.settings).startOfWeek);
-            const header = `Week of ${weekDate}`;
-
-            // Detect format: check if content starts with table marker or has list headers
-            const isTable = content.trimStart().startsWith('|');
-
-            if (isTable) {
-                // Table format: parse table, find correct column, insert recipe
-                content = addRecipeToTable(content, weekDate, day, recipe.name);
-            } else {
-                // List format: existing logic
-                const headerIndex = content.indexOf(header) + header.length;
-                const dayHeader = `## ${day}`;
-                const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
-                const recipeLine = `\n- [[${recipe.name}]]`;
-                content = content.slice(0, dayHeaderIndex) + recipeLine + content.slice(dayHeaderIndex);
-            }
-
-            return content;
-        });
+        const weekDate = GetCurrentWeek(get(ctx.settings).startOfWeek);
+        file.vault.process(file, (content) => insertRecipeIntoContent(content, weekDate, day, recipe.name));
     }
 }
 
@@ -226,26 +228,7 @@ export async function AddRecipeToMealPlanByDate(ctx: Context, recipe: Recipe, da
 
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
-        file.vault.process(file, (content) => {
-            const header = `Week of ${weekDate}`;
-
-            // Detect format: check if content starts with table marker or has list headers
-            const isTable = content.trimStart().startsWith('|');
-
-            if (isTable) {
-                // Table format: parse table, find correct column, insert recipe
-                content = addRecipeToTable(content, weekDate, day, recipe.name);
-            } else {
-                // List format: existing logic
-                const headerIndex = content.indexOf(header) + header.length;
-                const dayHeader = `## ${day}`;
-                const dayHeaderIndex = content.indexOf(dayHeader, headerIndex) + dayHeader.length;
-                const recipeLine = `\n- [[${recipe.name}]]`;
-                content = content.slice(0, dayHeaderIndex) + recipeLine + content.slice(dayHeaderIndex);
-            }
-
-            return content;
-        });
+        file.vault.process(file, (content) => insertRecipeIntoContent(content, weekDate, day, recipe.name));
     }
 }
 
