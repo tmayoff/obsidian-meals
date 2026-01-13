@@ -57,7 +57,7 @@ test('validateIgnoreBehaviour_Regex', () => {
         if (test.expected.isOk()) {
             expect(actual).toStrictEqual(test.expected);
         } else {
-            expect(actual.error.message).toStrictEqual(test.expected.error.message);
+            expect(actual.unwrapErr().message).toStrictEqual(test.expected.unwrapErr().message);
         }
     }
 });
@@ -89,7 +89,7 @@ test('validateIgnoreBehaviour_Wildcard', () => {
         if (test.expected.isOk()) {
             expect(actual).toStrictEqual(test.expected);
         } else {
-            expect(actual.error.message).toStrictEqual(test.expected.error.message);
+            expect(actual.unwrapErr().message).toStrictEqual(test.expected.unwrapErr().message);
         }
     }
 });
