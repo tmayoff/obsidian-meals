@@ -1,5 +1,5 @@
 import moment from 'moment';
-import type { TFile } from 'obsidian';
+import type { LinkCache, TFile } from 'obsidian';
 import { DAYS_OF_WEEK } from '../constants.ts';
 import type { Context } from '../context.ts';
 
@@ -50,7 +50,7 @@ function extractDailyRecipesFromList(
     ctx: Context,
     file: TFile,
     content: string,
-    links: any[],
+    links: LinkCache[],
     startOfWeek: number,
 ): Map<string, CalendarItem[]> {
     const dailyRecipes = new Map<string, CalendarItem[]>();
