@@ -1,4 +1,4 @@
-import type { HeadingCache, TFile } from 'obsidian';
+import type { HeadingCache, LinkCache, TFile } from 'obsidian';
 import { get } from 'svelte/store';
 import { Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
@@ -8,7 +8,7 @@ import { AppendMarkdownExt } from '../utils/filesystem.ts';
 import { GetIngredientsFromList } from '../utils/parser.ts';
 import type { ErrCtx } from '../utils/result.ts';
 import { formatUnicorn, wildcardToRegex } from '../utils/utils.ts';
-import { extractWeeksFromMealPlan } from './week_extractor.ts';
+import { extractWeeksFromMealPlan, type WeekInfo } from './week_extractor.ts';
 import { WeekSelectorModal } from './week_selector_modal.ts';
 
 export async function ClearCheckedIngredients(ctx: Context) {
@@ -245,14 +245,14 @@ interface RecipeIngredients {
 }
 
 interface WeekIngredients {
-    week: import('./week_extractor.ts').WeekInfo;
+    week: WeekInfo;
     recipes: RecipeIngredients[];
 }
 
 /**
  * Process selected weeks and add to shopping list
  */
-export async function processSelectedWeeks(ctx: Context, mealPlanFile: TFile, selectedWeeks: import('./week_extractor.ts').WeekInfo[]) {
+export async function processSelectedWeeks(ctx: Context, mealPlanFile: TFile, selectedWeeks: WeekInfo[]) {
     const weekIngredientsGroups: WeekIngredients[] = [];
 
     // Extract ingredients for each selected week, grouped by recipe
@@ -271,7 +271,7 @@ export async function processSelectedWeeks(ctx: Context, mealPlanFile: TFile, se
 /**
  * Extract recipe ingredients for a specific week, grouped by recipe
  */
-async function getRecipesForWeek(ctx: Context, file: TFile, week: import('./week_extractor.ts').WeekInfo): Promise<RecipeIngredients[]> {
+async function getRecipesForWeek(ctx: Context, file: TFile, week: WeekInfo): Promise<RecipeIngredients[]> {
     const fileCache = ctx.app.metadataCache.getFileCache(file)!;
     const links = fileCache.links || [];
     const topLevel = fileCache.headings?.filter((h) => h.level === 1) || [];
@@ -292,12 +292,7 @@ async function getRecipesForWeek(ctx: Context, file: TFile, week: import('./week
 /**
  * Extract ingredients for a week in list format, grouped by recipe
  */
-async function getRecipesForWeekListFormat(
-    ctx: Context,
-    file: TFile,
-    week: import('./week_extractor.ts').WeekInfo,
-    links: any[],
-): Promise<RecipeIngredients[]> {
+async function getRecipesForWeekListFormat(ctx: Context, file: TFile, week: WeekInfo, links: LinkCache[]): Promise<RecipeIngredients[]> {
     const recipes: RecipeIngredients[] = [];
 
     for (const link of links) {
@@ -328,12 +323,7 @@ async function getRecipesForWeekListFormat(
 /**
  * Extract ingredients for a week in table format, grouped by recipe
  */
-async function getRecipesForWeekTableFormat(
-    ctx: Context,
-    file: TFile,
-    week: import('./week_extractor.ts').WeekInfo,
-    links: any[],
-): Promise<RecipeIngredients[]> {
+async function getRecipesForWeekTableFormat(ctx: Context, file: TFile, week: WeekInfo, links: LinkCache[]): Promise<RecipeIngredients[]> {
     const recipes: RecipeIngredients[] = [];
 
     for (const link of links) {
