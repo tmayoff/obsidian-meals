@@ -129,33 +129,6 @@ test('addRecipeToTable_headerSpacingVariations', () => {
     expect(result).toContain('| January 8th |  | [[Test Recipe]] |  |  |  |  |  |');
 });
 
-test('formatDetection_list', () => {
-    const content = `# Week of January 8th
-## Sunday
-## Monday
-- [[Recipe 1]]
-## Tuesday
-`;
-
-    const header = 'Week of January 8th';
-    const headerIndex = content.indexOf(header) + header.length;
-    const afterHeader = content.slice(headerIndex);
-    const isTable = afterHeader.trimStart().startsWith('|');
-
-    expect(isTable).toBe(false);
-});
-
-test('formatDetection_table', () => {
-    const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
-|---|---|---|---|---|---|---|---|
-| January 8th |  |  |  |  |  |  |  |
-`;
-
-    const isTable = content.trimStart().startsWith('|');
-
-    expect(isTable).toBe(true);
-});
-
 test('addRecipeToTable_multipleWeeks_table', () => {
     const content = `| Week Start | Sunday | Monday | Tuesday | Wednesday | Thursday | Friday | Saturday |
 |---|---|---|---|---|---|---|---|
