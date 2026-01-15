@@ -27,11 +27,6 @@ describe('AddMealPlanToShoppingList', () => {
     beforeEach(() => {
         vi.clearAllMocks();
 
-        // Mock system time to January 10, 2025 (within "Week of January 8th")
-        // This ensures tests work regardless of when they're run
-        vi.useFakeTimers();
-        vi.setSystemTime(new Date('2025-01-10T12:00:00'));
-
         // Mock GetCurrentWeek to return a fixed date
         vi.spyOn(Utils, 'GetCurrentWeek').mockReturnValue('January 8th');
 

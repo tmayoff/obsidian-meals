@@ -140,7 +140,7 @@ describe('AddRecipeToMealPlan integration tests', () => {
 `);
     });
 
-    test('should create meal plan note if it does not exist', async () => {
+    test('should create meal plan note content if the note is empty', async () => {
         fileContent = '';
 
         await AddRecipeToMealPlan(mockContext, mockRecipe, 'Monday');
@@ -157,7 +157,7 @@ describe('AddRecipeToMealPlan integration tests', () => {
 `);
     });
 
-    test('should add week header if file exists but is empty', async () => {
+    test('should add week header if file has existing content', async () => {
         fileContent = 'Some existing content\n';
 
         await AddRecipeToMealPlan(mockContext, mockRecipe, 'Sunday');

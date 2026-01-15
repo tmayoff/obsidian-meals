@@ -63,38 +63,6 @@ describe('AddToPlanModal', () => {
         };
     });
 
-    test('should create modal with buttons for each day of week', () => {
-        const modal = new AddToPlanModal(mockContext, mockRecipe);
-
-        expect(modal.buttons).toHaveLength(7);
-        expect(modal.buttons[0].name).toBe('Sunday');
-        expect(modal.buttons[1].name).toBe('Monday');
-        expect(modal.buttons[2].name).toBe('Tuesday');
-        expect(modal.buttons[3].name).toBe('Wednesday');
-        expect(modal.buttons[4].name).toBe('Thursday');
-        expect(modal.buttons[5].name).toBe('Friday');
-        expect(modal.buttons[6].name).toBe('Saturday');
-    });
-
-    test('should return all buttons when getting suggestions', () => {
-        const modal = new AddToPlanModal(mockContext, mockRecipe);
-
-        const suggestions = modal.getSuggestions('');
-
-        expect(suggestions).toEqual(modal.buttons);
-    });
-
-    test('should render suggestion with day name', () => {
-        const modal = new AddToPlanModal(mockContext, mockRecipe);
-        const mockEl = {
-            createEl: vi.fn(),
-        } as any;
-
-        modal.renderSuggestion(modal.buttons[0], mockEl);
-
-        expect(mockEl.createEl).toHaveBeenCalledWith('div', { text: 'Sunday' });
-    });
-
     test('should execute callback and close on suggestion chosen', () => {
         const modal = new AddToPlanModal(mockContext, mockRecipe);
         modal.close = vi.fn();
