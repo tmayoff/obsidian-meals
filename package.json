@@ -46,5 +46,6 @@
         "recipe-rs": "0.2.4",
         "ts-results-es": "^5.0.0",
         "unocss": "^66.5.0"
-    }
+    },
+    "packageManager": "yarn@4.12.0"
 }
