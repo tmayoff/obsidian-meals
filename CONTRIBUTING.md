@@ -2,6 +2,60 @@
 
 Thank you for your interest in contributing to Obsidian Meals! Contributions are welcome, please follow the guidelines below when submitting pull requests or issues.
 
+## Development Environment Setup
+
+### Option 1: Using Nix + direnv (Recommended)
+
+This project uses [Nix flakes](https://nixos.wiki/wiki/Flakes) and [direnv](https://direnv.net/) to automatically manage the development environment and dependencies.
+
+**Supported platforms:** Linux, macOS, Windows (via WSL2)
+
+**Prerequisites:**
+
+-   **Nix** (with flakes enabled) - [Installation guide](https://nixos.org/download.html)
+-   **direnv** - [Installation guide](https://direnv.net/docs/installation.html)
+
+**Setup:**
+
+1. Clone the repository
+2. Navigate to the project directory
+3. Allow direnv to load the environment:
+    ```bash
+    direnv allow
+    ```
+
+The development environment will be automatically loaded, providing all necessary tools:
+
+-   `yarn-berry` - Package manager (Yarn 3+)
+-   `biome` - Linting and formatting
+-   `pre-commit` - Git hooks
+-   `jq`, `act`, `just`, `funzzy` - Additional development utilities
+
+Once the environment is loaded, you can use the standard development commands (see CLAUDE.md for details).
+
+### Option 2: Manual Setup (Without Nix)
+
+If you prefer not to use Nix or are on a platform where it's not available:
+
+**Prerequisites:**
+
+-   **Node.js** (latest LTS version recommended) - [Installation guide](https://nodejs.org/)
+-   **Yarn 3+** (Yarn Berry) - [Installation guide](https://yarnpkg.com/getting-started/install)
+
+**Setup:**
+
+1. Clone the repository
+2. Navigate to the project directory
+3. Install dependencies:
+    ```bash
+    yarn install
+    ```
+
+**Optional tools** (install manually if needed):
+
+-   **Biome** - Linting and formatting (included in devDependencies, use via `npx biome`)
+-   **pre-commit** - Git hooks for code quality - [Installation guide](https://pre-commit.com/#install)
+
 ## Pull Request Guidelines
 
 ### Keep PRs Small and Focused

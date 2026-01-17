@@ -6,6 +6,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is an Obsidian plugin for recipe management and meal planning. It allows users to store recipes as markdown files, search/filter by ingredients, create weekly meal plans, and generate shopping lists from planned meals.
 
+## Development Environment
+
+This project uses **Nix flakes** (`flake.nix`) and **direnv** (`.envrc`) to manage the development environment on Linux, macOS, and Windows (via WSL2). The Nix flake provides all necessary development tools:
+
+-   `yarn-berry` - Package manager (Yarn 3+)
+-   `biome` - Linting and formatting
+-   `pre-commit` - Git hooks for code quality
+-   `jq`, `act`, `just`, `funzzy` - Additional development utilities
+
+When a developer enters the project directory with direnv enabled, the environment is automatically loaded with all required dependencies. This ensures consistent tooling across all contributors.
+
+**Alternative setup:** Developers not using Nix can manually install Node.js and Yarn 3+, then run `yarn install` to get dependencies. See CONTRIBUTING.md for detailed setup instructions.
+
 ## Development Commands
 
 ```bash
