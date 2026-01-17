@@ -43,7 +43,7 @@ describe('Recipe.fillIngredients', () => {
         };
     });
 
-    test('should call console.error when parsing fails, regardless of showRecipeParseErrors setting', async () => {
+    test('should call console.error when parsing fails', async () => {
         // Mock GetIngredients to return an error
         const mockError = new ErrCtx('test-recipe.md', 'MISSING_INGREDIENT_HEADING');
         vi.spyOn(IngredientsModule, 'GetIngredients').mockResolvedValue(Err(mockError));
