@@ -64,7 +64,7 @@ async function fillMealPlanNote(ctx: Context, filePath: string) {
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
         ctx.app.vault.process(file, (content) => {
-            if (content.contains(header)) {
+            if (content.includes(header)) {
                 return content;
             }
 

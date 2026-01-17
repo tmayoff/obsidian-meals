@@ -177,7 +177,7 @@ function getMealPlanIngredients(ctx: Context, file: TFile) {
     let end = -1;
     if (topLevel.length > 1) {
         end = topLevel.findIndex((h) => {
-            return h.level === 1 && h.heading.contains(thisWeek);
+            return h.level === 1 && h.heading.includes(thisWeek);
         });
         if (end < topLevel.length - 1) {
             end += 1;
