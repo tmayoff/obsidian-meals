@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/tmayoff/obsidian-meals/compare/1.1.1...1.1.2) (2026-02-08)
+
+
+### Bug Fixes
+
+* Markdown in ingredients broken, and leading '.' ([#333](https://github.com/tmayoff/obsidian-meals/issues/333)) ([70a4327](https://github.com/tmayoff/obsidian-meals/commit/70a4327d3b2c83c67fafc34f7ab531cbbbd65123))
+
 ## [1.1.1](https://github.com/tmayoff/obsidian-meals/compare/1.1.0...1.1.1) (2025-09-07)
 
 
