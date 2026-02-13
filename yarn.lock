@@ -128,18 +128,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/biome@npm:2.3.14"
+"@biomejs/biome@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/biome@npm:2.3.15"
   dependencies:
-    "@biomejs/cli-darwin-arm64": "npm:2.3.14"
-    "@biomejs/cli-darwin-x64": "npm:2.3.14"
-    "@biomejs/cli-linux-arm64": "npm:2.3.14"
-    "@biomejs/cli-linux-arm64-musl": "npm:2.3.14"
-    "@biomejs/cli-linux-x64": "npm:2.3.14"
-    "@biomejs/cli-linux-x64-musl": "npm:2.3.14"
-    "@biomejs/cli-win32-arm64": "npm:2.3.14"
-    "@biomejs/cli-win32-x64": "npm:2.3.14"
+    "@biomejs/cli-darwin-arm64": "npm:2.3.15"
+    "@biomejs/cli-darwin-x64": "npm:2.3.15"
+    "@biomejs/cli-linux-arm64": "npm:2.3.15"
+    "@biomejs/cli-linux-arm64-musl": "npm:2.3.15"
+    "@biomejs/cli-linux-x64": "npm:2.3.15"
+    "@biomejs/cli-linux-x64-musl": "npm:2.3.15"
+    "@biomejs/cli-win32-arm64": "npm:2.3.15"
+    "@biomejs/cli-win32-x64": "npm:2.3.15"
   dependenciesMeta:
     "@biomejs/cli-darwin-arm64":
       optional: true
@@ -159,62 +159,62 @@ __metadata:
       optional: true
   bin:
     biome: bin/biome
-  checksum: 10c0/7dc4c0354c59046a24cc23e69465e0d7def81ba85e2039268b828461c5f0978693c68d917e08c554474392314a9b7039fed50487e8fc4b96d039f2f63b1b829a
+  checksum: 10c0/17fe84f92a282a4ac742324c84abae07ee746581e4bc34be82cfb36482fb9c5bf34b7d612a8463c7f656b40197470e9566080f91fa3660252ea32e08e20aa08c
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-arm64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-darwin-arm64@npm:2.3.14"
+"@biomejs/cli-darwin-arm64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-darwin-arm64@npm:2.3.15"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-x64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-darwin-x64@npm:2.3.14"
+"@biomejs/cli-darwin-x64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-darwin-x64@npm:2.3.15"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64-musl@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.3.14"
+"@biomejs/cli-linux-arm64-musl@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.3.15"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-linux-arm64@npm:2.3.14"
+"@biomejs/cli-linux-arm64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-linux-arm64@npm:2.3.15"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64-musl@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-linux-x64-musl@npm:2.3.14"
+"@biomejs/cli-linux-x64-musl@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-linux-x64-musl@npm:2.3.15"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-linux-x64@npm:2.3.14"
+"@biomejs/cli-linux-x64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-linux-x64@npm:2.3.15"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-arm64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-win32-arm64@npm:2.3.14"
+"@biomejs/cli-win32-arm64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-win32-arm64@npm:2.3.15"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-x64@npm:2.3.14":
-  version: 2.3.14
-  resolution: "@biomejs/cli-win32-x64@npm:2.3.14"
+"@biomejs/cli-win32-x64@npm:2.3.15":
+  version: 2.3.15
+  resolution: "@biomejs/cli-win32-x64@npm:2.3.15"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -998,6 +998,13 @@ __metadata:
   dependencies:
     "@types/estree": "npm:*"
   checksum: 10c0/1d30ccfbb84362fe7a7edeea3ba5268f5a7a0965d504147c6b701092f0ea3f0833799ee753e2059a535ca06590f91dd2416e4bd94a6e8ad51eea127a0607c617
+  languageName: node
+  linkType: hard
+
+"@types/trusted-types@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "@types/trusted-types@npm:2.0.7"
+  checksum: 10c0/4c4855f10de7c6c135e0d32ce462419d8abbbc33713b31d294596c0cc34ae1fa6112a2f9da729c8f7a20707782b0d69da3b1f8df6645b0366d08825ca1522e0c
   languageName: node
   linkType: hard
 
@@ -2413,12 +2420,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-svelte@npm:^0.563.0":
-  version: 0.563.0
-  resolution: "lucide-svelte@npm:0.563.0"
+"lucide-svelte@npm:^0.564.0":
+  version: 0.564.0
+  resolution: "lucide-svelte@npm:0.564.0"
   peerDependencies:
     svelte: ^3 || ^4 || ^5.0.0-next.42
-  checksum: 10c0/0ed46898691cd42731ec1e70c8822bc1df93743b152012193f40a32e1338574765f0a6ca617951875ed612cc6931c3d7984a3d8e17c6834aa632945aeba0f446
+  checksum: 10c0/9bda1999211895e6efc4cdfbfddcab0c68a188ef258fd091e03ff5675b9dc4dff85d6af2eeeb04d3ad5715e29df2cb774461ad18e2afebbb566ae18db85829d3
   languageName: node
   linkType: hard
 
@@ -2706,7 +2713,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "obsidian-meals@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:2.3.14"
+    "@biomejs/biome": "npm:2.3.15"
     "@popperjs/core": "npm:^2.11.8"
     "@sveltejs/vite-plugin-svelte": "npm:6.2.4"
     "@tsconfig/svelte": "npm:^5.0.7"
@@ -2717,16 +2724,16 @@ __metadata:
     "@vitest/coverage-v8": "npm:^3.2.4"
     autoprefixer: "npm:^10.4.24"
     builtin-modules: "npm:^5.0.0"
-    lucide-svelte: "npm:^0.563.0"
+    lucide-svelte: "npm:^0.564.0"
     moment: "npm:^2.30.1"
-    obsidian: "npm:^1.11.4"
+    obsidian: "npm:^1.12.0"
     parse-ingredient: "npm:^1.3.3"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.6"
     recipe-rs: "npm:0.2.4"
-    svelte: "npm:^5.50.0"
-    svelte-check: "npm:^4.3.6"
-    svelte-language-server: "npm:^0.17.25"
+    svelte: "npm:^5.51.0"
+    svelte-check: "npm:^4.4.0"
+    svelte-language-server: "npm:^0.17.26"
     tailwindcss: "npm:^4.1.18"
     ts-results-es: "npm:^5.0.0"
     tslib: "npm:^2.8.1"
@@ -2738,16 +2745,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"obsidian@npm:^1.11.4":
-  version: 1.11.4
-  resolution: "obsidian@npm:1.11.4"
+"obsidian@npm:^1.12.0":
+  version: 1.12.0
+  resolution: "obsidian@npm:1.12.0"
   dependencies:
     "@types/codemirror": "npm:5.60.8"
     moment: "npm:2.29.4"
   peerDependencies:
     "@codemirror/state": 6.5.0
     "@codemirror/view": 6.38.6
-  checksum: 10c0/0dcb0436f3823c9bbe42f6c2dd18a9890846490967829fbd25403d6d0e6da7b498698991fd4d50cb212efa56bc80c9ae83c3b5b2347a44938bb7834b783eecdf
+  checksum: 10c0/783c537e250b4fd039210d9233be24cb1cb85b89b8ff044ab8c4510028f13c3538d28e85fd64b4188aa271de956a677528fd3e0c96062a8478f9bedcaf54d2ea
   languageName: node
   linkType: hard
 
@@ -3236,9 +3243,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-check@npm:^4.3.6":
-  version: 4.3.6
-  resolution: "svelte-check@npm:4.3.6"
+"svelte-check@npm:^4.4.0":
+  version: 4.4.0
+  resolution: "svelte-check@npm:4.4.0"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     chokidar: "npm:^4.0.1"
@@ -3250,13 +3257,13 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/0b2a70efaedb9bae01ab9a4b6086a1445f24aec3132002bcd69b43e40a8baf259c8f3eac8b83ac681d7cfbf13804351f860959026335ad59a02ae4455cf599ce
+  checksum: 10c0/451f52b74a4a2b2ac5570eeecae07af5fb4836d67a8b50570e42fdbd0fdbc0cdaaabd8bb9a18daba3d5e55b3fe0d6b8db3f1a245c449ee828bbaaa768896a367
   languageName: node
   linkType: hard
 
-"svelte-language-server@npm:^0.17.25":
-  version: 0.17.25
-  resolution: "svelte-language-server@npm:0.17.25"
+"svelte-language-server@npm:^0.17.26":
+  version: 0.17.26
+  resolution: "svelte-language-server@npm:0.17.26"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     "@vscode/emmet-helper": "npm:2.8.4"
@@ -3268,7 +3275,7 @@ __metadata:
     prettier: "npm:~3.3.3"
     prettier-plugin-svelte: "npm:^3.4.0"
     svelte: "npm:^4.2.19"
-    svelte2tsx: "npm:~0.7.47"
+    svelte2tsx: "npm:~0.7.48"
     typescript: "npm:^5.9.2"
     typescript-auto-import-cache: "npm:^0.3.6"
     vscode-css-languageservice: "npm:~6.3.5"
@@ -3279,20 +3286,20 @@ __metadata:
     vscode-uri: "npm:~3.1.0"
   bin:
     svelteserver: bin/server.js
-  checksum: 10c0/64d855bb062502e1ef1cd991e77c8e0b2b4eafe8ed4548b44b7c9b04d79106b27c1ccba55fb2986fb9332a4f1d64c15c2b969eec7b61f55126b1faf80152f34e
+  checksum: 10c0/9950cc4689c3519965cf654436cb27c68c4e1c3515252633dd2566e51d06fe6c868769deb6f8ad8f59a0b60a43f0142a5d6dc016815f2fc4a03dd77ac2cd5498
   languageName: node
   linkType: hard
 
-"svelte2tsx@npm:~0.7.47":
-  version: 0.7.47
-  resolution: "svelte2tsx@npm:0.7.47"
+"svelte2tsx@npm:~0.7.48":
+  version: 0.7.48
+  resolution: "svelte2tsx@npm:0.7.48"
   dependencies:
     dedent-js: "npm:^1.0.1"
     scule: "npm:^1.3.0"
   peerDependencies:
     svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
     typescript: ^4.9.4 || ^5.0.0
-  checksum: 10c0/4d30153f70b4a9e0a8a3301be3fbbc8c53df66a157da1b95e6c54fc4f3f8bb030fa9d1d311722d9121aebe368feb77ef1263dc329eb1ee1e35a1b9f48853335f
+  checksum: 10c0/9e016dda442775b5cf4d328bc2f43df9581e8942ebdcef7c892bc9164b6262fbb0747db756f2fb1eb6e86ac51235219e99a342f8db431692363252f76ffcb842
   languageName: node
   linkType: hard
 
@@ -3318,14 +3325,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.50.0":
-  version: 5.50.0
-  resolution: "svelte@npm:5.50.0"
+"svelte@npm:^5.51.0":
+  version: 5.51.0
+  resolution: "svelte@npm:5.51.0"
   dependencies:
     "@jridgewell/remapping": "npm:^2.3.4"
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
     "@sveltejs/acorn-typescript": "npm:^1.0.5"
     "@types/estree": "npm:^1.0.5"
+    "@types/trusted-types": "npm:^2.0.7"
     acorn: "npm:^8.12.1"
     aria-query: "npm:^5.3.1"
     axobject-query: "npm:^4.1.0"
@@ -3337,7 +3345,7 @@ __metadata:
     locate-character: "npm:^3.0.0"
     magic-string: "npm:^0.30.11"
     zimmerframe: "npm:^1.1.2"
-  checksum: 10c0/58acd1e42da5065228d2c673aee56a4eaf655272a82541ba8fc97050a7ab3bd54dd66a40bc46aff8fdc65b66ce9c8b613a7f316d1d1e31b0b93e7eac6b8ae4c8
+  checksum: 10c0/762603e6a9e87c32df1eae25700d5aa061b73038181107154b1904085a58b2a4f4fb9f40c6bc5025421683c3495254d410ad2cc30f617c858185ead85b725359
   languageName: node
   linkType: hard
 
