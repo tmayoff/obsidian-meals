@@ -2454,7 +2454,7 @@ __metadata:
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.6"
     recipe-rs: "npm:0.2.4"
-    svelte: "npm:^5.51.5"
+    svelte: "npm:^5.53.5"
     svelte-check: "npm:^4.4.3"
     svelte-language-server: "npm:^0.17.28"
     tailwindcss: "npm:^4.2.1"
@@ -3032,9 +3032,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.51.5":
-  version: 5.53.3
-  resolution: "svelte@npm:5.53.3"
+"svelte@npm:^5.53.5":
+  version: 5.53.6
+  resolution: "svelte@npm:5.53.6"
   dependencies:
     "@jridgewell/remapping": "npm:^2.3.4"
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
@@ -3052,7 +3052,7 @@ __metadata:
     locate-character: "npm:^3.0.0"
     magic-string: "npm:^0.30.11"
     zimmerframe: "npm:^1.1.2"
-  checksum: 10c0/c8df62418a8b396c9cee8c787f8cd1177c46dd1fc88c2aa7140ca20216dcba8a7cea3d5a0c7839fcdf137eaf003f598e458867e053fdcfbab2515df604ad16c6
+  checksum: 10c0/e49a586a17283988ba341de16507e92eb43127950762c33543d28f96d148048d6b01fccae89764e9ad3f199dbdbd19493b20df709e1ae759b9a51e6ba60132af
   languageName: node
   linkType: hard
 
