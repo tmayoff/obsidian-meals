@@ -17,7 +17,7 @@
     "devDependencies": {
         "@biomejs/biome": "2.4.9",
         "@popperjs/core": "^2.11.8",
-        "@sveltejs/vite-plugin-svelte": "6.2.4",
+        "@sveltejs/vite-plugin-svelte": "7.0.0",
         "@tsconfig/svelte": "^5.0.8",
         "@types/node": "^25.5.0",
         "@types/pluralize": "^0.0.33",
