@@ -2470,12 +2470,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-svelte@npm:^0.575.0":
-  version: 0.575.0
-  resolution: "lucide-svelte@npm:0.575.0"
+"lucide-svelte@npm:^0.577.0":
+  version: 0.577.0
+  resolution: "lucide-svelte@npm:0.577.0"
   peerDependencies:
     svelte: ^3 || ^4 || ^5.0.0-next.42
-  checksum: 10c0/fb05dc15d3fd6a0c5913d8bf36dad267a4be508d6fa0671f954f90bce02905c67ab586e26585d526d7eb74b0ff75c1c4899d4a8f398d2a750b2c9051d2946802
+  checksum: 10c0/b8637399cc69fb9502f9e324f749a255f44a6687758d9c39572f16c35387289a3f1974bc1ea2e0369811303e0f2356f0661364e7425b91cc270e8ebfa4aa68ac
   languageName: node
   linkType: hard
 
@@ -2801,7 +2801,7 @@ __metadata:
     "@vitest/coverage-v8": "npm:^4.1.2"
     autoprefixer: "npm:^10.4.27"
     builtin-modules: "npm:^5.0.0"
-    lucide-svelte: "npm:^0.575.0"
+    lucide-svelte: "npm:^0.577.0"
     moment: "npm:^2.30.1"
     obsidian: "npm:^1.12.3"
     parse-ingredient: "npm:^2.1.0"
