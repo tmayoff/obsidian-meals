@@ -16,17 +16,16 @@ export async function GetIngredients(ctx: Context, recipeFile: TFile): Promise<R
     const settings = get(ctx.settings);
 
     const fileContent = await ctx.app.vault.read(recipeFile);
-    const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
-    if (fileMetadata == null) {
-        // console.error('Failed to load recipe metadata');
-        return Err(new ErrCtx(recipeFile.path, 'Failed to load recipe metadata'));
-    }
 
     let res: Result<string[], ParseErrors>;
 
     if (settings.recipeFormat === RecipeFormat.RecipeMD) {
         res = GetRecipeMDFormatBoundedList(GetContentSkipFrontmatter(fileContent));
     } else {
+        const fileMetadata = ctx.app.metadataCache.getFileCache(recipeFile);
+        if (fileMetadata == null) {
+            return Err(new ErrCtx(recipeFile.path, 'Failed to load recipe metadata'));
+        }
         res = GetMealPlanFormatBoundedList(fileContent, fileMetadata);
     }
 
@@ -59,7 +58,7 @@ function GetMealPlanFormatBoundedList(fileContent: string, fileMetadata: CachedM
                 break;
             }
 
-            if (heading.heading.contains('Ingredient') || heading.heading.contains('ingredient')) {
+            if (heading.heading.includes('Ingredient') || heading.heading.includes('ingredient')) {
                 start = heading.position.end;
                 ingredientHeadingLevel = heading.level;
             }
