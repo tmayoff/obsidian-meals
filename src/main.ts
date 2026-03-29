@@ -37,6 +37,12 @@ export default class MealPlugin extends Plugin {
             );
 
             this.registerEvent(
+                this.app.metadataCache.on('resolved', () => {
+                    this.ctx.loadRecipes(null);
+                }),
+            );
+
+            this.registerEvent(
                 this.app.vault.on('modify', (file) => {
                     if (file instanceof TFile) {
                         this.ctx.loadRecipes(file as TFile);
@@ -86,14 +92,14 @@ export default class MealPlugin extends Plugin {
         });
 
         this.registerEvent(
-            this.app.workspace.on('file-menu', (e, t) => {
-                if (t instanceof TFile && t.path.contains(get(this.ctx.settings).recipeDirectory)) {
+            this.app.workspace.on('file-menu', (e, file) => {
+                if (file instanceof TFile && file.path.contains(get(this.ctx.settings).recipeDirectory)) {
                     e.addItem((e) => {
                         return e
                             .setTitle('Add to shopping list')
                             .setIcon('shopping-basket')
                             .onClick(() => {
-                                AddFileToShoppingList(this.ctx, t);
+                                AddFileToShoppingList(this.ctx, file);
                             });
                     });
                     e.addItem((e) => {
@@ -101,7 +107,7 @@ export default class MealPlugin extends Plugin {
                             .setTitle('Add to meal plan')
                             .setIcon('utensils')
                             .onClick(() => {
-                                new AddToPlanModal(this.ctx, new Recipe(t), false).open();
+                                new AddToPlanModal(this.ctx, new Recipe(file)).open();
                             });
                     });
 
@@ -110,7 +116,7 @@ export default class MealPlugin extends Plugin {
                             .setTitle('Redownload recipe')
                             .setIcon('download')
                             .onClick(async () => {
-                                await RedownloadRecipe(this.ctx, new Recipe(t, t.basename));
+                                await RedownloadRecipe(this.ctx, new Recipe(file, file.basename));
                             });
                     });
                 }

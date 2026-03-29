@@ -85,7 +85,12 @@ export class Context {
 
                 GetRecipe(this, file).then((r) => {
                     this.recipes.update((arr) => {
-                        arr.push(r);
+                        const idx = arr.findIndex((existing) => existing.path.path === r.path.path);
+                        if (idx !== -1) {
+                            arr[idx] = r;
+                        } else {
+                            arr.push(r);
+                        }
                         return arr;
                     });
                 });

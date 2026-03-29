@@ -71,17 +71,17 @@ export async function AddMealPlanToShoppingList(ctx: Context) {
 
 export async function AddFileToShoppingList(ctx: Context, recipeFile: TFile) {
     const shoppingListFilePath = AppendMarkdownExt(get(ctx.settings).shoppingListNote);
-    let file = ctx.app.vault.getFileByPath(shoppingListFilePath);
-    if (file == null) {
+    let shoppingListFile = ctx.app.vault.getFileByPath(shoppingListFilePath);
+    if (shoppingListFile == null) {
         ctx.app.vault.create(shoppingListFilePath, '');
-        file = ctx.app.vault.getFileByPath(shoppingListFilePath);
+        shoppingListFile = ctx.app.vault.getFileByPath(shoppingListFilePath);
     }
-    if (file == null) {
+    if (shoppingListFile == null) {
         return;
     }
 
     const newIngredients = getIngredientsRecipe(ctx, recipeFile);
-    await updateShoppingList(ctx, file, newIngredients);
+    await updateShoppingList(ctx, shoppingListFile, newIngredients);
 }
 
 async function updateShoppingList(ctx: Context, file: TFile, newIngredients: Ingredient[]) {
@@ -117,13 +117,11 @@ function getFoodListRange(ctx: Context, file: TFile) {
     if (headings) {
         for (const header of headings) {
             if (header.heading === 'Food') {
-                console.error('Found food heading', header);
                 startHeader = header;
                 continue;
             }
 
             if (startHeader !== null && endHeader === null) {
-                console.error('End header found, ', header);
                 endHeader = header;
                 break;
             }
@@ -255,7 +253,7 @@ function getIngredientsRecipe(ctx: Context, recipeNote: TFile) {
                 case ShoppingListIgnoreBehaviour.Regex:
                     return new RegExp(ignored).test(desc);
                 default:
-                    return false;
+                    return true;
             }
         });
     });
