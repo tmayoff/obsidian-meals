@@ -6,7 +6,7 @@ import type { Context } from '../context.ts';
 import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
 import { ErrCtx } from '../utils/result.ts';
 import type { Recipe as MealsRecipe } from './recipe.ts';
-import { get_first_recipe, to_recipemd } from './schema.ts';
+import { get_first_recipe, get_nutritional_information, to_recipemd } from './schema.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
     query = '';
@@ -153,13 +153,25 @@ function generateFrontmatter(includeNutritionalInformation: boolean, url: string
     let content = '---\n';
 
     const frontmatter: any = { source: url };
-    // if (recipe.nutritional_information !== undefined) {
-    //     if (includeNutritionalInformation) {
-    //         Object.assign(frontmatter, definedProps(recipe.nutritional_information));
-    //     } else {
-    //         frontmatter.serving_size = recipe.nutritional_information.serving_size;
-    //     }
-    // }
+
+    if (recipe.recipeYield !== null) {
+        frontmatter.servings = recipe.recipeYield;
+    }
+
+    if (includeNutritionalInformation) {
+        const nutrition = get_nutritional_information(recipe);
+        if (nutrition != null) {
+            if (nutrition.calories) frontmatter.calories = nutrition.calories;
+            if (nutrition.fatContent) frontmatter.fat = nutrition.fatContent;
+            if (nutrition.saturatedFatContent) frontmatter.saturatedFat = nutrition.saturatedFatContent;
+            if (nutrition.carbohydrateContent) frontmatter.carbohydrate = nutrition.carbohydrateContent;
+            if (nutrition.sugarContent) frontmatter.sugar = nutrition.sugarContent;
+            if (nutrition.fiberContent) frontmatter.fiber = nutrition.fiberContent;
+            if (nutrition.proteinContent) frontmatter.protein = nutrition.proteinContent;
+            if (nutrition.sodiumContent) frontmatter.sodium = nutrition.sodiumContent;
+            if (nutrition.cholesterolContent) frontmatter.cholesterol = nutrition.cholesterolContent;
+        }
+    }
 
     content += stringifyYaml(frontmatter);
     content += '---\n';
