@@ -7,10 +7,8 @@ import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredien
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import { MealSettings } from './settings/settings.ts';
 import 'virtual:uno.css';
-import initWasm from 'recipe-rs';
-import wasmData from 'recipe-rs/recipe_rs_bg.wasm?url';
 import { mount, unmount } from 'svelte';
-import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader.ts';
+import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader_ui.ts';
 import { Recipe } from './recipe/recipe.ts';
 import SettingsPage from './settings/SettingsPage.svelte';
 
@@ -23,8 +21,6 @@ export default class MealPlugin extends Plugin {
 
         this.app.workspace.onLayoutReady(async () => {
             await this.loadSettings();
-
-            await initWasm(wasmData);
 
             await this.ctx.loadRecipes(null);
 

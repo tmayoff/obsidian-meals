@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 
-import path from 'path';
+import path from 'node:path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
@@ -11,6 +11,7 @@ export default defineConfig({
     },
     test: {
         include: ['src/tests/**.test.*'],
+        exclude: ['**/*.bck'],
         deps: {
             moduleDirectories: ['node_modules', 'src'],
         },
