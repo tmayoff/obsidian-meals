@@ -71,3 +71,15 @@ export class PluginSettingTab {
 
     display() {}
 }
+
+export function requestUrl(url: string): { text: Promise<string> } {
+    return { text: fetch(url).then((r) => r.text()) };
+}
+
+export function stringifyYaml(obj: any): string {
+    return (
+        Object.entries(obj)
+            .map(([k, v]) => `${k}: ${v}`)
+            .join('\n') + '\n'
+    );
+}
