@@ -44,7 +44,8 @@ export function to_recipemd(recipe: Recipe): string {
 
     const ingredients = toArray(recipe.recipeIngredient).filter((item): item is Text => typeof item === 'string');
     ingredients.forEach((ingredient) => {
-        formatted += `- ${ingredient}\n`;
+        const suffix = ingredient.toString().startsWith('-') ? '' : '- ';
+        formatted += `${suffix}${ingredient}\n`;
     });
 
     formatted += '---\n';

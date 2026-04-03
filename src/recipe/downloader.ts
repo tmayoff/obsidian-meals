@@ -73,7 +73,7 @@ export async function DownloadRecipeFileContent(
     const { recipeName, recipeContent, recipe } = result.unwrap();
 
     let file_content = generateFrontmatter(includeNutritionalInformation, url, recipe);
-    file_content += recipeContent;
+    file_content += `\n${recipeContent}`;
 
     return Ok({ recipeName: recipeName, recipeContent: file_content, recipe: recipe });
 }

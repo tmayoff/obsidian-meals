@@ -11,6 +11,7 @@ export default defineConfig({
     },
     test: {
         include: ['src/tests/**.test.*'],
+        exclude: ['**/*.bck'],
         deps: {
             moduleDirectories: ['node_modules', 'src'],
         },
