@@ -1,11 +1,12 @@
 import { type App, getFrontMatterInfo, Modal, parseYaml, requestUrl, Setting, SuggestModal, stringifyYaml } from 'obsidian';
-import { format, type Recipe, scrape } from 'recipe-rs';
+import type { Recipe, Recipe as SchemaRecipe } from 'schema-dts';
 import { get } from 'svelte/store';
 import { Err, Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
 import { ErrCtx } from '../utils/result.ts';
 import type { Recipe as MealsRecipe } from './recipe.ts';
+import { get_first_recipe, to_recipemd } from './schema.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
     query = '';
@@ -107,18 +108,21 @@ async function Download(url: string): Promise<Result<DownloadedContent, ErrCtx>>
     console.debug(`Downloading ${url}`);
     const dom = await requestUrl(url).text;
 
-    let recipe: Recipe;
-    let formatted = '';
-    try {
-        recipe = scrape(url, dom);
-        formatted = format(recipe);
-    } catch (exception) {
-        console.error('Failed to download recipe', exception);
-        return Err(new ErrCtx(`${exception}`, ''));
+    const recipe: SchemaRecipe | null = get_first_recipe(dom);
+    if (recipe === null) {
+        console.error(`Couldn't find a recipe in ${url}`);
+        return Err(new ErrCtx(`Couldn't find a recipe in ${url}`, ''));
     }
 
-    const sanitized = recipe.name.replace(/[:?/<>"|*-]/gi, ' ').trim();
+    if (recipe.name === undefined) {
+        console.error(`Recipe found but no name found: ${url}`);
+        return Err(new ErrCtx(`Recipe found but no name found: ${url}`, ''));
+    }
 
+    const name = recipe.name.toString();
+    const sanitized = name.replace(/[:?/<>"|*-]/gi, ' ').trim();
+
+    const formatted = to_recipemd(recipe);
     return Ok({ recipeName: sanitized, recipeContent: formatted, recipe: recipe });
 }
 
@@ -149,13 +153,13 @@ function generateFrontmatter(includeNutritionalInformation: boolean, url: string
     let content = '---\n';
 
     const frontmatter: any = { source: url };
-    if (recipe.nutritional_information !== undefined) {
-        if (includeNutritionalInformation) {
-            Object.assign(frontmatter, definedProps(recipe.nutritional_information));
-        } else {
-            frontmatter.serving_size = recipe.nutritional_information.serving_size;
-        }
-    }
+    // if (recipe.nutritional_information !== undefined) {
+    //     if (includeNutritionalInformation) {
+    //         Object.assign(frontmatter, definedProps(recipe.nutritional_information));
+    //     } else {
+    //         frontmatter.serving_size = recipe.nutritional_information.serving_size;
+    //     }
+    // }
 
     content += stringifyYaml(frontmatter);
     content += '---\n';
