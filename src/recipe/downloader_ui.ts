@@ -126,14 +126,14 @@ export async function RedownloadRecipe(ctx: Context, mealsRecipe: MealsRecipe) {
     const frontmatterYaml = parseYaml(frontmatter);
 
     const sourceUrl = frontmatterYaml.source;
-
-    const result = await Download(sourceUrl);
+    const includeNutritionalInfo = get(ctx.settings).includeNutritionalInformation;
+    const result = await DownloadRecipeFileContent(sourceUrl, includeNutritionalInfo);
     if (result.isErr()) {
         new ErrorDialog(ctx.app, `${result.error}`).open();
         return;
     }
 
-    const { recipeContent, recipe } = result.unwrap();
+    const { recipeContent } = result.unwrap();
 
     const originalContent = await ctx.app.vault.cachedRead(mealsRecipe.path);
     if (originalContent !== recipeContent) {
@@ -150,9 +150,7 @@ export async function RedownloadRecipe(ctx: Context, mealsRecipe: MealsRecipe) {
         }
 
         await ctx.app.vault.process(mealsRecipe.path, () => {
-            let content = generateFrontmatter(get(ctx.settings).includeNutritionalInformation, sourceUrl, recipe);
-            content += recipeContent;
-            return content;
+            return recipeContent;
         });
     }
 }

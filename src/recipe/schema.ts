@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio';
-import type { Graph, NutritionInformation, Recipe, Text, Thing } from 'schema-dts';
+import type { Graph, HowToSection, HowToStep, NutritionInformation, Recipe, Text, Thing } from 'schema-dts';
 
 export function get_first_recipe(html: string): Recipe | null {
     const $ = cheerio.load(html);
@@ -48,11 +48,20 @@ export function to_recipemd(recipe: Recipe): string {
         formatted += `${suffix}${ingredient}\n`;
     });
 
-    formatted += '---\n';
+    formatted += '---\n\n';
 
-    const steps = toArray(recipe.recipeInstructions).filter((item): item is Text => typeof item === 'string');
-    steps.forEach((step, i) => {
-        formatted += `${i + 1}. ${step}\n`;
+    const steps = toArray(recipe.recipeInstructions)
+        .flatMap((step) => {
+            if (typeof step === 'string') return [step];
+            if ((step as HowToSection).itemListElement !== undefined)
+                return toArray((step as HowToSection).itemListElement).map((s) =>
+                    typeof s === 'string' ? s : ((s as HowToStep).text?.toString() ?? ''),
+                );
+            return [(step as HowToStep).text?.toString() ?? ''];
+        })
+        .filter((text) => text.trim() !== '');
+    steps.forEach((text, i) => {
+        formatted += `${i + 1}. ${text}\n`;
     });
 
     return formatted;
