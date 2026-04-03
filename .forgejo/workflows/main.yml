@@ -16,19 +16,19 @@ jobs:
   lint:
     runs-on: codeberg-tiny
     steps:
-      - uses: actions/checkout@v4
-      - uses: https://github.com/DeterminateSystems/nix-installer-action@v17
+      - uses: actions/checkout@v6
+      - uses: https://github.com/DeterminateSystems/nix-installer-action@v21
       - name: lint
         run: nix develop --command biome ci src/
 
   build:
     runs-on: codeberg-tiny
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
-        node-version: '20.x'
+        node-version: '24.x'
         registry-url: 'https://npm.pkg.github.com'
 
     - name: install
