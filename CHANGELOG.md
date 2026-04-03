@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/tmayoff/obsidian-meals/compare/1.1.3...1.2.0) (2026-04-03)
+
+
+### Features
+
+* switch to internal schema and ld+json parsing ([#404](https://github.com/tmayoff/obsidian-meals/issues/404)) ([2ec10ce](https://github.com/tmayoff/obsidian-meals/commit/2ec10ce62ea15c8e839525c4d33fb25fd43ad658))
+
 ## [1.1.3](https://github.com/tmayoff/obsidian-meals/compare/1.1.2...1.1.3) (2026-03-29)
 
 
