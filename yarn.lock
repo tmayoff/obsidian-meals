@@ -67,18 +67,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@biomejs/biome@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/biome@npm:2.4.9"
+"@biomejs/biome@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/biome@npm:2.4.10"
   dependencies:
-    "@biomejs/cli-darwin-arm64": "npm:2.4.9"
-    "@biomejs/cli-darwin-x64": "npm:2.4.9"
-    "@biomejs/cli-linux-arm64": "npm:2.4.9"
-    "@biomejs/cli-linux-arm64-musl": "npm:2.4.9"
-    "@biomejs/cli-linux-x64": "npm:2.4.9"
-    "@biomejs/cli-linux-x64-musl": "npm:2.4.9"
-    "@biomejs/cli-win32-arm64": "npm:2.4.9"
-    "@biomejs/cli-win32-x64": "npm:2.4.9"
+    "@biomejs/cli-darwin-arm64": "npm:2.4.10"
+    "@biomejs/cli-darwin-x64": "npm:2.4.10"
+    "@biomejs/cli-linux-arm64": "npm:2.4.10"
+    "@biomejs/cli-linux-arm64-musl": "npm:2.4.10"
+    "@biomejs/cli-linux-x64": "npm:2.4.10"
+    "@biomejs/cli-linux-x64-musl": "npm:2.4.10"
+    "@biomejs/cli-win32-arm64": "npm:2.4.10"
+    "@biomejs/cli-win32-x64": "npm:2.4.10"
   dependenciesMeta:
     "@biomejs/cli-darwin-arm64":
       optional: true
@@ -98,62 +98,62 @@ __metadata:
       optional: true
   bin:
     biome: bin/biome
-  checksum: 10c0/10d5e64d844d055bf395391b06194d791a0ed0f6279fa7eb9d1ab1a83ba9be29a8b64465474f314e31e6446da2dd2b51695a266fe201a02f2be16178602323ff
+  checksum: 10c0/80d10d5e6fa41a24efb9020ee73b79b0aca46942b55ea96e880c3bb45ea14c71e49fb1be9f134bee23b2d940bb8cad51a70351ca051e09a43613018dba693bd6
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-arm64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-darwin-arm64@npm:2.4.9"
+"@biomejs/cli-darwin-arm64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-darwin-arm64@npm:2.4.10"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-darwin-x64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-darwin-x64@npm:2.4.9"
+"@biomejs/cli-darwin-x64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-darwin-x64@npm:2.4.10"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64-musl@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.4.9"
+"@biomejs/cli-linux-arm64-musl@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-linux-arm64-musl@npm:2.4.10"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-arm64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-linux-arm64@npm:2.4.9"
+"@biomejs/cli-linux-arm64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-linux-arm64@npm:2.4.10"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64-musl@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-linux-x64-musl@npm:2.4.9"
+"@biomejs/cli-linux-x64-musl@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-linux-x64-musl@npm:2.4.10"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@biomejs/cli-linux-x64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-linux-x64@npm:2.4.9"
+"@biomejs/cli-linux-x64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-linux-x64@npm:2.4.10"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-arm64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-win32-arm64@npm:2.4.9"
+"@biomejs/cli-win32-arm64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-win32-arm64@npm:2.4.10"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@biomejs/cli-win32-x64@npm:2.4.9":
-  version: 2.4.9
-  resolution: "@biomejs/cli-win32-x64@npm:2.4.9"
+"@biomejs/cli-win32-x64@npm:2.4.10":
+  version: 2.4.10
+  resolution: "@biomejs/cli-win32-x64@npm:2.4.10"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -1076,11 +1076,11 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^25.5.0":
-  version: 25.5.0
-  resolution: "@types/node@npm:25.5.0"
+  version: 25.5.2
+  resolution: "@types/node@npm:25.5.2"
   dependencies:
     undici-types: "npm:~7.18.0"
-  checksum: 10c0/70c508165b6758c4f88d4f91abca526c3985eee1985503d4c2bd994dbaf588e52ac57e571160f18f117d76e963570ac82bd20e743c18987e82564312b3b62119
+  checksum: 10c0/11e41a85401724cd1a4de6fb7bd4264ec46db10c09fc8cf8d41de4ede0a7063db458348f859ead4ec0929906aa26aaf45a5fef3aa59742ca0521cda9cee52377
   languageName: node
   linkType: hard
 
@@ -1104,6 +1104,13 @@ __metadata:
   version: 2.0.7
   resolution: "@types/trusted-types@npm:2.0.7"
   checksum: 10c0/4c4855f10de7c6c135e0d32ce462419d8abbbc33713b31d294596c0cc34ae1fa6112a2f9da729c8f7a20707782b0d69da3b1f8df6645b0366d08825ca1522e0c
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/types@npm:^8.2.0":
+  version: 8.58.0
+  resolution: "@typescript-eslint/types@npm:8.58.0"
+  checksum: 10c0/f2fe1321758a04591c20d77caba956ae76b77cff0b976a0224b37077d80b1ebd826874d15ec79c3a3b7d57ee5679e5d10756db1b082bde3d51addbd3a8431d38
   languageName: node
   linkType: hard
 
@@ -2165,12 +2172,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esrap@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "esrap@npm:2.2.2"
+"esrap@npm:^2.2.4":
+  version: 2.2.4
+  resolution: "esrap@npm:2.2.4"
   dependencies:
     "@jridgewell/sourcemap-codec": "npm:^1.4.15"
-  checksum: 10c0/859675c5cc529a7260b1a9c1fc308eacd9090c1b615adfe2bfc706dada1381daaf5c293fae25da9b28f0ec134cac9e70dc7fb6559fc1d973fe808c7e19cf6e9b
+    "@typescript-eslint/types": "npm:^8.2.0"
+  checksum: 10c0/10b852508b5e82932d025eef6892b16d43ac94f6a240faeb564b39360c1fe57d2299a5e1d7f0f6ab0ed024cc790b9151e0f496b3b7e6be6682066e142a3dcea4
   languageName: node
   linkType: hard
 
@@ -2940,7 +2948,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "obsidian-meals@workspace:."
   dependencies:
-    "@biomejs/biome": "npm:2.4.9"
+    "@biomejs/biome": "npm:2.4.10"
     "@popperjs/core": "npm:^2.11.8"
     "@sveltejs/vite-plugin-svelte": "npm:7.0.0"
     "@tsconfig/svelte": "npm:^5.0.8"
@@ -3666,8 +3674,8 @@ __metadata:
   linkType: hard
 
 "svelte-check@npm:^4.4.5":
-  version: 4.4.5
-  resolution: "svelte-check@npm:4.4.5"
+  version: 4.4.6
+  resolution: "svelte-check@npm:4.4.6"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     chokidar: "npm:^4.0.1"
@@ -3679,13 +3687,13 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/03f985de3d0e445b19d72c21db2b94f642bbfb725c4bc825cc0ed7ed7ac0b5bf5aa24720ec2237baad0554e6924b3f4ca321f0b2e8d544a9900381c40f8c2597
+  checksum: 10c0/583603c5c4e88db613312c21fe60e948bf626a5b53126914f99ef8cca91143a95dafedfa4c4c03322a29bc54d89d304ee3253166665ec819657b1f5320b59862
   languageName: node
   linkType: hard
 
 "svelte-language-server@npm:^0.17.29":
-  version: 0.17.29
-  resolution: "svelte-language-server@npm:0.17.29"
+  version: 0.17.30
+  resolution: "svelte-language-server@npm:0.17.30"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     "@vscode/emmet-helper": "npm:2.8.4"
@@ -3697,7 +3705,7 @@ __metadata:
     prettier: "npm:~3.3.3"
     prettier-plugin-svelte: "npm:^3.5.0"
     svelte: "npm:^4.2.19"
-    svelte2tsx: "npm:~0.7.51"
+    svelte2tsx: "npm:~0.7.53"
     typescript: "npm:^5.9.2"
     typescript-auto-import-cache: "npm:^0.3.6"
     vscode-css-languageservice: "npm:~6.3.5"
@@ -3708,20 +3716,20 @@ __metadata:
     vscode-uri: "npm:~3.1.0"
   bin:
     svelteserver: bin/server.js
-  checksum: 10c0/abd4201710501e2a9d54bd619895584edc578ce3b7de62150f573c1c4802b40c500f08275a5190639a1c617e298501f6b5b5ff77798b6e41d0183ba0db92656b
+  checksum: 10c0/a51605bf99dd796b917943ae31af57c15a19cbf88e5ef9f654922ae9c94e7caa85c509b62aa067d6a54c424d686e6a598a4c9c6dfc239492b9019f4c61bacfc1
   languageName: node
   linkType: hard
 
-"svelte2tsx@npm:~0.7.51":
-  version: 0.7.52
-  resolution: "svelte2tsx@npm:0.7.52"
+"svelte2tsx@npm:~0.7.53":
+  version: 0.7.53
+  resolution: "svelte2tsx@npm:0.7.53"
   dependencies:
     dedent-js: "npm:^1.0.1"
     scule: "npm:^1.3.0"
   peerDependencies:
     svelte: ^3.55 || ^4.0.0-next.0 || ^4.0 || ^5.0.0-next.0
     typescript: ^4.9.4 || ^5.0.0
-  checksum: 10c0/514ce6a48be8575518f8fd0f13e4547000a23731287136189c0bb663398da0f749e8702fd235b59af3e85a87ff3b961e80d2848b145066066bff2a0e6bac5a26
+  checksum: 10c0/eb98d5fadc73d34d169b01e7525c5c7a60e8f7d5d7f81f71eaf7fe8eb522711ade31d13b70e76253998ffa123241d9c4f2a9ae2e536140ee4332ca3706fd65fd
   languageName: node
   linkType: hard
 
@@ -3748,8 +3756,8 @@ __metadata:
   linkType: hard
 
 "svelte@npm:^5.55.0":
-  version: 5.55.0
-  resolution: "svelte@npm:5.55.0"
+  version: 5.55.1
+  resolution: "svelte@npm:5.55.1"
   dependencies:
     "@jridgewell/remapping": "npm:^2.3.4"
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
@@ -3762,12 +3770,12 @@ __metadata:
     clsx: "npm:^2.1.1"
     devalue: "npm:^5.6.4"
     esm-env: "npm:^1.2.1"
-    esrap: "npm:^2.2.2"
+    esrap: "npm:^2.2.4"
     is-reference: "npm:^3.0.3"
     locate-character: "npm:^3.0.0"
     magic-string: "npm:^0.30.11"
     zimmerframe: "npm:^1.1.2"
-  checksum: 10c0/2a23abec064ba6f6196764b752e60af80628fb8b85d135ab43009efb01b08696fc194cb31fe4c1d7ad06f75d714cffc6c13c159a612b9c3eac6715616a131abe
+  checksum: 10c0/4a915072cc6f0388b55f6e51533dbc6bb78aec796e2bf5a571775b454236260042ca9a556d77d2eeb8d471561ab1e64f25e66f0e587d51b12b2d4a65f82c6ae6
   languageName: node
   linkType: hard
 
