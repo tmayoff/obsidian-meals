@@ -1,12 +1,24 @@
 import * as cheerio from 'cheerio';
 import type { Graph, HowToSection, HowToStep, NutritionInformation, Recipe, Text, Thing } from 'schema-dts';
 
+function decodeHtmlEntities(text: string): string {
+    return text
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&#39;/g, "'")
+        .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code, 10)))
+        .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+}
+
 export function get_first_recipe(html: string): Recipe | null {
     const $ = cheerio.load(html);
 
     for (const el of $('script[type="application/ld+json"]').toArray()) {
         try {
-            const parsed = JSON.parse($(el).html() ?? '');
+            const parsed = JSON.parse(decodeHtmlEntities($(el).html() ?? ''));
 
             // Handle @graph (multiple items in one block)
             if (parsed['@graph']) {
