@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/tmayoff/obsidian-meals/compare/1.2.0...1.2.1) (2026-04-22)
+
+
+### Bug Fixes
+
+* Decode symbols in the html ([#412](https://github.com/tmayoff/obsidian-meals/issues/412)) ([ea61ab6](https://github.com/tmayoff/obsidian-meals/commit/ea61ab6e41eaf8c69aa19735b7017b58934fb1ad))
+
 ## [1.2.0](https://github.com/tmayoff/obsidian-meals/compare/1.1.3...1.2.0) (2026-04-03)
 
 
