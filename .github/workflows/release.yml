@@ -32,6 +32,7 @@ jobs:
           nix develop --command yarn run build
 
       - name: artifact attestation
+        if: ${{ steps.release.outputs.release_created }}
         uses: actions/attest@v4
         with:
           subject-path: "build/*"
