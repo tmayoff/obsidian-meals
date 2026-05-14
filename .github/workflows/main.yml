@@ -39,7 +39,7 @@ jobs:
         run: nix develop --command yarn run build
 
       - name: artifact attestation
-        uses: actions/attest
+        uses: actions/attest@v4
         with:
           subject-path: "build/*"
 
