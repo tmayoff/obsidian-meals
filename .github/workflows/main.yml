@@ -11,6 +11,8 @@ on:
 permissions:
   contents: read
   packages: read
+  id-token: write
+  attestations: write
 
 jobs:
   lint:
@@ -35,6 +37,11 @@ jobs:
     
     - name: build
       run: nix develop --command yarn run build
+
+    - name: artifact attestation
+      uses: actions/attest
+      with:
+        subject-path: 'build/*'
 
     - name: test
       run: nix develop --command yarn run coverage
