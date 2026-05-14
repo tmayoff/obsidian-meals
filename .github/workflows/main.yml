@@ -1,6 +1,6 @@
 name: build & test
 
-on: 
+on:
   push:
     branches:
       - main
@@ -11,6 +11,8 @@ on:
 permissions:
   contents: read
   packages: read
+  id-token: write
+  attestations: write
 
 jobs:
   lint:
@@ -24,22 +26,27 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    
-    - uses: DeterminateSystems/nix-installer-action@v22
+      - uses: actions/checkout@v6
 
-    - name: install
-      run: nix develop --command yarn install
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: build
-      run: nix develop --command yarn run build
+      - uses: DeterminateSystems/nix-installer-action@v22
 
-    - name: test
-      run: nix develop --command yarn run coverage
+      - name: install
+        run: nix develop --command yarn install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload results to Codecov
-      uses: codecov/codecov-action@v6
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: build
+        run: nix develop --command yarn run build
+
+      - name: artifact attestation
+        uses: actions/attest@v4
+        with:
+          subject-path: "build/*"
+
+      - name: test
+        run: nix develop --command yarn run coverage
+
+      - name: Upload results to Codecov
+        uses: codecov/codecov-action@v6
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
