@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { moment } from 'obsidian';
 import { Err, Ok, type Result } from 'ts-results-es';
 import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
 
