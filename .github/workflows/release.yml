@@ -7,6 +7,8 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write
+  attestations: write
 
 jobs:
   release-please:
@@ -28,6 +30,11 @@ jobs:
         run: |
           nix develop --command yarn install
           nix develop --command yarn run build
+
+      - name: artifact attestation
+        uses: actions/attest
+        with:
+          subject-path: 'build/*'
 
       - name: Upload Release Artifact
         if: ${{ steps.release.outputs.release_created }}
