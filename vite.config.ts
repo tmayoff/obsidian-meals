@@ -1,10 +1,8 @@
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import extractorSvelte from '@unocss/extractor-svelte';
 import { presetUno } from '@unocss/preset-uno';
-import builtins from 'builtin-modules';
 import UnoCSS from 'unocss/vite';
-import { type PluginOption, defineConfig } from 'vite';
-// import wasmPack from "vite-plugin-wasm-pack";
+import { defineConfig, type PluginOption } from 'vite';
 
 const setOutDir = (mode: string) => {
     // biome-ignore lint/style/useDefaultSwitchClause: <explanation>
@@ -20,7 +18,6 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            // wasmPack(['../recipe-rs']),
             UnoCSS({
                 presets: [presetUno()],
                 extractors: [extractorSvelte()],
@@ -57,7 +54,6 @@ export default defineConfig(({ mode }) => {
                     '@lezer/common',
                     '@lezer/highlight',
                     '@lezer/lr',
-                    ...builtins,
                 ],
             },
             outDir: setOutDir(mode),
