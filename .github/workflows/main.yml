@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
       - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@13
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
       - uses: JRMurr/direnv-nix-action@v4.2.0
 
       - run: yarn install
