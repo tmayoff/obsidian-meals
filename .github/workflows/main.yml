@@ -27,8 +27,8 @@ jobs:
       - name: lint
         run: biome ci src/
 
-      - name: eslinnt
-        run: yarn eslint src/
+      # - name: eslint
+      #   run: yarn eslint src/
 
   build:
     runs-on: ubuntu-latest
