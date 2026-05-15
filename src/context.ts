@@ -83,7 +83,7 @@ export class Context {
                     console.debug('Loading recipe:', file.name);
                 }
 
-                GetRecipe(this, file).then((r) => {
+                await GetRecipe(this, file).then((r) => {
                     this.recipes.update((arr) => {
                         const idx = arr.findIndex((existing) => existing.path.path === r.path.path);
                         if (idx !== -1) {
@@ -96,7 +96,7 @@ export class Context {
                 });
             }
         } else {
-            GetRecipes(this, recipeFolder!).then((r) => {
+            await GetRecipes(this, recipeFolder).then((r) => {
                 this.recipes.set(r);
             });
         }

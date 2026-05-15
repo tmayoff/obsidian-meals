@@ -37,6 +37,7 @@ export function generateFrontmatter(includeNutritionalInformation: boolean, url:
 
     const frontmatter: any = { source: url };
 
+    /* eslint-disable */
     if (recipe.recipeYield !== null) {
         frontmatter.servings = recipe.recipeYield;
     }
@@ -55,6 +56,8 @@ export function generateFrontmatter(includeNutritionalInformation: boolean, url:
             if (nutrition.cholesterolContent) frontmatter.cholesterol = nutrition.cholesterolContent;
         }
     }
+
+    /* eslint-enable */
 
     content += stringifyYaml(frontmatter);
     content += '---\n';

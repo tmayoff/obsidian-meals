@@ -16,7 +16,7 @@ export async function AddRecipeToMealPlan(ctx: Context, recipe: Recipe, day: str
 
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
-        file.vault.process(file, (content) => {
+        await file.vault.process(file, (content) => {
             const header = `Week of ${GetCurrentWeek(get(ctx.settings).startOfWeek)}`;
             const headerIndex = content.indexOf(header) + header.length;
             const dayHeader = `## ${day}`;
@@ -47,7 +47,7 @@ export async function OpenMealPlanNote(ctx: Context, filePath: string) {
         await ctx.app.workspace.openLinkText(filePath, '', true);
     }
 
-    fillMealPlanNote(ctx, filePath);
+    await fillMealPlanNote(ctx, filePath);
 }
 
 async function fillMealPlanNote(ctx: Context, filePath: string) {
@@ -63,7 +63,7 @@ async function fillMealPlanNote(ctx: Context, filePath: string) {
 
     const file = ctx.app.vault.getFileByPath(filePath);
     if (file != null) {
-        ctx.app.vault.process(file, (content) => {
+        await ctx.app.vault.process(file, (content) => {
             if (content.includes(header)) {
                 return content;
             }

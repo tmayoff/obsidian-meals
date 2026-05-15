@@ -37,7 +37,7 @@ export class AddToPlanModal extends SuggestModal<AddToPlanTarget> {
         el.createEl('div', { text: item.name });
     }
 
-    onChooseSuggestion(item: AddToPlanTarget, _evt: MouseEvent | KeyboardEvent): void {
+    onChooseSuggestion(item: AddToPlanTarget, _evt: any): void {
         if (item.cb) {
             item.cb();
         }
