@@ -2,16 +2,16 @@ import { moment } from 'obsidian';
 import { Err, Ok, type Result } from 'ts-results-es';
 import { ShoppingListIgnoreBehaviour } from '../settings/settings.ts';
 
-export function GetCurrentWeek(startOfWeek: number) {
-    return moment().weekday(startOfWeek).format('MMMM Do');
+export function GetCurrentWeek(startOfWeek: number): string {
+    return moment().weekday(startOfWeek).format('MMMM Do'); // eslint-disable-line
 }
 
 // https://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format#4673436
-export function formatUnicorn(fmtString: string, obj: object) {
+export function formatUnicorn(fmtString: string, obj: object): string {
     let str = fmtString;
 
     for (const [key, rawValue] of Object.entries(obj)) {
-        let value = rawValue;
+        let value = rawValue as string;
         if (rawValue == null) {
             value = '';
         }

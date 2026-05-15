@@ -1,16 +1,15 @@
 import { type App, Modal, Plugin, PluginSettingTab, TFile } from 'obsidian';
+import { mount, unmount } from 'svelte';
 import { get } from 'svelte/store';
 import { Context } from './context.ts';
 import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
-import SearchRecipe from './recipe/SearchRecipe.svelte';
-import { MealSettings } from './settings/settings.ts';
-import 'virtual:uno.css';
-import { mount, unmount } from 'svelte';
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader_ui.ts';
 import { Recipe } from './recipe/recipe.ts';
+import SearchRecipe from './recipe/SearchRecipe.svelte';
 import SettingsPage from './settings/SettingsPage.svelte';
+import { MealSettings } from './settings/settings.ts';
 
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
@@ -25,23 +24,23 @@ export default class MealPlugin extends Plugin {
             await this.ctx.loadRecipes(null);
 
             this.registerEvent(
-                this.app.vault.on('create', (file) => {
+                this.app.vault.on('create', async (file) => {
                     if (file instanceof TFile) {
-                        this.ctx.loadRecipes(file);
+                        await this.ctx.loadRecipes(file);
                     }
                 }),
             );
 
             this.registerEvent(
-                this.app.metadataCache.on('resolved', () => {
-                    this.ctx.loadRecipes(null);
+                this.app.metadataCache.on('resolved', async () => {
+                    await this.ctx.loadRecipes(null);
                 }),
             );
 
             this.registerEvent(
-                this.app.vault.on('modify', (file) => {
+                this.app.vault.on('modify', async (file) => {
                     if (file instanceof TFile) {
-                        this.ctx.loadRecipes(file as TFile);
+                        await this.ctx.loadRecipes(file);
                     }
                 }),
             );
@@ -57,7 +56,7 @@ export default class MealPlugin extends Plugin {
 
         this.addCommand({
             id: 'open-meal-plan',
-            name: 'Open meal plan note',
+            name: 'Open meal plan note', // eslint-disable-line obsidianmd/commands/no-plugin-name-in-command-name
             callback: async () => {
                 await OpenMealPlanNote(this.ctx, get(this.ctx.settings).mealPlanNote);
             },
@@ -81,7 +80,7 @@ export default class MealPlugin extends Plugin {
 
         this.addCommand({
             id: 'download-url',
-            name: 'Download recipe from url',
+            name: 'Download recipe from URL',
             callback: () => {
                 DownloadRecipeCommand(this.ctx);
             },
@@ -94,8 +93,8 @@ export default class MealPlugin extends Plugin {
                         return e
                             .setTitle('Add to shopping list')
                             .setIcon('shopping-basket')
-                            .onClick(() => {
-                                AddFileToShoppingList(this.ctx, file);
+                            .onClick(async () => {
+                                await AddFileToShoppingList(this.ctx, file);
                             });
                     });
                     e.addItem((e) => {
@@ -120,9 +119,9 @@ export default class MealPlugin extends Plugin {
         );
 
         this.ctx.settings.subscribe(async () => {
-            this.updateDebugMode(this.ctx.debugMode());
+            await this.updateDebugMode(this.ctx.debugMode());
             await this.ctx.loadRecipes(null);
-            this.saveSettings();
+            await this.saveSettings();
         });
 
         console.info('obisidan-meals plugin loaded');
@@ -131,7 +130,7 @@ export default class MealPlugin extends Plugin {
     async loadSettings() {
         this.loadedSettings = true;
 
-        this.ctx.settings.set(Object.assign({}, new MealSettings(), await this.loadData()));
+        this.ctx.settings.set(Object.assign({}, new MealSettings(), await this.loadData()) as MealSettings);
     }
 
     async saveSettings() {
