@@ -1,8 +1,9 @@
 name: release
+
 on:
   push:
-    branches:
-      - main
+    tags:
+      - "*"
 
 permissions:
   contents: write
@@ -11,36 +12,38 @@ permissions:
   attestations: write
 
 jobs:
-  release-please:
+  release:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v4
-        id: release
-        with:
-          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
-
       - uses: actions/checkout@v6
-        if: ${{ steps.release.outputs.release_created }}
-
+      - uses: actions/setup-node@v6
       - uses: DeterminateSystems/nix-installer-action@v22
-        if: ${{ steps.release.outputs.release_created }}
+      - uses: DeterminateSystems/magic-nix-cache-action@v13
+      - uses: JRMurr/direnv-nix-action@v4.2.0
 
       - name: Build
-        if: ${{ steps.release.outputs.release_created }}
         run: |
-          nix develop --command yarn install
-          nix develop --command yarn run build
+          yarn install
+          yarn run build
 
       - name: artifact attestation
-        if: ${{ steps.release.outputs.release_created }}
         uses: actions/attest@v4
         with:
-          subject-path: "build/*"
+          subject-path: |
+            build/*
+            manifest.json
 
-      - name: Upload Release Artifact
-        if: ${{ steps.release.outputs.release_created }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release upload ${{ steps.release.outputs.tag_name }} build/main.js build/styles.css manifest.json
-
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: false
+          body: See the [changelog](https://github.com/Vinzent03/obsidian-git/blob/master/CHANGELOG.md) for details.
+          draft: false
+          prerelease: false
+          files: |
+            main.js
+            manifest.json
+            styles.css

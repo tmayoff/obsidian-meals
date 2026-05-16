@@ -1,0 +1,47 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+  attestations: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        id: release
+        with:
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+
+      - uses: actions/checkout@v6
+        if: ${{ steps.release.outputs.release_created }}
+
+      - uses: DeterminateSystems/nix-installer-action@v22
+        if: ${{ steps.release.outputs.release_created }}
+
+      - name: Build
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          nix develop --command yarn install
+          nix develop --command yarn run build
+
+      - name: artifact attestation
+        if: ${{ steps.release.outputs.release_created }}
+        uses: actions/attest@v4
+        with:
+          subject-path: "build/*"
+
+      - name: Create tag
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag ${{ steps.release.outputs.tag_name }}
+          git push origin
+          
