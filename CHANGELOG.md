@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.3.0](https://github.com/tmayoff/obsidian-meals/compare/1.2.0...1.3.0) (2026-05-17)
+
+
+### Features
+
+* Build Attestation ([#424](https://github.com/tmayoff/obsidian-meals/issues/424)) ([346aaf0](https://github.com/tmayoff/obsidian-meals/commit/346aaf0147b8cf825e4eb0d82af8e31e4370da15))
+* updated release scripts for attestation ([#432](https://github.com/tmayoff/obsidian-meals/issues/432)) ([269bd0c](https://github.com/tmayoff/obsidian-meals/commit/269bd0c86a495d4c849bc13a60b2a23478324d92))
+
+
+### Bug Fixes
+
+* build attestation for nightly ([#425](https://github.com/tmayoff/obsidian-meals/issues/425)) ([d876994](https://github.com/tmayoff/obsidian-meals/commit/d876994e4b484769d516db123546bda7224d7556))
+* Decode symbols in the html ([#412](https://github.com/tmayoff/obsidian-meals/issues/412)) ([ea61ab6](https://github.com/tmayoff/obsidian-meals/commit/ea61ab6e41eaf8c69aa19735b7017b58934fb1ad))
+* Improve Scorecard ([#430](https://github.com/tmayoff/obsidian-meals/issues/430)) ([0f79785](https://github.com/tmayoff/obsidian-meals/commit/0f797850b9bb31ac81adf001109a446753290078))
+* nightly ([d7500f4](https://github.com/tmayoff/obsidian-meals/commit/d7500f49d0e7069b7cb18752caa3893bab3915f1))
+* nightly gh command ([e8c2cff](https://github.com/tmayoff/obsidian-meals/commit/e8c2cffd0d8f2106891cc2acb009cd01d3793282))
+* nightly gh command ([e1269ee](https://github.com/tmayoff/obsidian-meals/commit/e1269eecb555726509338c9011537a71030d1ef5))
+* nightly step namgae ([3272590](https://github.com/tmayoff/obsidian-meals/commit/32725900636a436f94d22873e332495c673b07fd))
+* nightly trying to build attest ([#433](https://github.com/tmayoff/obsidian-meals/issues/433)) ([c9243d0](https://github.com/tmayoff/obsidian-meals/commit/c9243d0766feef4b5e5619430067503fe5eb2b5c))
+* release, use the correct ref_name ([b93b3ae](https://github.com/tmayoff/obsidian-meals/commit/b93b3ae97a33fe6224ae332dd40c3656431ede24))
+
 ## [1.2.0](https://github.com/tmayoff/obsidian-meals/compare/1.1.3...1.2.0) (2026-04-03)
 
 
