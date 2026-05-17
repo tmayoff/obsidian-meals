@@ -3,13 +3,11 @@ name: release nightly
 on:
   pull_request:
     paths:
-      - 'CHANGELOG.md'
+      - "CHANGELOG.md"
 
 permissions:
   contents: write
   pull-requests: write
-  id-token: write
-  attestations: write
 
 jobs:
   release-nightly:
@@ -31,6 +29,10 @@ jobs:
         with:
           subject-path: "build/*"
 
+      - name: delete old pre-releases
+        run: |
+          gh release list --json tagName --jq '.[].tagName' | grep '\-prerelease' | xargs -I {} gh release delete {} --yes --delete-tag
+
       - name: Upload Release Artifact
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -40,6 +42,4 @@ jobs:
           echo Version: $VERSION
           CHANGELOG="$(gh pr view $PR_NUMBER --json body --jq .body | tail -n+4)"
           echo "$CHANGELOG"
-          gh release delete $VERSION --cleanup-tag -y || true
           gh release create $VERSION -p --latest=false -t "$VERSION" -n "$CHANGELOG"
-          gh release upload $VERSION --clobber build/main.js build/styles.css manifest.json
