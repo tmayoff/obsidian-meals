@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/tmayoff/obsidian-meals/compare/1.3.0...1.3.1) (2026-05-17)
+
+
+### Bug Fixes
+
+* re-locked yarn.lock ([2802b81](https://github.com/tmayoff/obsidian-meals/commit/2802b81cd2aa7957deaa6e75c2e05989cfea94cb))
+
 ## [1.3.0](https://github.com/tmayoff/obsidian-meals/compare/1.2.0...1.3.0) (2026-05-17)
 
 
