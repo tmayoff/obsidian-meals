@@ -3,13 +3,11 @@ name: release nightly
 on:
   pull_request:
     paths:
-      - 'CHANGELOG.md'
+      - "CHANGELOG.md"
 
 permissions:
   contents: write
   pull-requests: write
-  id-token: write
-  attestations: write
 
 jobs:
   release-nightly:
@@ -30,6 +28,10 @@ jobs:
         uses: actions/attest@v4
         with:
           subject-path: "build/*"
+
+      - name: delete old pre-releases
+        run: |
+          gh release list --json tagName --jq '.[].tagName' | grep '\-prerelease' | xargs -I {} gh release delete {} --yes --delete-tag
 
       - name: Upload Release Artifact
         env:
