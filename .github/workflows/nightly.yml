@@ -19,16 +19,6 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@v13
       - uses: JRMurr/direnv-nix-action@v4.2.0
 
-      - name: Build
-        run: |
-          yarn install
-          yarn run build
-
-      - name: artifact attestation
-        uses: actions/attest@v4
-        with:
-          subject-path: "build/*"
-
       - name: delete old pre-releases
         run: |
           gh release list --json tagName --jq '.[].tagName' | grep '\-prerelease' | xargs -I {} gh release delete {} --yes --delete-tag
