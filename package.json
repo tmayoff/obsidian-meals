@@ -53,7 +53,7 @@
         "unocss": "^66.6.7"
     },
     "resolutions": {
-        "typescript": "~5.8.0"
+        "typescript": "~6.0.0"
     },
     "packageManager": "yarn@4.13.0"
 }
