@@ -14,10 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: DeterminateSystems/magic-nix-cache-action@v13
-      - uses: JRMurr/direnv-nix-action@v4.2.0
 
       - name: delete old pre-releases
         env:
@@ -28,7 +24,7 @@ jobs:
 
       - name: Create release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
         run: |
           VERSION="$(cat package.json | jq -r .version)-prerelease"
