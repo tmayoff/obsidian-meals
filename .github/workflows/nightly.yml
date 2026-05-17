@@ -26,7 +26,7 @@ jobs:
         run: |
           gh release list --json tagName --jq '.[].tagName' | grep '\-prerelease' | xargs -I {} gh release delete {} --yes --cleanup-tag
 
-      - name: Upload Release Artifact
+      - name: Create release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.number }}
