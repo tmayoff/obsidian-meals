@@ -1,7 +1,5 @@
 import { svelte, vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import extractorSvelte from '@unocss/extractor-svelte';
-import { presetUno } from '@unocss/preset-uno';
-import UnoCSS from 'unocss/vite';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig, type PluginOption } from 'vite';
 
 const setOutDir = (mode: string) => {
@@ -18,10 +16,7 @@ const setOutDir = (mode: string) => {
 export default defineConfig(({ mode }) => {
     return {
         plugins: [
-            UnoCSS({
-                presets: [presetUno()],
-                extractors: [extractorSvelte()],
-            }),
+            tailwindcss(),
             svelte({
                 preprocess: vitePreprocess(),
                 compilerOptions: {
