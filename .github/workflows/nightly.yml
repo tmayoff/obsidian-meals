@@ -20,6 +20,9 @@ jobs:
       - uses: JRMurr/direnv-nix-action@v4.2.0
 
       - name: delete old pre-releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
         run: |
           gh release list --json tagName --jq '.[].tagName' | grep '\-prerelease' | xargs -I {} gh release delete {} --yes --delete-tag
 
