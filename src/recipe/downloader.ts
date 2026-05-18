@@ -1,6 +1,7 @@
 import { requestUrl, stringifyYaml } from 'obsidian';
 import type { Recipe, Recipe as SchemaRecipe } from 'schema-dts';
 import { Err, Ok, type Result } from 'ts-results-es';
+import { GetRecipeMDFormatBoundedList } from '../utils/parser.ts';
 import { ErrCtx } from '../utils/result.ts';
 import { get_first_recipe, get_nutritional_information, to_recipemd } from './schema.ts';
 
@@ -77,6 +78,10 @@ export async function DownloadRecipeFileContent(
 
     let file_content = generateFrontmatter(includeNutritionalInformation, url, recipe);
     file_content += `\n${recipeContent}`;
+
+    // Post process ingredients
+
+    const res = GetRecipeMDFormatBoundedList(recipeContent);
 
     return Ok({ recipeName: recipeName, recipeContent: file_content, recipe: recipe });
 }

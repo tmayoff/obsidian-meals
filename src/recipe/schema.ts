@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import type { Graph, HowToSection, HowToStep, NutritionInformation, Recipe, Text, Thing } from 'schema-dts';
+import { ParseIngredient } from '../utils/parser';
 
 function decodeHtmlEntities(text: string): string {
     return text
@@ -42,6 +43,7 @@ function toArray<T>(value: T | readonly T[] | null | undefined): T[] {
     return Array.isArray(value) ? [...value] : [value as T];
 }
 
+const prefixRegex = /- +/;
 export function to_recipemd(recipe: Recipe): string {
     let formatted = `# ${recipe.name ?? ''}\n`;
     if (recipe.description !== null) {
@@ -55,9 +57,26 @@ export function to_recipemd(recipe: Recipe): string {
     formatted += '---\n';
 
     const ingredients = toArray(recipe.recipeIngredient).filter((item): item is Text => typeof item === 'string');
-    ingredients.forEach((ingredient) => {
-        const suffix = ingredient.toString().startsWith('-') ? '' : '- ';
-        formatted += `${suffix}${ingredient}\n`;
+    ingredients.forEach((ingredientLeaf) => {
+        const ingredientText = ingredientLeaf.toString().replace(prefixRegex, '').trim();
+        const ingredient = ParseIngredient(`- ${ingredientText}`, true).expect(`Failed to parse ingredient ${ingredientText}`);
+
+        let quantity = '*';
+        if (ingredient.quantity !== null) {
+            quantity += `${ingredient.quantity?.toString()}`;
+
+            if (ingredient.quantity2 !== null) {
+                quantity += ` - ${ingredient.quantity2.toString()}`;
+            }
+        }
+
+        if (ingredient.unitOfMeasure !== null) {
+            quantity += ` ${ingredient.unitOfMeasure}`;
+        }
+
+        quantity += `*`;
+
+        formatted += `- ${quantity.length === 2 ? '' : quantity + ' '}${ingredient.description}\n`;
     });
 
     formatted += '---\n\n';
