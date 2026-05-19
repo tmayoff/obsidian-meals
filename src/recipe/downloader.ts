@@ -1,7 +1,6 @@
 import { requestUrl, stringifyYaml } from 'obsidian';
 import type { Recipe, Recipe as SchemaRecipe } from 'schema-dts';
 import { Err, Ok, type Result } from 'ts-results-es';
-import { GetRecipeMDFormatBoundedList } from '../utils/parser.ts';
 import { ErrCtx } from '../utils/result.ts';
 import { get_first_recipe, get_nutritional_information, to_recipemd } from './schema.ts';
 
