@@ -63,6 +63,7 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
 
 export function ParseIngredient(content: string, advancedParse: boolean): Result<Ingredient, ParseErrors> {
     // Parse the ingredient line
+    // TODO Remove the need for the prefix here
     const match = content.match(linePrefix);
     if (match === null) {
         return Err('NO_INGREDIENT');

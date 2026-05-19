@@ -17,7 +17,7 @@ export class MealSettings {
     recipeFormat: RecipeFormat = RecipeFormat.RecipeMD;
     shoppingListIgnore: string[] = ['salt', 'pepper', 'olive oil', 'garlic powder'];
     shoppingListIgnoreBehaviour: ShoppingListIgnoreBehaviour = ShoppingListIgnoreBehaviour.Exact;
-    advancedIngredientParsing = false;
+    advancedIngredientParsing = true;
     shoppingListFormat = '{description} {quantity} {unitOfMeasure}';
     debugMode = false;
     startOfWeek = 0;
