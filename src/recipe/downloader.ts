@@ -79,9 +79,5 @@ export async function DownloadRecipeFileContent(
     let file_content = generateFrontmatter(includeNutritionalInformation, url, recipe);
     file_content += `\n${recipeContent}`;
 
-    // Post process ingredients
-
-    const res = GetRecipeMDFormatBoundedList(recipeContent);
-
     return Ok({ recipeName: recipeName, recipeContent: file_content, recipe: recipe });
 }

@@ -61,22 +61,18 @@ export function to_recipemd(recipe: Recipe): string {
         const ingredientText = ingredientLeaf.toString().replace(prefixRegex, '').trim();
         const ingredient = ParseIngredient(`- ${ingredientText}`, true).expect(`Failed to parse ingredient ${ingredientText}`);
 
-        let quantity = '*';
-        if (ingredient.quantity !== null) {
-            quantity += `${ingredient.quantity?.toString()}`;
+        const modifier = ingredientText.includes(',') ? ingredientText.substring(ingredientText.indexOf(',')) : null;
 
-            if (ingredient.quantity2 !== null) {
-                quantity += ` - ${ingredient.quantity2.toString()}`;
-            }
-        }
+        let quantity = '';
+        quantity += ingredient.quantity?.toString() ?? '';
+        quantity += ingredient.quantity2 !== null ? `-${ingredient.quantity2?.toString()}` : '';
+        quantity += ingredient.unitOfMeasure !== null ? ` ${ingredient.unitOfMeasure}` : '';
 
-        if (ingredient.unitOfMeasure !== null) {
-            quantity += ` ${ingredient.unitOfMeasure}`;
-        }
-
-        quantity += `*`;
-
-        formatted += `- ${quantity.length === 2 ? '' : quantity + ' '}${ingredient.description}\n`;
+        formatted += '- ';
+        formatted += quantity.length === 0 ? '' : `*${quantity}* `;
+        formatted += ingredient.description !== null ? `${ingredient.description.trim()}` : '';
+        formatted += modifier ?? '';
+        formatted += '\n';
     });
 
     formatted += '---\n\n';
