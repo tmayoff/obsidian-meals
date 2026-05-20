@@ -2,7 +2,7 @@
 # Manual changes might be lost - proceed with caution!
 
 __metadata:
-  version: 8
+  version: 9
   cacheKey: 10c0
 
 "@ampproject/remapping@npm:^2.2.1":
@@ -4560,7 +4560,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"numeric-quantity@npm:^3.2.0":
+"numeric-quantity@npm:^3.2.1":
   version: 3.2.1
   resolution: "numeric-quantity@npm:3.2.1"
   checksum: 10c0/6efe9bd718c21965518f4758c628896526b7c71576964daadf3e779532ef182da44b03808019b198c1bf2c613a2536c4f6d92f40d3f8e6e0125e8475c7ad70b1
@@ -4867,11 +4867,11 @@ __metadata:
   linkType: hard
 
 "parse-ingredient@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "parse-ingredient@npm:2.1.0"
+  version: 2.2.0
+  resolution: "parse-ingredient@npm:2.2.0"
   dependencies:
-    numeric-quantity: "npm:^3.2.0"
-  checksum: 10c0/c9ddfcd606b01231ffc44f7779e8625ac31a9dce563791640b26a9f4a5e81030e015cd9e0ed491b832099b0b41a295c039b7afb024029b993588ee8c78c71e62
+    numeric-quantity: "npm:^3.2.1"
+  checksum: 10c0/8409db556692604a4c267c542307fd2ad5c073eda07a38666460b745d05e1603f0de7fe85acf7533fbb9ed62c0608f6a6f60457d1e3f701d8f4da65872b82c28
   languageName: node
   linkType: hard
 
@@ -5901,9 +5901,9 @@ __metadata:
   linkType: hard
 
 "tailwindcss@npm:^4.2.2":
-  version: 4.2.2
-  resolution: "tailwindcss@npm:4.2.2"
-  checksum: 10c0/6eae8a125c35d504ba6c518d26ec64fba694ff4a9ab9b9cd9883050128e0b7afdf491388c472d9bed2624664c1c7d4a133d19b653151a6b52e6ce6953168a857
+  version: 4.3.0
+  resolution: "tailwindcss@npm:4.3.0"
+  checksum: 10c0/4cde389ee5e9132e7ef90e4c1d05978d52821761a00700c18b7d46d325881086f0a9c9ec7f616929ecd6e26109c41913538883e066c6dd4bd993debbbbc99084
   languageName: node
   linkType: hard
 
