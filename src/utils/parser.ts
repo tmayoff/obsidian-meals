@@ -46,7 +46,12 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
             console.debug('Parsing ingredient, raw line: ', rawIngredient);
         }
 
-        const ingredient = ParseIngredient(rawIngredient, advancedParsing);
+        const match = rawIngredient.match(linePrefix);
+        if (match === null) {
+            continue;
+        }
+
+        const ingredient = ParseIngredient(match[4].replaceAll('*', ''), true, advancedParsing);
         if (ingredient.isOk()) {
             if (debug) {
                 console.debug('Final ingredient output', ingredient.value);
@@ -61,14 +66,8 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
     return Ok(ingredients);
 }
 
-export function ParseIngredient(content: string, advancedParse: boolean): Result<Ingredient, ParseErrors> {
-    // Parse the ingredient line
-    const match = content.match(linePrefix);
-    if (match === null) {
-        return Err('NO_INGREDIENT');
-    }
-
-    let ingredientContent = match[4].replaceAll('*', '');
+export function ParseIngredient(ingredientContent: string, singularize: boolean, advancedParse: boolean): Result<Ingredient, ParseErrors> {
+    // Parse the ingredient
 
     if (ingredientContent === '') {
         return Err('INGREDIENT_EMPTY');
@@ -99,7 +98,7 @@ export function ParseIngredient(content: string, advancedParse: boolean): Result
         return Err('INGREDIENT_FAILED_TO_PARSE');
     }
 
-    if (advancedParse) {
+    if (singularize) {
         tingredient.description = singular(tingredient.description);
     }
 

@@ -28,21 +28,21 @@ Made in one pot in just 30 minutes, this is guaranteed to be the easiest lentil 
 **8,8 servings servings**
 
 ---
-- 1 tablespoon olive oil
-- 1 large yellow onion, chopped small
-- 5 cloves garlic, minced
-- 1 tablespoon fresh ginger, peeled and grated
-- 1 tablespoon garam masala
-- 1 teaspoon ground turmeric
-- 1/2 teaspoon red pepper chili flakes
-- 1 1/2 cups dried red lentils
-- 14 ounce can diced tomatoes
-- 13.5 ounce can full fat coconut milk
-- 3 cups vegetable broth
-- 1 teaspoon salt, or to taste
+- *1 tablespoon* olive oil
+- *1 large* yellow onion, chopped small
+- *5 cloves* garlic, minced
+- *1 tablespoon* fresh ginger, peeled and grated
+- *1 tablespoon* garam masala
+- *1 teaspoon* ground turmeric
+- *0.5 teaspoon* red pepper chili flakes
+- *1.5 cups* dried red lentils
+- *14 ounce* can diced tomatoes
+- *13.5 ounce* can full fat coconut milk
+- *3 cups* vegetable broth
+- *1 teaspoon* salt, or to taste
 - half a lemon, juiced
-- 3-4 cups baby spinach
-- 4 cups cooked brown or white rice
+- *3-4 cups* baby spinach
+- *4 cups* cooked brown or white rice
 - Vegan Naan
 ---
 
@@ -72,22 +72,22 @@ Fryer-Less General Tao Chicken
 **6 serving(s) servings**
 
 ---
-- 6 tablespoons (90 ml) soy sauce
-- 6 tablespoons (90 ml) chicken broth (or water)
-- 6 tablespoons (90 ml) rice vinegar
-- 1 to 2 tablespoons (15 to 30 ml) fresh ginger, finely chopped
-- 3 cloves garlic, finely chopped
-- 4 teaspoons (20 ml) cornstarch
-- 2 teaspoons (10 ml) paprika
-- 2 teaspoons (10 ml) sambal oelek
-- 1 teaspoon (5 ml) toasted sesame oil
-- 1 cup (250 ml) sugar
-- 3 tablespoons (45 ml) water
-- 2 red bell peppers, cut into strips
-- 3/4 cup (180 ml) canola oil
-- 2 lbs (1 kg) chicken skinless and boneless thighs chicken, cut into large cubes
-- 1/2 cup (125 ml) unbleached all-purpose flour
-- 2 green onions, thinly sliced
+- *6 tablespoons* soy sauce
+- *6 tablespoons* chicken broth (or water)
+- *6 tablespoons* rice vinegar
+- *1-2 tablespoons* fresh ginger, finely chopped
+- *3 cloves* garlic, finely chopped
+- *4 teaspoons* cornstarch
+- *2 teaspoons* paprika
+- *2 teaspoons* sambal oelek
+- *1 teaspoon* toasted sesame oil
+- *1 cup* sugar
+- *3 tablespoons* water
+- *2* red bell peppers, cut into strips
+- *0.75 cup* canola oil
+- *2 lbs* chicken skinless and boneless thighs chicken, cut into large cubes
+- *0.5 cup* unbleached all-purpose flour
+- *2* green onions, thinly sliced
 - Salt and pepper
 ---
 
@@ -117,10 +117,10 @@ Les graines de Chia font figure de super-aliment depuis quelque temps…
 **2 servings**
 
 ---
-- 200 ml Lait de coco
-- 2 c. à soupe Graine(s) de chia
-- 1 c. à soupe Cassonade
-- 1 Mangue(s)
+- *200 ml* Lait de coco
+- *2 c.* à soupe Graine de chia
+- *1 c.* à soupe Cassonade
+- *1* Mangue
 ---
 
 1. Mélanger les graines de chia avec le lait de coco et la cassonade la veille dans un bol. 

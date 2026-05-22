@@ -1,5 +1,6 @@
 import * as cheerio from 'cheerio';
 import type { Graph, HowToSection, HowToStep, NutritionInformation, Recipe, Text, Thing } from 'schema-dts';
+import { ParseIngredient } from '../utils/parser';
 
 function decodeHtmlEntities(text: string): string {
     return text
@@ -42,6 +43,7 @@ function toArray<T>(value: T | readonly T[] | null | undefined): T[] {
     return Array.isArray(value) ? [...value] : [value as T];
 }
 
+const prefixRegex = /- +/;
 export function to_recipemd(recipe: Recipe): string {
     let formatted = `# ${recipe.name ?? ''}\n`;
     if (recipe.description !== null) {
@@ -55,9 +57,22 @@ export function to_recipemd(recipe: Recipe): string {
     formatted += '---\n';
 
     const ingredients = toArray(recipe.recipeIngredient).filter((item): item is Text => typeof item === 'string');
-    ingredients.forEach((ingredient) => {
-        const suffix = ingredient.toString().startsWith('-') ? '' : '- ';
-        formatted += `${suffix}${ingredient}\n`;
+    ingredients.forEach((ingredientLeaf) => {
+        const ingredientText = ingredientLeaf.toString().replace(prefixRegex, '').trim();
+        const ingredient = ParseIngredient(ingredientText, false, true).expect(`Failed to parse ingredient ${ingredientText}`);
+
+        const modifier = ingredientText.includes(',') ? ingredientText.substring(ingredientText.indexOf(',')) : null;
+
+        let quantity = '';
+        quantity += ingredient.quantity?.toString() ?? '';
+        quantity += ingredient.quantity2 !== null ? `-${ingredient.quantity2?.toString()}` : '';
+        quantity += ingredient.unitOfMeasure !== null ? ` ${ingredient.unitOfMeasure}` : '';
+
+        formatted += '- ';
+        formatted += quantity.length === 0 ? '' : `*${quantity}* `;
+        formatted += ingredient.description !== null ? `${ingredient.description.trim()}` : '';
+        formatted += modifier ?? '';
+        formatted += '\n';
     });
 
     formatted += '---\n\n';
