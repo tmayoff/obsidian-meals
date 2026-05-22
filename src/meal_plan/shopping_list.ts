@@ -182,7 +182,7 @@ function getMealPlanIngredients(ctx: Context, file: TFile) {
     }
 
     const startPos = topLevel[0].position!;
-    const endPos = end !== -1 ? topLevel[end]?.position! : null;
+    const endPos = topLevel[end]?.position ?? null;
 
     const links = fileCache.links!;
     let ingredients: Ingredient[] = [];

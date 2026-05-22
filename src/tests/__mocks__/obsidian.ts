@@ -77,9 +77,7 @@ export function requestUrl(url: string): { text: Promise<string> } {
 }
 
 export function stringifyYaml(obj: any): string {
-    return (
-        Object.entries(obj)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join('\n') + '\n'
-    );
+    return `${Object.entries(obj)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n')}\n`;
 }
