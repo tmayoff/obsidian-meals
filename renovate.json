@@ -1,19 +1,29 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["config:recommended"],
-    "minimumReleaseAge": "30 days",
+    "minimumReleaseAge": "3 days",
     "dependencyDashboard": true,
     "commitMessagePrefix": "chore(deps):",
+    "lockFileMaintenance": {
+        "enabled": true
+    },
+    "postUpdateOptions": ["yarnDedupeHighest"],
     "packageRules": [
         {
             "matchUpdateTypes": ["minor", "patch"],
             "groupName": "minor and patch updates",
-            "groupSlug": "minor"
+            "groupSlug": "minor",
+            "automerge": true,
+            "automergeType": "pr",
+            "platformAutomerge": true
         },
         {
             "matchManagers": ["github-actions"],
             "groupName": "github actions",
-            "groupSlug": "all"
+            "groupSlug": "all",
+            "automerge": true,
+            "automergeType": "pr",
+            "platformAutomerge": true
         }
     ]
 }
