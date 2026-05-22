@@ -16,9 +16,9 @@ export class TFile {
     name = '';
     parent: any = null;
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export class TFolder {
@@ -27,9 +27,9 @@ export class TFolder {
     parent: any = null;
     children: any[] = [];
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export const getFrontMatterInfo = vi.fn();
@@ -38,9 +38,9 @@ export class Plugin {
     app: any;
     manifest: any;
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export class Modal {
