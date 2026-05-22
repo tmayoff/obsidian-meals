@@ -22,3 +22,5 @@ jobs:
           pr-labels: |                  # Labels to be set on the PR
             dependencies
             automated
+      - uses: DeterminateSystems/flake-checker-action@main # This action
+                    
