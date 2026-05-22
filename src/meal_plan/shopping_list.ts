@@ -1,5 +1,4 @@
 import type { HeadingCache, TFile } from 'obsidian';
-// import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import { Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
@@ -183,7 +182,7 @@ function getMealPlanIngredients(ctx: Context, file: TFile) {
     }
 
     const startPos = topLevel[0].position!;
-    const endPos = end !== -1 ? topLevel[end]?.position! : null;
+    const endPos = topLevel[end]?.position ?? null;
 
     const links = fileCache.links!;
     let ingredients: Ingredient[] = [];

@@ -16,9 +16,9 @@ export class TFile {
     name = '';
     parent: any = null;
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export class TFolder {
@@ -27,9 +27,9 @@ export class TFolder {
     parent: any = null;
     children: any[] = [];
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export const getFrontMatterInfo = vi.fn();
@@ -38,9 +38,9 @@ export class Plugin {
     app: any;
     manifest: any;
 
-    constructor() {
-        // Mock implementation
-    }
+    // constructor() {
+    //     // Mock implementation
+    // }
 }
 
 export class Modal {
@@ -77,9 +77,7 @@ export function requestUrl(url: string): { text: Promise<string> } {
 }
 
 export function stringifyYaml(obj: any): string {
-    return (
-        Object.entries(obj)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join('\n') + '\n'
-    );
+    return `${Object.entries(obj)
+        .map(([k, v]) => `${k}: ${v}`)
+        .join('\n')}\n`;
 }

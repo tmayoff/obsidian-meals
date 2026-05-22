@@ -2,7 +2,7 @@ import { type App, getFrontMatterInfo, Modal, parseYaml, Setting, SuggestModal }
 import { get } from 'svelte/store';
 import type { Context } from '../context.ts';
 import { AppendMarkdownExt, NoteExists, OpenNotePath } from '../utils/filesystem.ts';
-import { Download, DownloadRecipeFileContent, generateFrontmatter } from './downloader.ts';
+import { DownloadRecipeFileContent } from './downloader.ts';
 import type { Recipe as MealsRecipe } from './recipe.ts';
 
 class DownloadRecipeModal extends SuggestModal<string> {
