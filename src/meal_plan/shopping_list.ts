@@ -1,5 +1,4 @@
 import type { HeadingCache, TFile } from 'obsidian';
-// import type { Ingredient } from 'parse-ingredient';
 import { get } from 'svelte/store';
 import { Ok, type Result } from 'ts-results-es';
 import type { Context } from '../context.ts';
