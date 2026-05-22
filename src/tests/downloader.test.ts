@@ -34,9 +34,9 @@ Made in one pot in just 30 minutes, this is guaranteed to be the easiest lentil 
 - *1 tablespoon* fresh ginger, peeled and grated
 - *1 tablespoon* garam masala
 - *1 teaspoon* ground turmeric
-- *0.5 teaspoon* red pepper chili flake
-- *1.5 cups* dried red lentil
-- *14 ounce* can diced tomato
+- *0.5 teaspoon* red pepper chili flakes
+- *1.5 cups* dried red lentils
+- *14 ounce* can diced tomatoes
 - *13.5 ounce* can full fat coconut milk
 - *3 cups* vegetable broth
 - *1 teaspoon* salt, or to taste
@@ -83,11 +83,11 @@ Fryer-Less General Tao Chicken
 - *1 teaspoon* toasted sesame oil
 - *1 cup* sugar
 - *3 tablespoons* water
-- *2* red bell pepper, cut into strips
+- *2* red bell peppers, cut into strips
 - *0.75 cup* canola oil
 - *2 lbs* chicken skinless and boneless thighs chicken, cut into large cubes
 - *0.5 cup* unbleached all-purpose flour
-- *2* green onion, thinly sliced
+- *2* green onions, thinly sliced
 - Salt and pepper
 ---
 
