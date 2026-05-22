@@ -46,7 +46,12 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
             console.debug('Parsing ingredient, raw line: ', rawIngredient);
         }
 
-        const ingredient = ParseIngredient(rawIngredient, true, advancedParsing);
+        const match = rawIngredient.match(linePrefix);
+        if (match === null) {
+            continue;
+        }
+
+        const ingredient = ParseIngredient(match[4].replaceAll('*', ''), true, advancedParsing);
         if (ingredient.isOk()) {
             if (debug) {
                 console.debug('Final ingredient output', ingredient.value);
@@ -61,15 +66,8 @@ export function GetIngredientsFromList(list: string[], advancedParsing: boolean,
     return Ok(ingredients);
 }
 
-export function ParseIngredient(content: string, singularize: bool, advancedParse: boolean): Result<Ingredient, ParseErrors> {
-    // Parse the ingredient line
-    // TODO Remove the need for the prefix here
-    const match = content.match(linePrefix);
-    if (match === null) {
-        return Err('NO_INGREDIENT');
-    }
-
-    let ingredientContent = match[4].replaceAll('*', '');
+export function ParseIngredient(ingredientContent: string, singularize: boolean, advancedParse: boolean): Result<Ingredient, ParseErrors> {
+    // Parse the ingredient
 
     if (ingredientContent === '') {
         return Err('INGREDIENT_EMPTY');

@@ -59,7 +59,7 @@ export function to_recipemd(recipe: Recipe): string {
     const ingredients = toArray(recipe.recipeIngredient).filter((item): item is Text => typeof item === 'string');
     ingredients.forEach((ingredientLeaf) => {
         const ingredientText = ingredientLeaf.toString().replace(prefixRegex, '').trim();
-        const ingredient = ParseIngredient(`- ${ingredientText}`, false, true).expect(`Failed to parse ingredient ${ingredientText}`);
+        const ingredient = ParseIngredient(ingredientText, false, true).expect(`Failed to parse ingredient ${ingredientText}`);
 
         const modifier = ingredientText.includes(',') ? ingredientText.substring(ingredientText.indexOf(',')) : null;
 
