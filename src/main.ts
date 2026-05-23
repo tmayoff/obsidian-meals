@@ -10,6 +10,7 @@ import { Recipe } from './recipe/recipe.ts';
 import SearchRecipe from './recipe/SearchRecipe.svelte';
 import SettingsPage from './settings/SettingsPage.svelte';
 import { MealSettings } from './settings/settings.ts';
+import 'virtual:uno.css';
 
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
