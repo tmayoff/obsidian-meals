@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0](https://github.com/tmayoff/obsidian-meals/compare/1.3.1...2.0.0) (2026-05-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* Proper RecipeMD ingredients ([#436](https://github.com/tmayoff/obsidian-meals/issues/436))
+
+### Bug Fixes
+
+* back to unocss ([#444](https://github.com/tmayoff/obsidian-meals/issues/444)) ([bf9b995](https://github.com/tmayoff/obsidian-meals/commit/bf9b995b0bbfdd613453b1b074c0793e82ac0b02))
+* Proper RecipeMD ingredients ([#436](https://github.com/tmayoff/obsidian-meals/issues/436)) ([68be301](https://github.com/tmayoff/obsidian-meals/commit/68be301bec99ade95a213564376e2ba5fbe853c5))
+
 ## [1.3.1](https://github.com/tmayoff/obsidian-meals/compare/1.3.0...1.3.1) (2026-05-17)
 
 
