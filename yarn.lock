@@ -2973,6 +2973,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-video-id@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "get-video-id@npm:4.2.0"
+  checksum: 10c0/d3f5d1b0117c3717b2f8bc05e1e1ccb5b7f8fdbfad7ba872308f41db08d1171e28109186aa379caa0b00ac29503fc78f24628d9d2dcd0788535ed6bc76490020
+  languageName: node
+  linkType: hard
+
 "glob-parent@npm:^6.0.2":
   version: 6.0.2
   resolution: "glob-parent@npm:6.0.2"
@@ -4110,6 +4117,7 @@ __metadata:
     cheerio: "npm:^1.2.0"
     eslint: "npm:^10.3.0"
     eslint-plugin-obsidianmd: "npm:^0.3.0"
+    get-video-id: "npm:^4.2.0"
     lucide-svelte: "npm:^1.0.0"
     moment: "npm:^2.30.1"
     obsidian: "npm:^1.12.3"

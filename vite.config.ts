@@ -59,6 +59,16 @@ export default defineConfig(({ mode }) => {
             outDir: setOutDir(mode),
             emptyOutDir: false,
             sourcemap: mode === 'production' ? false : 'inline',
+            watch: {
+                usePolling: true,
+                interval: 300, // ms, lower = more responsive but more CPU
+            },
+        },
+        server: {
+            watch: {
+                usePolling: true,
+                interval: 300, // ms, lower = more responsive but more CPU
+            },
         },
     };
 });

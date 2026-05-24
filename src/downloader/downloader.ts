@@ -2,16 +2,17 @@ import { requestUrl, stringifyYaml } from 'obsidian';
 import type { Recipe, Recipe as SchemaRecipe } from 'schema-dts';
 import { Err, Ok, type Result } from 'ts-results-es';
 import { ErrCtx } from '../utils/result.ts';
+import type { DownloadedContent } from './content.ts';
 import { get_first_recipe, get_nutritional_information, to_recipemd } from './schema.ts';
-
-interface DownloadedContent {
-    recipeName: string;
-    recipeContent: string;
-    recipe: Recipe;
-}
+import { download_youtube } from './youtube.ts';
 
 export async function Download(url: string): Promise<Result<DownloadedContent, ErrCtx>> {
     console.debug(`Downloading ${url}`);
+
+    if (url.includes('youtube.com')) {
+        return await download_youtube(url);
+    }
+
     const dom = await requestUrl(url).text;
 
     const recipe: SchemaRecipe | null = get_first_recipe(dom);
