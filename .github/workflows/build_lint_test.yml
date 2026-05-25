@@ -1,16 +1,12 @@
-name: build lint test
+name: build & test
 
 on:
   push:
     branches:
       - main
-    paths:
-      - 'src/**'
   pull_request:
     branches:
       - main
-    paths:
-      - 'src/**'
 
 permissions:
   contents: read
