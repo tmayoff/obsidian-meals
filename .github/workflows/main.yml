@@ -6,11 +6,15 @@ on:
       - main
     paths:
       - 'src/**'
+      - 'package.json'
+      - 'yarn.lock'
   pull_request:
     branches:
       - main
     paths:
       - 'src/**'
+      - 'package.json'
+      - 'yarn.lock'
 
 permissions:
   contents: read
