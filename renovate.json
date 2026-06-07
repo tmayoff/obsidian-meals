@@ -7,7 +7,7 @@
     "postUpdateOptions": ["yarnDedupeHighest"],
     "packageRules": [
         {
-            "matchPackageNames": ["yarn"],
+            "matchDepNames": ["yarn"],
             "enabled": false
         },
         {
