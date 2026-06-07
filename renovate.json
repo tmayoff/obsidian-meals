@@ -4,11 +4,12 @@
     "minimumReleaseAge": "3 days",
     "dependencyDashboard": true,
     "commitMessagePrefix": "chore(deps):",
-    "lockFileMaintenance": {
-        "enabled": true
-    },
     "postUpdateOptions": ["yarnDedupeHighest"],
     "packageRules": [
+        {
+            "matchPackageNames": ["yarn"],
+            "enabled": false
+        },
         {
             "matchUpdateTypes": ["minor", "patch"],
             "groupName": "minor and patch updates",
