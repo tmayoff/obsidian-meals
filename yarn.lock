@@ -4288,15 +4288,15 @@ __metadata:
   linkType: hard
 
 "obsidian@npm:^1.12.3":
-  version: 1.13.0
-  resolution: "obsidian@npm:1.13.0"
+  version: 1.13.1
+  resolution: "obsidian@npm:1.13.1"
   dependencies:
     "@types/codemirror": "npm:5.60.8"
     moment: "npm:2.29.4"
   peerDependencies:
     "@codemirror/state": 6.5.0
     "@codemirror/view": 6.38.6
-  checksum: 10c0/2eb456be9f1a8b7f535124dfeed886bb8dadb7504b09eec2fb1f24eb0a5040d1918ea4efce4fa47fcaadbf916ff9d4cb59fcc672b6a4284a9bee03c744290e9e
+  checksum: 10c0/cc7bf4de68c36edfd7e3a348b45c8919d01bc6fb04b1f03fae74092156bf78add092f0f94c3885599fefbb3a83740630360044a1d899bd299c2016d345311521
   languageName: node
   linkType: hard
 
