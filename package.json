@@ -30,7 +30,7 @@
         "obsidian": "^1.12.3",
         "parse-ingredient": "^2.1.0",
         "postcss": "^8.5.10",
-        "svelte": "^5.55.0",
+        "svelte": "^5.56.4",
         "svelte-check": "^4.4.5",
         "svelte-language-server": "^0.18.0",
         "tailwindcss": "^4.2.2",
