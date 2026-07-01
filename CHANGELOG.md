@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/tmayoff/obsidian-meals/compare/2.0.0...2.0.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* updated workflows ([0298684](https://github.com/tmayoff/obsidian-meals/commit/02986845192343a5f55e51f59bca2d96ecd3f211))
+* updated workflows ([6c6d4c1](https://github.com/tmayoff/obsidian-meals/commit/6c6d4c1217e79789b5f7893f2844b3d1b551d1dc))
+
 ## [2.0.0](https://github.com/tmayoff/obsidian-meals/compare/1.3.1...2.0.0) (2026-05-23)
 
 
