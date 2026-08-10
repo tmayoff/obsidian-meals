@@ -794,10 +794,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/load-config@npm:^0.2.0, @sveltejs/load-config@npm:^0.2.1":
-  version: 0.2.1
-  resolution: "@sveltejs/load-config@npm:0.2.1"
-  checksum: 10c0/5aed9658f7d6a42b14d7e755ed509dfea7a6a4d5cf137a3ee297ef84f77edfe96585d3cb630eaad6b94085ca4f1b219edc2d45071c548567c544863d290e04ec
+"@sveltejs/load-config@npm:^0.2.0, @sveltejs/load-config@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "@sveltejs/load-config@npm:0.2.2"
+  checksum: 10c0/daa381cba07a40a6ee340e5f15f35b871735a022d1666fc209a7298b16f957ea537b9590233c23b36a15d6ddb45d66b45883fd4bdf303d4756a6342381998910
   languageName: node
   linkType: hard
 
@@ -5171,11 +5171,11 @@ __metadata:
   linkType: hard
 
 "svelte-check@npm:^4.4.5":
-  version: 4.7.4
-  resolution: "svelte-check@npm:4.7.4"
+  version: 4.7.5
+  resolution: "svelte-check@npm:4.7.5"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
-    "@sveltejs/load-config": "npm:^0.2.1"
+    "@sveltejs/load-config": "npm:^0.2.2"
     chokidar: "npm:^4.0.1"
     fdir: "npm:^6.2.0"
     picocolors: "npm:^1.0.0"
@@ -5185,7 +5185,7 @@ __metadata:
     typescript: ^5.0.0 || ^6.0.0
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/f404431ccdc5ff2f5f68f387dd6d48b4a6966b330b483a0c352084f365d2b6b5025c3d3dd4f5ca77f9f21d88ae51a01baeb45ac9caa77ed11fddc92eb2aab61a
+  checksum: 10c0/8b951521ddade7b42eac5113798279f0269e4b24fc9f38532eb30f35bd91374878ba3900bf241917e151ddbe8fd406d20225998da4c7dbd79447c93b1db0a8d9
   languageName: node
   linkType: hard
 
