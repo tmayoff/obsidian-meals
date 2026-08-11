@@ -801,18 +801,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/vite-plugin-svelte@npm:7.2.0":
-  version: 7.2.0
-  resolution: "@sveltejs/vite-plugin-svelte@npm:7.2.0"
+"@sveltejs/vite-plugin-svelte@npm:7.3.0":
+  version: 7.3.0
+  resolution: "@sveltejs/vite-plugin-svelte@npm:7.3.0"
   dependencies:
     deepmerge: "npm:^4.3.1"
-    magic-string: "npm:^0.30.21"
+    magic-string: "npm:^1.0.0"
     obug: "npm:^2.1.0"
     vitefu: "npm:^1.1.2"
   peerDependencies:
     svelte: ^5.46.4
     vite: ^8.0.0-beta.7 || ^8.0.0
-  checksum: 10c0/f256762aae5c6f6338e7cccf1e229da3c092d836779e2e6c557d17494341ffe352ef53f5218fd24a8a9de780734932ea08f894e093d5a708d5b1596295a5e591
+  checksum: 10c0/064affb1b09af408b8f9948cb657a8983ac629bc899dbf20bde9bf8d10d4333acbf4df43376adfc32ea69e2a041a7b57ff3a11f23e76c201b2af972b0ef5ea28
   languageName: node
   linkType: hard
 
@@ -3903,6 +3903,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"magic-string@npm:^1.0.0":
+  version: 1.1.0
+  resolution: "magic-string@npm:1.1.0"
+  dependencies:
+    "@jridgewell/sourcemap-codec": "npm:^1.5.5"
+  checksum: 10c0/f904dee2fd190ee5450c754234d8a831228677e9092ed2e545e42746beecf18d617156eb911af55a14496ebe1e60179678c4080c919f74eca7738eba3f38f13a
+  languageName: node
+  linkType: hard
+
 "magicast@npm:^0.5.2":
   version: 0.5.3
   resolution: "magicast@npm:0.5.3"
@@ -4234,7 +4243,7 @@ __metadata:
   dependencies:
     "@biomejs/biome": "npm:2.5.7"
     "@popperjs/core": "npm:^2.11.8"
-    "@sveltejs/vite-plugin-svelte": "npm:7.2.0"
+    "@sveltejs/vite-plugin-svelte": "npm:7.3.0"
     "@tsconfig/svelte": "npm:^5.0.8"
     "@types/node": "npm:^25.5.0"
     "@types/pluralize": "npm:^0.0.33"
