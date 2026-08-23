@@ -4271,7 +4271,7 @@ __metadata:
     tslib: "npm:^2.8.1"
     tsutils: "npm:^3.21.0"
     typescript: "npm:^6.0.0"
-    typescript-language-server: "npm:^5.1.3"
+    typescript-language-server: "npm:^6.0.0"
     unocss: "npm:^66.6.7"
     vite: "npm:^8.0.6"
     vitest: "npm:^4.1.2"
@@ -5527,12 +5527,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-language-server@npm:^5.1.3":
-  version: 5.3.0
-  resolution: "typescript-language-server@npm:5.3.0"
+"typescript-language-server@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "typescript-language-server@npm:6.0.0"
   bin:
     typescript-language-server: lib/cli.mjs
-  checksum: 10c0/d37d795f20849f5788134c18b00ad724ba325536d7f9fd308fc7ee97ee10a4ca383b7e35791b4e526beaa6a286e8255e42c807c3f20e884d71f21d5fe19807d5
+  checksum: 10c0/de69a5745e7851d531a1130ed45845847873a48f1998b7f557d888dfcf6201df2888cfb2a4a040d819eda959cc5b8756dc53777a10ec376cabfa1fb83481734c
   languageName: node
   linkType: hard
 
