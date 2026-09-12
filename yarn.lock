@@ -4148,10 +4148,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"numeric-quantity@npm:^3.2.1":
-  version: 3.2.1
-  resolution: "numeric-quantity@npm:3.2.1"
-  checksum: 10c0/6efe9bd718c21965518f4758c628896526b7c71576964daadf3e779532ef182da44b03808019b198c1bf2c613a2536c4f6d92f40d3f8e6e0125e8475c7ad70b1
+"numeric-quantity@npm:^3.3.2":
+  version: 3.3.2
+  resolution: "numeric-quantity@npm:3.3.2"
+  checksum: 10c0/84ed732e6a9522942156af898210bfc7e3cdfb10049dcff1e5e64cfdf84795c370f52a11e58f46b850becbc11818bd18655435a02eed042cc88c9931a1ea6b4a
   languageName: node
   linkType: hard
 
@@ -4259,7 +4259,7 @@ __metadata:
     lucide-svelte: "npm:^1.0.0"
     moment: "npm:^2.30.1"
     obsidian: "npm:^1.12.3"
-    parse-ingredient: "npm:^2.1.0"
+    parse-ingredient: "npm:^3.0.0"
     pluralize: "npm:^8.0.0"
     postcss: "npm:^8.5.10"
     schema-dts: "npm:^2.0.0"
@@ -4453,12 +4453,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"parse-ingredient@npm:^2.1.0":
-  version: 2.2.0
-  resolution: "parse-ingredient@npm:2.2.0"
+"parse-ingredient@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "parse-ingredient@npm:3.0.0"
   dependencies:
-    numeric-quantity: "npm:^3.2.1"
-  checksum: 10c0/8409db556692604a4c267c542307fd2ad5c073eda07a38666460b745d05e1603f0de7fe85acf7533fbb9ed62c0608f6a6f60457d1e3f701d8f4da65872b82c28
+    numeric-quantity: "npm:^3.3.2"
+  checksum: 10c0/e9fac788069cbf1b794580c78b40ae3bc64c5bcf0b3a813b1dde7fb54c7a3c4e185643f9b746eec63ac6999cb4bdadff3b1553990de374cefd1cb0a63e8251df
   languageName: node
   linkType: hard
 
