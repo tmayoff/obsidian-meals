@@ -6,11 +6,12 @@ import { AddToPlanModal } from './meal_plan/add_to_plan.ts';
 import { OpenMealPlanNote } from './meal_plan/plan.ts';
 import { AddFileToShoppingList, AddMealPlanToShoppingList, ClearCheckedIngredients } from './meal_plan/shopping_list.ts';
 import { DownloadRecipeCommand, RedownloadRecipe } from './recipe/downloader_ui.ts';
+import FindRecipe from './recipe/FindRecipe.svelte';
 import { Recipe } from './recipe/recipe.ts';
-import SearchRecipe from './recipe/SearchRecipe.svelte';
 import SettingsPage from './settings/SettingsPage.svelte';
 import { MealSettings } from './settings/settings.ts';
 import 'virtual:uno.css';
+import { FindAndCook } from './cook/cook.ts';
 
 export default class MealPlugin extends Plugin {
     ctx = new Context(this);
@@ -84,6 +85,14 @@ export default class MealPlugin extends Plugin {
             name: 'Download recipe from URL',
             callback: () => {
                 DownloadRecipeCommand(this.ctx);
+            },
+        });
+
+        this.addCommand({
+            id: 'cook-recipe',
+            name: 'Cook a recipe',
+            callback: () => {
+                FindAndCook(this.ctx);
             },
         });
 
@@ -185,7 +194,7 @@ class RecipeSearch extends Modal {
     }
 
     onOpen() {
-        this.component = mount(SearchRecipe, {
+        this.component = mount(FindRecipe, {
             target: this.containerEl.children[1].children[2],
             props: {
                 ctx: this.ctx,
