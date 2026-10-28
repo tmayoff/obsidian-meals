@@ -19,7 +19,7 @@
         "@popperjs/core": "^2.11.8",
         "@sveltejs/vite-plugin-svelte": "7.3.0",
         "@tsconfig/svelte": "^5.0.8",
-        "@types/node": "^25.5.0",
+        "@types/node": "^26.0.0",
         "@types/pluralize": "^0.0.33",
         "@typescript-eslint/eslint-plugin": "^8.59.3",
         "@typescript-eslint/parser": "^8.59.3",
