@@ -28,7 +28,7 @@
         "eslint": "^10.3.0",
         "eslint-plugin-obsidianmd": "^0.4.0",
         "obsidian": "^1.12.3",
-        "parse-ingredient": "^2.1.0",
+        "parse-ingredient": "^3.0.0",
         "postcss": "^8.5.10",
         "svelte": "^5.55.0",
         "svelte-check": "^4.4.5",
